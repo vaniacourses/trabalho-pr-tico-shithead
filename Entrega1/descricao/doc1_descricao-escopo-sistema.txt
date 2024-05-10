@@ -1,0 +1,6 @@
+Escopo do sistema:
+	
+	O sistema corresponde a uma plataforma de acesso em diversas máquinas diferentes em caixas registradoras diversas em uma loja, mercado ou comércio,
+permitindo o gerenciamento, que se entende por, cadastro, alteração, remoção e consulta de entidades relevantes a logística do caixa, sendo essas: funcionários, clientes, vendas, descontos e produtos.
+O sistema deve também restringir o gerenciamento de certas entidades para os gerentes exclusivamente, fazendo a autenticação do login e a distinção de usuários.
+Além disso, deve permitir que seja feito o relatório de vendas operadas no caixa. A autenticação e as operações realizadas devem ser seguras e autenticadas sem conflito entre os caixas, com mais de uma máquina acessando um mesmo repositório compartilhado.

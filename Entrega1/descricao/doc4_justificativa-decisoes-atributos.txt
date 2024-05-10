@@ -1,0 +1,39 @@
+Atributos de qualidade e decisões arquiteturais: 
+obs.: seguimos o modelo de qualidade ISO 25010
+
+
+
+portabilidade - Para garantir a portabilidade do sistema em máquinas diversas de caixa,
+     o sistema front-end é baseado em web, onde o browser garante a portabilidade.
+    
+    
+confiabilidade:
+     -disponibilidade - O modelo Cliente/Servidor mantém o sistema operacional enquanto o Servidor estiver operando, dessa forma mesmo se apenas uma pessoa quiser acessar, o sistema estará ativo, pois o servidor será mantido ativo. 
+
+
+
+compatibilidade:
+      -coexistência
+    
+    
+adequação funcional:
+      -corretude
+      -completude
+      -funcionalidade apropriada
+
+
+usabilidade:
+      -todos os subrequisitos parecem importantes
+
+
+manutenilidade:
+
+
+segurança:
+      -Autenticidade: Garantido pelo sistema backend e o banco de dados, o login e a senha do usuário são
+      verificados no sistema servidor para o acesso ser permitido.
+      
+      -Responsabilidade: A responsabilidade é garantida pela associação de um funcionário a toda venda registrada
+      no banco de dados, possibilitando rastreá-lo a venda.
+      
+      -Integridade: A diferenciação entre gerente e funcionário será feita pelo backend e pelo banco de dados, garantindo que somente o gerente tenha acesso a algumas funcionalidades

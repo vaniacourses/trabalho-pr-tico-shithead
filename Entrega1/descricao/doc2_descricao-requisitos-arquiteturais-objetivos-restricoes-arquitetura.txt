@@ -1,0 +1,14 @@
+Lista de requisitos arquiteturais:
+
+    rf1. o sistema deve permitir que funcionários façam crud de clientes
+    rf2. o sistema deve permitir que funcionários façam login no sistema
+    rf3. o sistema deve garantir que apenas funcionários do tipo gerente façam CRUD de funcionários
+    rf4. o sistema deve permitir que operadores de caixa façam crud de vendas
+    rf5. o sistema deve permitir que funcionários façam crud de produtos
+    rf6. o sistema deve garantir que apenas funcionários do tipo gerente façam CRUD de descontos
+ 
+    rnf1. o sistema deve ser portátil
+    rnf2. o sistema deve estar disponível para uso durante todo o horário de funcionamento da loja
+    rnf3. o sistema deve suportar mútiplos funcionários acessando-o ao mesmo tempo
+    rnf4. o sistema deve ser fácil, simples e intuitivo
+    rnf5. o sistema deve ser capaz de atender lojas de diferentes seguimentos

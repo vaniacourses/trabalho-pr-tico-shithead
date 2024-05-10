@@ -1,0 +1,6 @@
+Considerando a necessidade de um sistema distribuído, onde vários terminais de caixa
+conectam-se a um servidor central para acessar os dados e funcionalidades, 
+um padrão arquitetural adequado
+seria o Modelo Cliente-Servidor. 
+Este modelo permite uma divisão clara entre o cliente (o terminal do caixa) e 
+o servidor (que gerencia o banco de dados e processa as operações).
