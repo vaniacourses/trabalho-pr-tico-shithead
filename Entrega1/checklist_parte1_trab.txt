@@ -20,7 +20,7 @@ desconto - (a ser feito por Lucas)
 login - feito
 relatorio - feito
 calculo_desconto -
-
+reembolso = feito
 
 Diagrama geral - 
 Diagramas de interação (mínimo 4, 1 por caso de uso) -
