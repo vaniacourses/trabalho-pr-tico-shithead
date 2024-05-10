@@ -19,7 +19,7 @@ crud_venda -
 desconto - (a ser feito por Lucas)
 login - feito
 relatorio - feito
-calculo_desconto -
+calculo_desconto - feito
 reembolso = feito
 
 Diagrama geral - 
