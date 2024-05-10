@@ -1,0 +1,26 @@
+Checklist - Parte 1 - Trabalho
+
+Escopo - feito
+Requisitos arquiteturais -feito
+objetivos da arquitetura -
+restrições da arquitetura -
+padrões arquiteturais - feito
+Justificativas decisões para atributos de qualidade - ta sendo feito
+
+
+Casos de uso - feito
+Modelo conceitual - feito
+Diagramas de Sequência (Mínimo 4 DSSs) -
+funcionario - (a ser feito por Lucas)
+produto - (a ser feito por João Vítor) 
+cliente- (a ser feito por João Vítor)
+venda - 
+desconto - (a ser feito por Lucas)
+login - feito
+relatorio - feito
+calculo_desconto -
+
+
+Diagrama geral - 
+Diagramas de interação (mínimo 4, 1 por caso de uso) -
+Diagrama de Classe - 
