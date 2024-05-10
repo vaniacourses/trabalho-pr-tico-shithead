@@ -25,7 +25,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGPX4FBp1vHFeA="
 							},
-							"name": "Mostra relastório de vendas",
+							"name": "Mostra relatório de vendas",
 							"ownedViews": [
 								{
 									"_type": "UMLFrameView",
@@ -46,9 +46,9 @@
 											"font": "Arial;13;0",
 											"left": 32.72998046875,
 											"top": 13,
-											"width": 160.41162109375,
+											"width": 153.91162109375,
 											"height": 13,
-											"text": "Mostra relastório de vendas"
+											"text": "Mostra relatório de vendas"
 										},
 										{
 											"_type": "LabelView",
