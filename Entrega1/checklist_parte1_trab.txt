@@ -15,7 +15,7 @@ funcionario - (a ser feito por Lucas)
 produto - (a ser feito por João Vítor) 
 cliente- (a ser feito por João Vítor)
 opera_venda - feito
-crud_venda -
+crud_venda - feito
 desconto - (a ser feito por Lucas)
 login - feito
 relatorio - feito
@@ -23,5 +23,5 @@ calculo_desconto - feito
 reembolso = feito
 
 Diagrama geral - 
-Diagramas de interação (mínimo 4, 1 por caso de uso) -
+Diagramas de interação (mínimo 4, 1 por caso de uso) - mistério
 Diagrama de Classe - feito
