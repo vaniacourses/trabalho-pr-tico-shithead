@@ -11,12 +11,12 @@ Justificativas decisões para atributos de qualidade - feito
 Casos de uso - feito
 Modelo conceitual - feito
 Diagramas de Sequência (Mínimo 4 DSSs) -
-funcionario - (a ser feito por Lucas)
+funcionario - feito
 produto - (a ser feito por João Vítor) 
 cliente- (a ser feito por João Vítor)
 opera_venda - feito
 crud_venda - feito
-desconto - (a ser feito por Lucas)
+desconto - feito
 login - feito
 relatorio - feito
 calculo_desconto - feito
