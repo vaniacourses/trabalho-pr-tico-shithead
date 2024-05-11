@@ -22,6 +22,5 @@ relatorio - feito
 calculo_desconto - feito
 reembolso = feito
 
-Diagrama geral - 
-Diagramas de interação (mínimo 4, 1 por caso de uso) - mistério
+Diagrama geral - feito
 Diagrama de Classe - feito
