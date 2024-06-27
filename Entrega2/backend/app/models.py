@@ -18,13 +18,14 @@ class <uppercase table name>(Base):
     <relationship> = relationship("<uppercase associated table name>", back_populates="<lowercase name of the relationship as in the associated table>")
 """
 
-produtos_venda = Table(
-    'produtos_venda',
-    Base.metadata,
-    Column('id_produto', ForeignKey('produtos.id_produto'), primary_key=True),
-    Column('id_venda', ForeignKey('vendas.id_venda'), primary_key=True)
-)
+class ProdutoVenda(Base):
+    __tablename__ = "produtos_venda"
 
+    id_produto = Column(Integer, ForeignKey("produtos.id_produto"), primary_key=True)
+    id_venda = Column(Integer, ForeignKey("vendas.id_venda"), primary_key=True)
+
+    produto = relationship("Produto", back_populates="vendas")
+    venda = relationship("Venda", back_populates="produtos")
 
 class Funcionario(Base):
     __tablename__ = "funcionarios"
