@@ -28,14 +28,14 @@ def create_funcionario(db: Session, funcionario: schemas.FuncionarioCreate):
 
 #CLIENTE
 
-def get_cliente_by_cpf(db: Session, cpf: int) -> Cliente:
-    return db.query(Cliente).filter(Cliente.cpf == cpf).first()
+def get_cliente_by_cpf(db: Session, cpf: int):
+    return db.query(models.Cliente).filter(models.Cliente.cpf == cpf).first()
 
-def get_clientes(db: Session, skip: int = 0, limit: int = 100) -> list[Cliente]:
-    return db.query(Cliente).offset(skip).limit(limit).all()
+def get_clientes(db: Session, skip: int = 0, limit: int = 100) -> list[schemas.Cliente]:
+    return db.query(models.Cliente).offset(skip).limit(limit).all()
 
-def create_cliente(db: Session, cliente: ClienteCreate) -> Cliente:
-    db_cliente = Cliente(
+def create_cliente(db: Session, cliente: schemas.ClienteCreate):
+    db_cliente = models.Cliente(
         cpf=cliente.cpf,
     )
     db.add(db_cliente)
@@ -43,7 +43,7 @@ def create_cliente(db: Session, cliente: ClienteCreate) -> Cliente:
     db.refresh(db_cliente)
     return db_cliente
 
-def update_cliente(db: Session, cpf: int, cliente: ClienteCreate) -> Cliente:
+def update_cliente(db: Session, cpf: int, cliente: schemas.ClienteCreate):
     db_cliente = get_cliente_by_cpf(db, cpf)
     if not db_cliente:
         raise Exception(f"Cliente with CPF {cpf} not found")
@@ -103,7 +103,7 @@ def delete_produto(db: Session, id_produto: int):
 
 #VENDA
 
-def create_venda(db: Session, venda: VendaCreate):
+def create_venda(db: Session, venda: schemas.VendaCreate):
     funcionario = db.query(Funcionario).filter(Funcionario.cpf == venda.id_funcionario).first()
     cliente = db.query(Cliente).filter(Cliente.cpf == venda.id_cliente).first()
     produtos = db.query(Produto).filter(Produto.id_produto.in_(venda.produtos)).all()
@@ -127,8 +127,8 @@ def get_vendas(db: Session, skip: int = 0, limit: int = 100):
 def get_venda_by_id(db: Session, venda_id: int):
     return db.query(Venda).filter(Venda.id_venda == venda_id).first()
 
-def update_venda(db: Session, venda_id: int, venda_update: Venda):
-    db_venda = db.query(Venda).filter(Venda.id_venda == venda_id).first()
+def update_venda(db: Session, venda_id: int, venda_update: schemas.Venda):
+    db_venda = db.query(models.Venda).filter(models.Venda.id_venda == venda_id).first()
 
     db_venda.valor_venda = venda_update.valor_venda
     db_venda.id_funcionario = venda_update.id_funcionario
@@ -147,41 +147,41 @@ def delete_venda(db: Session, venda_id: int):
 
 #PRODUTO-VENDA
 
-def create_produto_venda(db: Session, produto_venda: ProdutoVenda):
-    produto = db.query(Produto).filter(Produto.id_produto == produto_venda.id_produto).first()
-    venda = db.query(Venda).filter(Venda.id_venda == produto_venda.id_venda).first()
-
-    db_produto_venda = ProdutoVenda(
-        produto=produto,
-        venda=venda
-    )
-
-    db.add(db_produto_venda)
-    db.commit()
-    return db_produto_venda
-
-def get_produto_vendas(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(ProdutoVenda).offset(skip).limit(limit).all()
-
-def get_produto_venda_by_ids(db: Session, id_produto: int, id_venda: int):
-    return db.query(ProdutoVenda).filter(ProdutoVenda.id_produto == id_produto, ProdutoVenda.id_venda == id_venda).first()
-
-def delete_produto_venda(db: Session, id_produto: int, id_venda: int):
-    db.query(ProdutoVenda).filter(ProdutoVenda.id_produto == id_produto, ProdutoVenda.id_venda == id_venda).delete()
-    db.commit()
+#def create_produto_venda(db: Session, produto_venda: schemas.ProdutoVenda):
+#    produto = db.query(models.Produto).filter(models.Produto.id_produto == produto_venda.id_produto).first()
+#    venda = db.query(models.Venda).filter(models.Venda.id_venda == produto_venda.id_venda).first()
+#
+#    db_produto_venda = models.ProdutoVenda(
+#        produto=produto,
+#        venda=venda
+#    )
+#
+#    db.add(db_produto_venda)
+#    db.commit()
+#    return db_produto_venda
+#
+#def get_produto_vendas(db: Session, skip: int = 0, limit: int = 100):
+#    return db.query(ProdutoVenda).offset(skip).limit(limit).all()
+#
+#def get_produto_venda_by_ids(db: Session, id_produto: int, id_venda: int):
+#    return db.query(ProdutoVenda).filter(ProdutoVenda.id_produto == id_produto, ProdutoVenda.id_venda == id_venda).first()
+#
+#def delete_produto_venda(db: Session, id_produto: int, id_venda: int):
+#    db.query(ProdutoVenda).filter(ProdutoVenda.id_produto == id_produto, ProdutoVenda.id_venda == id_venda).delete()
+#    db.commit()
 
 
 #DESCONTO
 
-def get_desconto_by_id(db: Session, id_desconto: int) -> Desconto:
+def get_desconto_by_id(db: Session, id_desconto: int):
     return db.query(models.Desconto).filter(models.Desconto.id_desconto == id_desconto).first()
 
 
-def get_descontos(db: Session, skip: int = 0, limit: int = 100) -> list[Desconto]:
+def get_descontos(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Desconto).offset(skip).limit(limit).all()
 
 
-def create_desconto(db: Session, desconto: schemas.DescontoCreate) -> Desconto:
+def create_desconto(db: Session, desconto: schemas.DescontoCreate):
     db_desconto = models.Desconto(
         valor_desconto=desconto.valor_desconto,
         descricao=desconto.descricao,
@@ -192,7 +192,7 @@ def create_desconto(db: Session, desconto: schemas.DescontoCreate) -> Desconto:
     return db_desconto
 
 
-def update_desconto(db: Session, id_desconto: int, desconto_update: schemas.DescontoCreate) -> Desconto:
+def update_desconto(db: Session, id_desconto: int, desconto_update: schemas.DescontoCreate):
     db_desconto = get_desconto_by_id(db, id_desconto)
     if not db_desconto:
         raise Exception(f"Desconto with ID {id_desconto} not found")

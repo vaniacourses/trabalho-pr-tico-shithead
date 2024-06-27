@@ -40,24 +40,24 @@ def read_funcionario(cpf: int, db: Session = Depends(get_db)):
 
 #CLIENTE
 
-@app.post("/clientes/", response_model=Cliente)
-def create_cliente(cliente: ClienteCreate, db: Session = Depends(get_db)):
+@app.post("/clientes/", response_model=schemas.Cliente)
+def create_cliente(cliente: schemas.ClienteCreate, db: Session = Depends(get_db)):
     return create_cliente(db=db, cliente=cliente)
 
-@app.get("/clientes/", response_model=list[Cliente])
+@app.get("/clientes/", response_model=list[schemas.Cliente])
 def read_clientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     clientes = get_clientes(db, skip=skip, limit=limit)
     return clientes
 
-@app.get("/clientes/{cpf_cliente}/", response_model=Cliente)
+@app.get("/clientes/{cpf_cliente}/", response_model=schemas.Cliente)
 def read_cliente(cpf_cliente: int, db: Session = Depends(get_db)):
     db_cliente = get_cliente_by_cpf(db, cpf=cpf_cliente)
     if db_cliente is None:
         raise HTTPException(status_code=404, detail="Cliente não encontrado")
     return db_cliente
 
-@app.put("/clientes/{cpf_cliente}/", response_model=Cliente)
-def update_cliente(cpf_cliente: int, cliente_update: Cliente, db: Session = Depends(get_db)):
+@app.put("/clientes/{cpf_cliente}/", response_model=schemas.Cliente)
+def update_cliente(cpf_cliente: int, cliente_update: schemas.Cliente, db: Session = Depends(get_db)):
     db_cliente = update_cliente(db=db, cpf=cpf_cliente, cliente=cliente_update)
     if db_cliente is None:
         raise HTTPException(status_code=404, detail="Cliente não encontrado")
@@ -71,24 +71,24 @@ def delete_cliente(cpf_cliente: int, db: Session = Depends(get_db)):
 
 #PRODUTO
 
-@app.post("/produtos/", response_model=Produto)
-def create_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
+@app.post("/produtos/", response_model=schemas.Produto)
+def create_produto(produto: schemas.ProdutoCreate, db: Session = Depends(get_db)):
     return create_produto(db=db, produto=produto)
 
-@app.get("/produtos/", response_model=list[Produto])
+@app.get("/produtos/", response_model=list[schemas.Produto])
 def read_produtos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     produtos = get_produtos(db, skip=skip, limit=limit)
     return produtos
 
-@app.get("/produtos/{produto_id}", response_model=Produto)
+@app.get("/produtos/{produto_id}", response_model=schemas.Produto)
 def read_produto(produto_id: int, db: Session = Depends(get_db)):
     db_produto = get_produto_by_id(db, produto_id=produto_id)
     if db_produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     return db_produto
 
-@app.put("/produtos/{produto_id}", response_model=Produto)
-def update_produto(produto_id: int, produto_update: Produto, db: Session = Depends(get_db)):
+@app.put("/produtos/{produto_id}", response_model=schemas.Produto)
+def update_produto(produto_id: int, produto_update: schemas.Produto, db: Session = Depends(get_db)):
     db_produto = update_produto(db=db, produto_id=produto_id, produto_update=produto_update)
     if db_produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
@@ -102,24 +102,24 @@ def delete_produto(produto_id: int, db: Session = Depends(get_db)):
 
 #VENDA
 
-@app.post("/vendas/", response_model=Venda)
-def create_venda(venda: VendaCreate, db: Session = Depends(get_db)):
+@app.post("/vendas/", response_model=schemas.Venda)
+def create_venda(venda: schemas.VendaCreate, db: Session = Depends(get_db)):
     return create_venda(db=db, venda=venda)
 
-@app.get("/vendas/", response_model=list[Venda])
+@app.get("/vendas/", response_model=list[schemas.Venda])
 def read_vendas(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     vendas = get_vendas(db, skip=skip, limit=limit)
     return vendas
 
-@app.get("/vendas/{venda_id}", response_model=Venda)
+@app.get("/vendas/{venda_id}", response_model=schemas.Venda)
 def read_venda(venda_id: int, db: Session = Depends(get_db)):
     db_venda = get_venda_by_id(db, venda_id=venda_id)
     if db_venda is None:
         raise HTTPException(status_code=404, detail="Venda não encontrada")
     return db_venda
 
-@app.put("/vendas/{venda_id}", response_model=Venda)
-def update_venda(venda_id: int, venda_update: Venda, db: Session = Depends(get_db)):
+@app.put("/vendas/{venda_id}", response_model=schemas.Venda)
+def update_venda(venda_id: int, venda_update: schemas.Venda, db: Session = Depends(get_db)):
     db_venda = update_venda(db=db, venda_id=venda_id, venda_update=venda_update)
     if db_venda is None:
         raise HTTPException(status_code=404, detail="Venda não encontrada")
@@ -132,44 +132,44 @@ def delete_venda(venda_id: int, db: Session = Depends(get_db)):
 
 
 #PRODUTO-VENDA
-@app.post("/produto-vendas/", response_model=ProdutoVenda)
-def create_produto_venda(produto_venda: ProdutoVendaCreate, db: Session = Depends(get_db)):
-    return create_produto_venda(db=db, produto_venda=produto_venda)
-
-@app.get("/produto-vendas/", response_model=list[ProdutoVenda])
-def read_produto_vendas(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    produto_vendas = get_produto_vendas(db, skip=skip, limit=limit)
-    return produto_vendas
-
-@app.get("/produto-vendas/{id_produto}/{id_venda}", response_model=ProdutoVenda)
-def read_produto_venda(
-    id_produto: int, id_venda: int, db: Session = Depends(get_db)
-):
-    db_produto_venda = get_produto_venda_by_ids(
-        db=db, id_produto=id_produto, id_venda=id_venda
-    )
-    if db_produto_venda is None:
-        raise HTTPException(status_code=404, detail="Associação não encontrada")
-    return db_produto_venda
-
-@app.put("/produto-vendas/{id_produto}/{id_venda}", response_model=ProdutoVenda)
-def update_produto_venda(
-    id_produto: int, id_venda: int, produto_venda_update: ProdutoVenda, db: Session = Depends(get_db)
-):
-    db_produto_venda = update_produto_venda(
-        db=db,
-        id_produto=id_produto,
-        id_venda=id_venda,
-        produto_venda_update=produto_venda_update,
-    )
-    if db_produto_venda is None:
-        raise HTTPException(status_code=404, detail="Associação não encontrada")
-    return db_produto_venda
-
-@app.delete("/produto-vendas/{id_produto}/{id_venda}")
-def delete_produto_venda(id_produto: int, id_venda: int, db: Session = Depends(get_db)):
-    delete_produto_venda(db=db, id_produto=id_produto, id_venda=id_venda)
-    return {"message": "Associação deletada com sucesso"}
+#@app.post("/produto-vendas/", response_model=ProdutoVenda)
+#def create_produto_venda(produto_venda: ProdutoVendaCreate, db: Session = Depends(get_db)):
+#    return create_produto_venda(db=db, produto_venda=produto_venda)
+#
+#@app.get("/produto-vendas/", response_model=list[ProdutoVenda])
+#def read_produto_vendas(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#    produto_vendas = get_produto_vendas(db, skip=skip, limit=limit)
+#    return produto_vendas
+#
+#@app.get("/produto-vendas/{id_produto}/{id_venda}", response_model=ProdutoVenda)
+#def read_produto_venda(
+#    id_produto: int, id_venda: int, db: Session = Depends(get_db)
+#):
+#    db_produto_venda = get_produto_venda_by_ids(
+#        db=db, id_produto=id_produto, id_venda=id_venda
+#    )
+#    if db_produto_venda is None:
+#        raise HTTPException(status_code=404, detail="Associação não encontrada")
+#    return db_produto_venda
+#
+#@app.put("/produto-vendas/{id_produto}/{id_venda}", response_model=ProdutoVenda)
+#def update_produto_venda(
+#    id_produto: int, id_venda: int, produto_venda_update: ProdutoVenda, db: Session = Depends(get_db)
+#):
+#    db_produto_venda = update_produto_venda(
+#        db=db,
+#        id_produto=id_produto,
+#        id_venda=id_venda,
+#        produto_venda_update=produto_venda_update,
+#    )
+#    if db_produto_venda is None:
+#        raise HTTPException(status_code=404, detail="Associação não encontrada")
+#    return db_produto_venda
+#
+#@app.delete("/produto-vendas/{id_produto}/{id_venda}")
+#def delete_produto_venda(id_produto: int, id_venda: int, db: Session = Depends(get_db)):
+#    delete_produto_venda(db=db, id_produto=id_produto, id_venda=id_venda)
+#    return {"message": "Associação deletada com sucesso"}
 
 
 #DESCONTO
