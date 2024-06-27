@@ -1,0 +1,51 @@
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, Float, String, Date
+from sqlalchemy.orm import relationship
+
+from .database import Base
+
+"""
+class <uppercase table name>(Base):
+    __tablename__ "<plural table name>"
+
+    <attrib> = Column(<params>)
+    <attrib> = Column(<params>)
+    ...
+    <attrib> = Column(<params>)
+
+    <relationship> = relationship("<uppercase associated table name>", back_populates="<lowercase name of the relationship as in the associated table>")
+    <relationship> = relationship("<uppercase associated table name>", back_populates="<lowercase name of the relationship as in the associated table>")
+    ...
+    <relationship> = relationship("<uppercase associated table name>", back_populates="<lowercase name of the relationship as in the associated table>")
+"""
+
+
+class Funcionario(Base):
+    __tablename__ = "funcionarios"
+
+    cpf = Column(Integer, primary_key=True)
+    login = Column(String(255), unique=True)
+    senha = Column(String(255))
+    is_gerente = Column(Boolean)
+
+    vendas = relationship("Venda")
+
+
+class Venda(Base):
+    __tablename__ = "vendas"
+
+    id_venda = Column(Integer, primary_key=True)
+    valor_venda = Column(Float)
+    id_cliente = Column(Integer, ForeignKey("clientes.cpf"))
+    id_funcionario = Column(Integer, ForeignKey("funcionarios.cpf"))
+    data = Column(Date)
+
+    funcionario = relationship("Funcionario", back_populates="vendas")
+    cliente = relationship("Cliente")
+
+
+class Cliente(Base):
+    __tablename__ = "clientes"
+
+    cpf = Column(Integer, primary_key=True)
+
+    compras = relationship("Venda", back_populates="cliente")
