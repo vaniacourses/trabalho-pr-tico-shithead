@@ -42,7 +42,7 @@ class FuncionarioBase(BaseModel):
 
 
 class FuncionarioCreate(FuncionarioBase):
-    senha: str # A senha está aqui e não em FuncionarioBase por questão de segurança
+    senha: str 
 
 
 class Funcionario(FuncionarioBase):
@@ -52,4 +52,33 @@ class Funcionario(FuncionarioBase):
         orm_mode = True
 
 #-------------------------------------------
+class ProdutoBase(BaseModel):
+    valor: float
+    quantidade_estoque: int
 
+
+class ProdutoCreate(ProdutoBase):
+    pass
+
+
+class Produto(ProdutoBase):
+    id_produto: int
+
+    class Config:
+        orm_mode = True
+
+#-------------------------------------------
+
+class DescontoBase(BaseModel):
+    porcentagem: float
+
+
+class DescontoCreate(DescontoBase):
+    pass
+
+
+class Desconto(DescontoBase):
+    id_produto: int
+
+    class Config:
+        orm_mode = True
