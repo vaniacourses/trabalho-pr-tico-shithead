@@ -1,19 +1,47 @@
 from pydantic import BaseModel
+from datetime import date
+
+
+
+
+class ProdutoBase(BaseModel):
+    valor: float
+    quantidade_estoque: int
+
+
+
+class ProdutoCreate(ProdutoBase):
+    valor: float
+    quantidade_estoque: int
+    nome:str
+
+
+class Produto(ProdutoBase):
+    valor: float
+    quantidade_estoque: int
+
+
+    class Config:
+        orm_mode = True
+
+#-------------------------------------------
+
 
 
 class VendaBase(BaseModel):
     valor_venda: float
-    data: str # TODO: mudar (str) para um tipo mais adequado????????
+    data: date
+    cliente_cpf: int
+    funcionario_cpf: int
+    
 
 
 class VendaCreate(VendaBase):
-    pass
+    produtos : list[Produto] = []
 
 
 class Venda(VendaBase):
     id_venda: int
-    id_cliente: int
-    id_funcionario: int
 
     class Config:
         orm_mode = True
@@ -51,26 +79,6 @@ class Funcionario(FuncionarioBase):
     class Config:
         orm_mode = True
 
-#-------------------------------------------
-class ProdutoBase(BaseModel):
-    valor: float
-    quantidade_estoque: int
-
-
-
-class ProdutoCreate(ProdutoBase):
-    valor: float
-    quantidade_estoque: int
-    nome:str
-
-
-class Produto(ProdutoBase):
-    valor: float
-    quantidade_estoque: int
-
-
-    class Config:
-        orm_mode = True
 
 #-------------------------------------------
 
