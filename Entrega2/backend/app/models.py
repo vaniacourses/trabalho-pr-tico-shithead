@@ -74,8 +74,8 @@ class Produto(Base):
 
 class Desconto(Base):
     __tablename__ = "descontos"
-
-    id_produto = Column(Integer, ForeignKey("produtos.id_produto"), primary_key=True)
+    id_desconto = Column(Integer,primary_key=True)
+    id_produto = Column(Integer, ForeignKey("produtos.id_produto"))
     porcentagem = Column(Float)
 
     produto = relationship("Produto", back_populates="desconto")
