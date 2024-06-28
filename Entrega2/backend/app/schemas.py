@@ -55,15 +55,19 @@ class Funcionario(FuncionarioBase):
 class ProdutoBase(BaseModel):
     valor: float
     quantidade_estoque: int
-    nome:str
+
 
 
 class ProdutoCreate(ProdutoBase):
-    nome : str
+    valor: float
+    quantidade_estoque: int
+    nome:str
 
 
 class Produto(ProdutoBase):
-    id_produto: int
+    valor: float
+    quantidade_estoque: int
+
 
     class Config:
         orm_mode = True
