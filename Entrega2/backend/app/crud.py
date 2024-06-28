@@ -182,9 +182,11 @@ def get_descontos(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_desconto(db: Session, desconto: schemas.DescontoCreate):
+    db_produto = db.query(models.Produto).filter(models.Produto.id_produto == desconto.id_produto).first()
+
     db_desconto = models.Desconto(
-        valor_desconto=desconto.valor_desconto,
-        descricao=desconto.descricao,
+        porcentagem=desconto.porcentagem,
+        id_produto=db_produto.id_produto,
     )
     db.add(db_desconto)
     db.commit()
@@ -197,9 +199,8 @@ def update_desconto(db: Session, id_desconto: int, desconto_update: schemas.Desc
     if not db_desconto:
         raise Exception(f"Desconto with ID {id_desconto} not found")
 
-    db_desconto.valor_desconto = desconto_update.valor_desconto
-    db_desconto.descricao = desconto_update.descricao
-
+    db_desconto.porcentagem = desconto_update.porcentagem
+    db_desconto.id_produto = desconto_update.id_produto
     db.commit()
     db.refresh(db_desconto)
     return db_desconto
