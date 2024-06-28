@@ -64,6 +64,7 @@ class Produto(Base):
     __tablename__ = "produtos"
 
     id_produto = Column(Integer, primary_key=True)
+    nome = Column(String(255), unique=True)
     valor = Column(Float)
     quantidade_estoque = Column(Integer)
 
