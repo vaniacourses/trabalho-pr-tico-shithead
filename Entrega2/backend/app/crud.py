@@ -105,11 +105,11 @@ def delete_produto(db: Session, id_produto: int):
 #VENDA
 
 def create_venda(db: Session, venda: schemas.VendaCreate):
-    funcionario = db.query(Funcionario).filter(Funcionario.cpf == venda.id_funcionario).first()
-    cliente = db.query(Cliente).filter(Cliente.cpf == venda.id_cliente).first()
-    produtos = db.query(Produto).filter(Produto.id_produto.in_(venda.produtos)).all()
+    funcionario = db.query(models.Funcionario).filter(models.Funcionario.cpf == venda.funcionario_cpf).first()
+    cliente = db.query(models.Cliente).filter(models.Cliente.cpf == venda.cliente_cpf).first()
+    produtos = db.query(models.Produto).filter(models.Produto.id_produto.in_(venda.produtos)).all()
 
-    db_venda = Venda(
+    db_venda = models.Venda(
         valor_venda=venda.valor_venda,
         id_funcionario=funcionario.cpf,
         id_cliente=cliente.cpf,
@@ -123,10 +123,10 @@ def create_venda(db: Session, venda: schemas.VendaCreate):
     return db_venda
 
 def get_vendas(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Venda).offset(skip).limit(limit).all()
+    return db.query(models.Venda).offset(skip).limit(limit).all()
 
 def get_venda_by_id(db: Session, venda_id: int):
-    return db.query(Venda).filter(Venda.id_venda == venda_id).first()
+    return db.query(models.Venda).filter(models.Venda.id_venda == venda_id).first()
 
 def update_venda(db: Session, venda_id: int, venda_update: schemas.Venda):
     db_venda = db.query(models.Venda).filter(models.Venda.id_venda == venda_id).first()
