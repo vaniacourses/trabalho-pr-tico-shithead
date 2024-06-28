@@ -24,8 +24,8 @@ class ProdutoVenda(Base):
     id_produto = Column(Integer, ForeignKey("produtos.id_produto"), primary_key=True)
     id_venda = Column(Integer, ForeignKey("vendas.id_venda"), primary_key=True)
 
-    produto = relationship("Produto", back_populates="vendas")
-    venda = relationship("Venda", back_populates="produtos")
+    produto = relationship("Produto")
+    venda = relationship("Venda")
 
 class Funcionario(Base):
     __tablename__ = "funcionarios"
