@@ -19,6 +19,7 @@ class ProdutoCreate(ProdutoBase):
 class Produto(ProdutoBase):
     valor: float
     quantidade_estoque: int
+    nome : str
 
 
     class Config:
@@ -84,14 +85,13 @@ class Funcionario(FuncionarioBase):
 
 class DescontoBase(BaseModel):
     porcentagem: float
-
+    id_produto: int
 
 class DescontoCreate(DescontoBase):
     pass
 
 
 class Desconto(DescontoBase):
-    id_produto: int
 
     class Config:
         orm_mode = True
