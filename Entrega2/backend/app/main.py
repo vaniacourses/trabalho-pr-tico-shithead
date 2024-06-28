@@ -89,14 +89,14 @@ def read_produto(produto_id: int, db: Session = Depends(get_db)):
 
 @app.put("/produtos/{produto_id}", response_model=schemas.Produto)
 def update_produto(produto_id: int, produto_update: schemas.Produto, db: Session = Depends(get_db)):
-    db_produto = crud.update_produto(db=db, id_produto=produto_id, produto=produto_update)
+    db_produto = crud.update_produto(db=db, id_produto=produto_id,produto=produto_update)
     if db_produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     return db_produto
 
 @app.delete("/produtos/{produto_id}")
 def delete_produto(produto_id: int, db: Session = Depends(get_db)):
-    delete_produto(db=db, id_produto=produto_id)
+    crud.delete_produto(db=db, id_produto=produto_id)
     return {"message": "Produto deletado com sucesso"}
 
 
@@ -183,16 +183,22 @@ def read_descontos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
     descontos = crud.get_descontos(db, skip=skip, limit=limit)
     return descontos
 
-@app.get("/descontos/{desconto_id}", response_model=schemas.Desconto)
-def read_desconto(desconto_id: int, db: Session = Depends(get_db)):
-    db_desconto = crud.get_desconto_by_id(db, desconto_id=desconto_id)
+@app.get("/descontos/{id_desconto}", response_model=schemas.Desconto)
+def read_desconto(id_desconto: int, db: Session = Depends(get_db)):
+    db_desconto = crud.get_desconto_by_id(db, id_desconto=id_desconto)
     if db_desconto is None:
         raise HTTPException(status_code=404, detail="Desconto não encontrado")
     return db_desconto
 
-@app.put("/descontos/{desconto_id}", response_model=schemas.Desconto)
-def update_desconto(desconto_id: int, desconto_update: schemas.Desconto, db: Session = Depends(get_db)):
-    db_desconto = crud.update_desconto(db=db, desconto_id=desconto_id, desconto_update=desconto_update)
+@app.put("/descontos/{id_desconto}", response_model=schemas.Desconto)
+def update_desconto(id_desconto: int, desconto_update: schemas.Desconto, db: Session = Depends(get_db)):
+    db_desconto = crud.update_desconto(db=db, id_desconto=id_desconto, desconto_update=desconto_update)
     if db_desconto is None:
         raise HTTPException(status_code=404, detail="Desconto não encontrado")
     return db
+
+
+@app.delete("/descontos/{id_desconto}")
+def delete_desconto(id_desconto: int, db: Session = Depends(get_db)):
+    crud.delete_desconto(db=db, id_desconto=id_desconto)
+    return {"message": "Desconto deletado com sucesso"}
