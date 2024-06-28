@@ -105,8 +105,8 @@ def delete_produto(db: Session, id_produto: int):
 #VENDA
 
 def create_venda(db: Session, venda: schemas.VendaCreate):
-    funcionario = db.query(models.Funcionario).filter(models.Funcionario.cpf == venda.funcionario_cpf).first()
-    cliente = db.query(models.Cliente).filter(models.Cliente.cpf == venda.cliente_cpf).first()
+    funcionario = db.query(models.Funcionario).filter(models.Funcionario.cpf == venda.id_funcionario).first()
+    cliente = db.query(models.Cliente).filter(models.Cliente.cpf == venda.id_cliente).first()
     produtos = db.query(models.Produto).filter(models.Produto.id_produto.in_(venda.produtos)).all()
 
     db_venda = models.Venda(
