@@ -20,15 +20,15 @@ class Venda(VendaBase):
 
 #-------------------------------------------
 class ClienteBase(BaseModel):
-    pass 
+    cpf: int
 
 
 class ClienteCreate(ClienteBase):
-    pass
+    cpf:int
 
 
 class Cliente(ClienteBase):
-    cpf: int
+    cpf:int
     compras: list[Venda] = []
 
     class Config:
@@ -55,10 +55,11 @@ class Funcionario(FuncionarioBase):
 class ProdutoBase(BaseModel):
     valor: float
     quantidade_estoque: int
+    nome:str
 
 
 class ProdutoCreate(ProdutoBase):
-    pass
+    nome : str
 
 
 class Produto(ProdutoBase):
