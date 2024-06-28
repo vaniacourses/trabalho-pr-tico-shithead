@@ -135,14 +135,13 @@ def update_venda(db: Session, venda_id: int, venda_update: schemas.Venda):
     db_venda.id_funcionario = venda_update.id_funcionario
     db_venda.id_cliente = venda_update.id_cliente
     db_venda.data = venda_update.data
-    db_venda.produtos = venda_update.produtos
 
     db.commit()
     db.refresh(db_venda)
     return db_venda
 
 def delete_venda(db: Session, venda_id: int):
-    db.query(Venda).filter(Venda.id_venda == venda_id).delete()
+    db.query(models.Venda).filter(models.Venda.id_venda == venda_id).delete()
     db.commit()
 
 
