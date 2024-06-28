@@ -73,6 +73,7 @@ def get_produtos(db: Session, skip: int = 0, limit: int = 100):
 
 def create_produto(db: Session, produto: schemas.ProdutoCreate):
     db_produto = models.Produto(
+        nome = produto.nome,
         valor=produto.valor,
         quantidade_estoque=produto.quantidade_estoque
     )
