@@ -89,7 +89,7 @@ def read_produto(produto_id: int, db: Session = Depends(get_db)):
 
 @app.put("/produtos/{produto_id}", response_model=schemas.Produto)
 def update_produto(produto_id: int, produto_update: schemas.Produto, db: Session = Depends(get_db)):
-    db_produto = crud.update_produto(db=db, id_produto=produto_id, produto_update=produto_update)
+    db_produto = crud.update_produto(db=db, id_produto=produto_id, produto=produto_update)
     if db_produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     return db_produto
