@@ -31,8 +31,8 @@ class Produto(ProdutoBase):
 class VendaBase(BaseModel):
     valor_venda: float
     data: date
-    cliente_cpf: int
-    funcionario_cpf: int
+    id_cliente: int
+    id_funcionario: int
     
 
 
