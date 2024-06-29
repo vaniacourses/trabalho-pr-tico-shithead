@@ -203,11 +203,12 @@ def delete_desconto(id_desconto: int, db: Session = Depends(get_db)):
     crud.delete_desconto(db=db, id_desconto=id_desconto)
     return {"message": "Desconto deletado com sucesso"}
 
+
 #FIDELIDADE
 
 @app.get("/fidelidade-cliente/{cpf_cliente}", response_model=int)
 def get_numero_vendas_por_cliente(cpf_cliente: int, db: Session = Depends(get_db)):
-    fidelidade = crud.get_fidelidade(db, cpf_cliente=cpf_cliente)
+    fidelidade = crud.get_fidelidade(db, id_cliente=cpf_cliente)
     return fidelidade
 
 #VERIFICA LOGIN
