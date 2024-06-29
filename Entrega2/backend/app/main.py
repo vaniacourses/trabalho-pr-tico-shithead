@@ -202,3 +202,29 @@ def update_desconto(id_desconto: int, desconto_update: schemas.Desconto, db: Ses
 def delete_desconto(id_desconto: int, db: Session = Depends(get_db)):
     crud.delete_desconto(db=db, id_desconto=id_desconto)
     return {"message": "Desconto deletado com sucesso"}
+
+#FIDELIDADE
+
+@app.get("/fidelidade-cliente/{cpf_cliente}", response_model=int)
+def get_numero_vendas_por_cliente(cpf_cliente: int, db: Session = Depends(get_db)):
+    fidelidade = crud.get_fidelidade(db, cpf_cliente=cpf_cliente)
+    return fidelidade
+
+#VERIFICA LOGIN
+@app.post("/login/")
+def login_funcionario(login: str, senha: str, db: Session = Depends(get_db)):
+    is_valid = crud.validar_login_funcionario(db, login, senha)
+    if is_valid:
+        return {"message": "Login efetuado com sucesso"}
+    else:
+        raise HTTPException(status_code=401, detail="Login ou senha inválidos")
+
+#RELATORIO DE VENDAS
+
+@app.get("/relatorio-vendas/{mes}/{ano}")
+def get_vendas_mes_ano(mes: int, ano: int, db: Session = Depends(get_db)):
+    vendas = crud.get_vendas_by_mes_ano(db, mes, ano)
+    if vendas:
+        return vendas
+    else:
+        raise HTTPException(status_code=404, detail=f"Nenhuma venda encontrada para o mês {mes} do ano {ano}")
