@@ -211,7 +211,7 @@ def get_numero_vendas_por_cliente(cpf_cliente: int, db: Session = Depends(get_db
     return fidelidade
 
 #VERIFICA LOGIN
-@app.post("/login/")
+@app.post("/login/{login}/{senha}")
 def login_funcionario(login: str, senha: str, db: Session = Depends(get_db)):
     is_valid = crud.validar_login_funcionario(db, login, senha)
     if is_valid:
