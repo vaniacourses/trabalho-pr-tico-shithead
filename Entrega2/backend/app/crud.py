@@ -213,7 +213,6 @@ def delete_desconto(db: Session, id_desconto: int) -> None:
 
     db.delete(db_desconto)
     db.commit()
-
 #FIDELIDADE
 
 def get_fidelidade(db: Session, id_cliente: int) -> int:
@@ -228,7 +227,7 @@ def get_fidelidade(db: Session, id_cliente: int) -> int:
 
 def get_vendas_by_mes_ano(db: Session, mes: int, ano: int):
     return db.query(models.Venda) \
-        .filter(and_(models.Venda.data.month == mes, models.Venda.data.year == ano)) \
+        .filter(and_(extract("MONTH",models.Venda.data) == mes, extract("YEAR",models.Venda.data) == ano)) \
         .all()
 
 #VALIDA LOGIN
@@ -239,3 +238,4 @@ def validar_login_funcionario(db: Session, login: str, senha: str) -> bool:
     ).first()
 
     return funcionario is not None
+
