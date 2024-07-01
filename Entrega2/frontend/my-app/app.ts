@@ -1,10 +1,9 @@
 //A classe app tem como objetivo gerenciar a navegação pelas páginas da aplicação e chamar caixa para realizar alguma ação quando o usuário clicar em um botão
-
-//Se algum método não estiver funcionando tenta colocar .bind(this) no final
-import axios, { AxiosResponse } from 'axios';
+//npm install es6-promise @types/es6-promise --save
 
 class App {
-    my_caixa = new Caixa()
+    caixa: Caixa = Caixa.getInstance();
+    constrVenda: ConstrutorVenda= new ConstrutorVenda()
 
     constructor() {}
 
@@ -28,52 +27,83 @@ class App {
     
         const divBotoes = document.createElement('div');
         divBotoes.className = 'botoes';
-    
-        const gerenciarProdutosButton = document.createElement('button');
-        gerenciarProdutosButton.textContent = 'Gerenciar Produtos';
-        gerenciarProdutosButton.addEventListener('click', this.create_product_management_screen.bind(this));
-        divBotoes.appendChild(gerenciarProdutosButton);
-    
-        const gerenciarFuncionariosButton = document.createElement('button');
-        gerenciarFuncionariosButton.textContent = 'Gerenciar Funcionários';
-        gerenciarFuncionariosButton.addEventListener('click', this.create_employee_management_screen.bind(this));
-        divBotoes.appendChild(gerenciarFuncionariosButton);
+        
+        //somente logado
+        const funcionario = this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario) {
+            const gerenciarClientesButton = document.createElement('button');
+            gerenciarClientesButton.textContent = 'Gerenciar Clientes';
+            gerenciarClientesButton.addEventListener('click', this.create_client_management_screen.bind(this));
+            divBotoes.appendChild(gerenciarClientesButton);
 
-        const gerenciarClientesButton = document.createElement('button');
-        gerenciarClientesButton.textContent = 'Gerenciar Clientes';
-        gerenciarClientesButton.addEventListener('click', this.create_client_management_screen.bind(this));
-        divBotoes.appendChild(gerenciarClientesButton);
+            //Somente se o caixa estiver aberto
+            if(this.caixa.getStatus() == true) {
+                const registrarVendaButton = document.createElement('button');
+                registrarVendaButton.textContent = 'Registrar Venda';
+                registrarVendaButton.addEventListener('click', this.create_sell_registration_form.bind(this));
+                divBotoes.appendChild(registrarVendaButton);
 
-        const gerenciarDescontosButton = document.createElement('button');
-        gerenciarDescontosButton.textContent = 'Gerenciar Descontos';
-        gerenciarDescontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
-        divBotoes.appendChild(gerenciarDescontosButton);
+                const fecharCaixaButton = document.createElement('button');
+                fecharCaixaButton.textContent = 'Fechar Caixa';
+                fecharCaixaButton.addEventListener('click', () => {
+                    this.caixa.trocarStatus();
+                    this.create_start_screen();
+                });
+                divBotoes.appendChild(fecharCaixaButton);
+                
+            } else {
+                const abrirCaixaButton = document.createElement('button');
+                abrirCaixaButton.textContent = 'Abrir Caixa';
+                abrirCaixaButton.addEventListener('click', () => {
+                    this.caixa.trocarStatus()
+                    this.create_start_screen();
+                });
+                divBotoes.appendChild(abrirCaixaButton);
+            }
 
-        const registrarVendaButton = document.createElement('button');
-        registrarVendaButton.textContent = 'Registrar Venda';
-        registrarVendaButton.addEventListener('click', this.create_sell_registration_form.bind(this));
-        divBotoes.appendChild(registrarVendaButton);
+            //Somente gerente
+            if(funcionario.getTipoFuncionario() == "Gerente") {
+                const gerenciarProdutosButton = document.createElement('button');
+                gerenciarProdutosButton.textContent = 'Gerenciar Produtos';
+                gerenciarProdutosButton.addEventListener('click', this.create_product_management_screen.bind(this));
+                divBotoes.appendChild(gerenciarProdutosButton);
+            
+                const gerenciarFuncionariosButton = document.createElement('button');
+                gerenciarFuncionariosButton.textContent = 'Gerenciar Funcionários';
+                gerenciarFuncionariosButton.addEventListener('click', this.create_employee_management_screen.bind(this));
+                divBotoes.appendChild(gerenciarFuncionariosButton);
 
-        const reembolsarButton = document.createElement('button');
-        reembolsarButton.textContent = 'Reembolsar';
-        reembolsarButton.addEventListener('click', this.create_refund_form.bind(this));
-        divBotoes.appendChild(reembolsarButton);
+                const gerenciarDescontosButton = document.createElement('button');
+                gerenciarDescontosButton.textContent = 'Gerenciar Descontos';
+                gerenciarDescontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
+                divBotoes.appendChild(gerenciarDescontosButton);
 
-        const mostrarRelatorioButton = document.createElement('button');
-        mostrarRelatorioButton.textContent = 'Mostrar Relatório';
-        mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
-        divBotoes.appendChild(mostrarRelatorioButton);
+                const botaoCadastro = document.createElement('button');
+                botaoCadastro.textContent = 'Cadastro';
+                botaoCadastro.addEventListener('click', this.create_employee_registration_form.bind(this));
+                divBotoes.appendChild(botaoCadastro);
+            }
+
+            /*
+            const reembolsarButton = document.createElement('button');
+            reembolsarButton.textContent = 'Reembolsar';
+            reembolsarButton.addEventListener('click', this.create_refund_form.bind(this));
+            divBotoes.appendChild(reembolsarButton);
+            */
+            
+            /*
+            const mostrarRelatorioButton = document.createElement('button');
+            mostrarRelatorioButton.textContent = 'Mostrar Relatório';
+            mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
+            divBotoes.appendChild(mostrarRelatorioButton);
+            */
+        }
 
         const botaoLogin = document.createElement('button');
         botaoLogin.textContent = 'Login';
         botaoLogin.addEventListener('click', this.create_login_form.bind(this));
         divBotoes.appendChild(botaoLogin);
-
-        const botaoCadastro = document.createElement('button');
-        botaoCadastro.textContent = 'Cadastro';
-        botaoCadastro.addEventListener('click', this.create_employee_registration_form.bind(this));
-        divBotoes.appendChild(botaoCadastro);
-    
+        
         header.appendChild(divBotoes);
         document.body.appendChild(header);
     }
@@ -460,7 +490,7 @@ class App {
         registrationForm.appendChild(cpfLabel);
     
         const cpfInput = document.createElement('input');
-        cpfInput.type = 'text';
+        cpfInput.type = 'int';
         cpfInput.id = 'cpf';
         registrationForm.appendChild(cpfInput);
     
@@ -494,11 +524,11 @@ class App {
         const registerButton = document.createElement('button');
         registerButton.textContent = 'Cadastrar';
         registerButton.addEventListener('click', () => {
-            const cpf = (document.getElementById('cpf') as HTMLInputElement).value;
+            const cpf = (document.getElementById('cpf') as HTMLInputElement).valueAsNumber;
             const username = (document.getElementById('username') as HTMLInputElement).value;
             const password = (document.getElementById('password') as HTMLInputElement).value;
             const isAdmin = (document.getElementById('adm') as HTMLInputElement).checked;
-            this.cadastrando(cpf, username, password, isAdmin);
+            this.cadastrandoFuncionario(cpf, username, password, isAdmin);
         });
         registrationForm.appendChild(registerButton);
 
@@ -554,7 +584,16 @@ class App {
         const title = document.createElement('h1');
         title.textContent = 'Atualizar Funcionário';
         updateForm.appendChild(title);
+        
+        const cpfLabel = document.createElement('label');
+        cpfLabel.textContent = 'CPF:';
+        updateForm.appendChild(cpfLabel);
     
+        const cpfInput = document.createElement('input');
+        cpfInput.type = 'number';
+        cpfInput.id = 'cpf';
+        updateForm.appendChild(cpfInput);
+
         const loginLabel = document.createElement('label');
         loginLabel.textContent = 'Login:';
         updateForm.appendChild(loginLabel);
@@ -576,9 +615,10 @@ class App {
         const atualizarButton = document.createElement('button');
         atualizarButton.textContent = 'Atualizar';
         atualizarButton.addEventListener('click', () => {
+        const cpf = (document.getElementById('cpf') as HTMLInputElement).valueAsNumber;
         const login = (document.getElementById('login') as HTMLInputElement).value;
         const senha = (document.getElementById('senha') as HTMLInputElement).value;
-        this.atualizandoFuncionario(login, senha);
+        this.atualizandoFuncionario(cpf, login, senha);
         });
         updateForm.appendChild(atualizarButton);
     
@@ -596,7 +636,7 @@ class App {
     }
 
     //DESCONTO
-
+89
     create_discount_management_screen() {
         this.clear_body()
 
@@ -745,7 +785,7 @@ class App {
         alterarButton.addEventListener('click', () => {
             const idProduto = (document.getElementById('idProduto') as HTMLInputElement).valueAsNumber;
             const porcentagem = (document.getElementById('porcentagem') as HTMLInputElement).valueAsNumber;
-            this.alterandoDesconto(idProduto, porcentagem);
+            this.atualizandoDesconto(idProduto, porcentagem);
         });
         alteracaoForm.appendChild(alterarButton);
     
@@ -767,6 +807,82 @@ class App {
     create_sell_registration_form() {
         this.clear_body()
 
+        const sellRegisterScreen = document.createElement('div');
+        const productList = document.createElement('div');
+
+        const cpfLabel = document.createElement('label');
+        cpfLabel.textContent = 'CPF Cliente:';
+        sellRegisterScreen.appendChild(cpfLabel);
+
+        const cpfInput = document.createElement('input');
+        cpfInput.type = 'number';
+        cpfInput.id = 'cpfCliente:';
+        sellRegisterScreen.appendChild(cpfInput)
+
+        const idProdutoLabel = document.createElement('label');
+        idProdutoLabel.textContent = 'ID do produto:';
+        sellRegisterScreen.appendChild(idProdutoLabel);
+
+        const productIdInput = document.createElement('input');
+        productIdInput.type = 'number';
+        productIdInput.id = 'idProduto:';
+        sellRegisterScreen.appendChild(productIdInput)
+
+        const qtdProdutoLabel = document.createElement('label');
+        qtdProdutoLabel.textContent = 'Quantidade do produto:';
+        sellRegisterScreen.appendChild(qtdProdutoLabel);
+
+        const productQtdInput = document.createElement('input');
+        productQtdInput.type = 'number';
+        productQtdInput.id = 'qtdProduto:';
+        sellRegisterScreen.appendChild(productQtdInput)
+
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Adicionar';
+        sellRegisterScreen.appendChild(addButton)
+
+        addButton.addEventListener('click', () => {
+            const productId = productIdInput.valueAsNumber;
+            const productQtd = productQtdInput.valueAsNumber;
+            if (productId) {
+                this.constrVenda.adicionarProdutoLido(productId, productQtd)
+
+                const productLabel = document.createElement('label');
+                productLabel.textContent = `Produto: ${productId}`;
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remover';
+                removeButton.addEventListener('click', () => {
+                    this.constrVenda.removeProdutoLido(productLabel.textContent)
+                    productLabel.remove();
+                    removeButton.remove();
+                });
+
+                productList.appendChild(productLabel);
+                productList.appendChild(removeButton);
+            }
+        });
+        sellRegisterScreen.appendChild(addButton);
+        sellRegisterScreen.appendChild(productList)
+
+        const backButton = document.createElement('button');
+        backButton.textContent = 'Voltar';
+        backButton.addEventListener('click', () => {
+            this.constrVenda.cancelaVenda()
+            this.create_start_screen();
+        });
+        sellRegisterScreen.appendChild(backButton)
+
+        const submitButton = document.createElement('button');
+        submitButton.textContent = 'Cadastrar';
+        submitButton.addEventListener('click', () => {
+            const cpfCliente = (document.getElementById('cpfCliente') as HTMLInputElement).valueAsNumber;
+            const cpfFuncionario = this.caixa.getFuncionarioAtivo();
+            this.cadastrandoVenda(cpfCliente, cpfFuncionario);
+        });
+        sellRegisterScreen.appendChild(submitButton)
+
+        document.body.appendChild(sellRegisterScreen);
     }
 
     create_refund_form() {
@@ -809,57 +925,267 @@ class App {
 
     }
 
+    //As funções a seguir devem apenas chamar os métodos das classes onde os códigos foram implementados
 
-    //As funções não devem ter chamada da API elas devem apenas chamar as funções de classes presentes no nosso diagrama de classes
-    //e elas por sua vez farão toda lógica e retornarão apenas o que será mostrado.
+    //VENDA
+    cadastrandoVenda(cpfCliente: number, cpfFuncionario: number | null) {
+        console.log(`Cadastrano compra de ${cpfCliente} gerenciado por ${cpfFuncionario}`)
 
-    cadastrandoCliente(cpfCliente: number) {
+        if(cpfFuncionario)
+        this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario)
+    }
+
+    //CLIENTE
+    async cadastrandoCliente(cpfCliente: number) {
         console.log(`CPF Cliente: ${cpfCliente}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await funcionario.cadastraCliente(cpfCliente);
+        }
+        
+        if(sucess) {
+            alert("Cliente registrado");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao registrar cliente");
+        }
+
     }
 
-    cadastrando(cpf: string, username: string, password: string, isAdmin: boolean) {
+    async removendoCliente(cpfCliente: number) {
+        console.log(`CPF Cliente removido: ${cpfCliente}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await funcionario.removeCliente(cpfCliente);
+        }
+
+        if(sucess) {
+            alert("Cliente removido");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao remover cliente");
+        }
+    }
+
+    //FUNCIONARIO
+    async cadastrandoFuncionario(cpf: number, username: string, password: string, isAdmin: boolean) {
         console.log(`CPF: ${cpf}, Usuário: ${username}, Senha: ${password}, Administrador: ${isAdmin}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).cadastraFuncionario(cpf, username, password,  isAdmin);
+        }
+
+        if(sucess) {
+            alert("Funcionário registrado");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao registrar funcionário");
+        }
     }
 
+    async removendoFuncionario(cpf: number) {
+        console.log(`funcionário removido: ${cpf}`);
 
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).removeFuncionario(cpf);
+        }
+
+        if(sucess) {
+            alert("Funcionário removido");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao remover funcionário");
+        }
+    }
+
+    async atualizandoFuncionario(cpf: number, login: string, senha: string) {
+        console.log(`Login: ${login}, Senha: ${senha}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).atualizaFuncionario(cpf, login, senha);
+        }
+
+        if(sucess) {
+            alert("Funcionário atualizado");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao atualizar funcionário");
+        }
+    }
+
+    async listandoFuncionarios() {
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        
+        if(funcionario){
+            const data = await (funcionario as Gerente).consultaFuncionarios();
+
+            if(data) {
+                alert("Funcionários listados");
+                console.log(`${data}`);
+            } else {
+                alert("Falha ao buscar funcionários");
+            }
+        }
+    }
+
+    //PRODUTO
+    async cadastrandoProduto(nome: string, valor: number, quantidade: number) {
+        console.log(`Nome: ${nome}, Valor: ${valor}, Quantidade: ${quantidade}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).cadastraProduto(nome, valor, quantidade);
+        }
+
+        if(sucess) {
+            alert("Produto cadastrado");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao cadastrar produto");
+        }
+    }
+
+    async removendoProduto(id: number) {
+        console.log(`ID do produto removido: ${id}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).removeProduto(id);
+        }
+
+        if(sucess) {
+            alert("Produto removido");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao remover produto");
+        }
+    }
+
+    async atualizandoProduto(id: number, valor: number, quantidade: number) {
+        console.log(`ID: ${id}, Valor: ${valor}, Quantidade: ${quantidade}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).atualizaProduto(id, valor, quantidade);
+        }
+
+        if(sucess) {
+            alert("Produto atualizado");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao atualizar produto");
+        }
+    }
+
+    async listandoProdutos() {
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        
+        if(funcionario){
+            const data = await funcionario.consultaProdutos();
+
+            if(data) {
+                alert("Produtos listados");
+                console.log(`${data}`);
+            } else {
+                alert("Falha ao buscar produtos");
+            }
+        }
+    }
+
+    //DESCONTO
+    async cadastrandoDesconto(idProduto: number, porcentagem: number) {
+        console.log(`ID Produto: ${idProduto}, Porcentagem: ${porcentagem}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).cadastraDesconto(idProduto, porcentagem);
+        }
+
+        if(sucess) {
+            alert("Desconto registrado");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao registrar desconto");
+        }
+    }
+
+    async removendoDesconto(idProduto: number) {
+        console.log(`ID Produto: ${idProduto}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).removeDesconto(idProduto);
+        }
+
+        if(sucess) {
+            alert("Desconto removido");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao remover desconto");
+        }
+    }
+
+    async atualizandoDesconto(idProduto: number, porcentagem: number) {
+        console.log(`ID Produto: ${idProduto}, Porcentagem: ${porcentagem}`);
+
+        let sucess = false
+
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        if(funcionario){
+            sucess = await (funcionario as Gerente).atualizaDesconto(idProduto, porcentagem);
+        }
+
+        if(sucess) {
+            alert("Desconto atualizado");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao atualizar desconto");
+        }
+    }
+
+    async listandoDescontos() {
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+
+        if(funcionario){
+            const data = await funcionario.consultaDescontos();
+
+            if(data) {
+                alert("Desconto listados");
+                console.log(`${data}`);
+            } else {
+                alert("Falha ao buscar descontos");
+            }
+        }
+    }
+
+    //EXTRA
     logando(username: string, password: string) {
         console.log(`Usuário: ${username}, Senha: ${password}`);
-    }
-
-    removendoCliente(cpfCliente: number) {
-        console.log(`CPF Cliente removido: ${cpfCliente}`);
-    }
-
-    cadastrandoProduto(nome: string, valor: number, quantidade: number) {
-        console.log(`Nome: ${nome}, Valor: ${valor}, Quantidade: ${quantidade}`);
-    }
-
-    removendoProduto(id: number) {
-        console.log(`ID do produto removido: ${id}`);
-    }
-
-    atualizandoProduto(id: number, valor: number, quantidade: number) {
-        console.log(`ID: ${id}, Valor: ${valor}, Quantidade: ${quantidade}`);
-    }
-
-    removendoFuncionario(cpf: number) {
-        console.log(`CPF do funcionário removido: ${cpf}`);
-    }
-
-    atualizandoFuncionario(login: string, senha: string) {
-        console.log(`Login: ${login}, Senha: ${senha}`);
-    }
-
-    cadastrandoDesconto(idProduto: number, porcentagem: number) {
-        console.log(`ID Produto: ${idProduto}, Porcentagem: ${porcentagem}`);
-    }
-
-    removendoDesconto(idProduto: number) {
-        console.log(`ID Produto: ${idProduto}`);
-    }
-
-    alterandoDesconto(idProduto: number, porcentagem: number) {
-        console.log(`ID Produto: ${idProduto}, Porcentagem: ${porcentagem}`);
     }
 
     reembolsando(vendaNumero: number) {
@@ -867,214 +1193,473 @@ class App {
     }
 }
 
-const my_app = new App()
+interface FuncionarioInterface {
+    getTipoFuncionario(): string;
+}
 
-class Caixa {
-    funcionarioAtivo: Funcionario | null;
-    listaVendas: Venda[];
-    status: boolean = false
-
-    constructor() {
-      this.funcionarioAtivo = null;
-      this.listaVendas = [];
-    }
-
-    getStatus() : boolean {
-        return this.status
-    }
-
-    setStatus() {
-        if (this.status === true) {
-            this.status = false
-        } else {
-            this.status = true
-        }
-    }
-
-    async cadastraVenda(
-      valorVenda: number,
-      idCliente: number,
-      idFuncionario: number,
-      data: string,
-      produtos: number[]
-    ): Promise<void> {
-        try {
-            const response: AxiosResponse<any> = await axios.post(
-            'http://localhost:8000/vendas/', // URL da API local
-            {
-                valor_venda: valorVenda,
-                id_cliente: idCliente,
-                id_funcionario: idFuncionario,
-                data: data,
-                produtos: produtos,
-            },
-            { headers: { 'Content-Type': 'application/json' } }
-            );
-    
-            if (response.status === 201) {
-            console.log('Venda criada com sucesso!');
-            } else {
-            console.error(`Erro ao criar venda: ${response.statusText}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao criar venda: ${error.message}`);
-        }
-    }
+class Funcionario implements FuncionarioInterface{
+    private cpf: number;
+    private login: string;
   
-    async consultaVenda(vendaId: number): Promise<any> {
-        try {
-            const response: AxiosResponse<any> = await axios.get(
-            `http://localhost:8000/vendas/${vendaId}`, // URL da API local com o ID da venda
-            { headers: { 'Content-Type': 'application/json' } }
-            );
+    constructor(cpf: number, login: string) {
+        this.cpf = cpf;
+        this.login = login;
+    }
     
-            if (response.status === 200) {
-            console.log('Venda obtida com sucesso!');
-            console.log(response.data);
-            return response.data;
-            } else {
-            if (response.status === 404) {
-                console.error('Venda não encontrada.');
-                return null;
-            } else {
-                console.error(`Erro ao obter venda: ${response.statusText}`);
-                return null;
-            }
-            }
-        } catch (error) {
-            console.error(`Erro ao obter venda: ${error.message}`);
-            return null;
-        }
+    getTipoFuncionario(): string {
+        return 'Funcionario';
     }
-  
-    async removeVenda(vendaId: number): Promise<void> {
+    getCpf(): number {
+        return this.cpf;
+    }
+    getLogin(): string {
+        return this.login;
+    }
+
+    //CLIENTE
+    async cadastraCliente(cpfCliente: number): Promise<boolean> { //Retorna true ou false
         try {
-            const response: AxiosResponse<any> = await axios.delete(
-            `http://localhost:8000/vendas/${vendaId}`, // URL da API local com o ID da venda
-            { headers: { 'Content-Type': 'application/json' } }
-            );
-    
-            if (response.status === 204) {
-            console.log('Venda deletada com sucesso!');
+            const url = 'http://localhost:8000/clientes/';
+            const data = JSON.stringify({ cpf: cpfCliente });
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: data,
+            };
+            
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Cliente com CPF ${cpfCliente} cadastrado com sucesso!`);
+                return true
             } else {
-            if (response.status === 404) {
-                console.error('Venda não encontrada.');
-            } else {
-                console.error(`Erro ao deletar venda: ${response.statusText}`);
-            }
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao cadastrar cliente: ${errorMessage}`);
             }
         } catch (error) {
-            console.error(`Erro ao deletar venda: ${error.message}`);
+            console.error(`Erro ao cadastrar cliente: ${error.message}`);
+            return false
         }
     }
 
-    async consultaDesconto(idProduto: number): Promise<number> {
+    async removeCliente(cpfCliente: number): Promise<boolean> {
         try {
-            const response: AxiosResponse<any> = await axios.get(
-                `http://localhost:8000/descontos/${idProduto}`, // URL da API local com o ID do produto
-                { headers: { 'Content-Type': 'application/json' } }
-            );
+            const url = 'http://localhost:8000/clientes/';
+            const options = {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cpf: cpfCliente }),
+            };
         
-            if (response.status === 200) {
-                const desconto = response.data.porcentagem;
-                return desconto;
-            } else {
-                if (response.status === 404) {
-                console.error('Desconto não encontrado para o produto.');
-                return 0;
-                } else {
-                console.error(`Erro ao consultar desconto: ${response.statusText}`);
-                return 0;
-                }
-            }
-        } catch (error) {
-            console.error(`Erro ao consultar desconto: ${error.message}`);
-            return 0;
-        }
-    }
-
-    async consultaFidelidade(cpfCliente: number): Promise<number> {
-        try {
-            const response: AxiosResponse<number> = await axios.get(
-                `http://localhost:8000/fidelidade-cliente/${cpfCliente}`, // URL da API local com o CPF do cliente
-                { headers: { 'Content-Type': 'application/json' } }
-            );
+            const response = await fetch(`${url}${cpfCliente}`, options);
         
-            if (response.status === 200) {
-                const porcentagemDesconto = response.data;
-                return porcentagemDesconto;
-            } else {
-                if (response.status === 404) {
-                console.error('Cliente não encontrado no programa de fidelidade.');
-                return 0;
-                } else {
-                console.error(`Erro ao consultar fidelidade: ${response.statusText}`);
-                return 0;
-                }
-            }
-        } catch (error) {
-            console.error(`Erro ao consultar fidelidade: ${error.message}`);
-            return 0;
-        }
-    }
-
-    async validaLogin(login: string, senha: string): Promise<boolean> {
-        try {
-            const response: AxiosResponse<any> = await axios.post(
-                `http://localhost:8000/login/${login}/${senha}`, // URL da API local com login e senha
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-        
-            if (response.status === 200) {
-                const dadosFuncionario = response.data.funcionario;
-                const cpf = dadosFuncionario.cpf;
-                const loginFuncionario = dadosFuncionario.login;
-                const isAdm = dadosFuncionario.isAdm;
-        
-                if (isAdm) {
-                this.funcionarioAtivo = new Gerente(cpf, loginFuncionario);
-                } else {
-                this.funcionarioAtivo = new Funcionario(cpf, loginFuncionario);
-                }
-        
-                console.log('Login efetuado com sucesso!');
+            if (response.ok) {
+                console.log(`Cliente com CPF ${cpfCliente} removido com sucesso!`);
                 return true;
             } else {
-                console.error(`Erro ao validar login: ${response.statusText}`);
-                return false;
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao remover cliente: ${errorMessage}`);
             }
         } catch (error) {
-            console.error(`Erro ao validar login: ${error.message}`);
+            console.error(`Erro ao remover cliente: ${error.message}`);
             return false;
         }
     }
 
-    async consultaProduto(idProduto: number): Promise<Produto | null> {
+    //PRODUTOS
+    async consultaProdutos(): Promise<any> {
         try {
-            const response: AxiosResponse<any> = await axios.get(
-                `http://localhost:8000/produtos/${idProduto}`, // URL da API local com o ID do produto
-                { headers: { 'Content-Type': 'application/json' } }
-            );
+            const url = 'http://localhost:8000/produtos/';
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
         
-            if (response.status === 200) {
-                const produtoData = response.data;
-                const produto = new Produto(
-                produtoData.id_produto,
-                produtoData.valor,
-                produtoData.quantidade
-                );
-                return produto;
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const data = await response.json();
+                return data;
             } else {
-                if (response.status === 404) {
-                console.error('Produto não encontrado.');
-                return null;
-                } else {
-                console.error(`Erro ao consultar produto: ${response.statusText}`);
-                return null;
-                }
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar produtos: ${errorMessage}`);
             }
         } catch (error) {
-            console.error(`Erro ao consultar produto: ${error.message}`);
+            console.error(`Erro ao consultar produtos: ${error.message}`);
+            return null;
+        }
+    }
+
+    //DESCONTOS  
+    async consultaDescontos(): Promise<any> {
+        try {
+            const url = 'http://localhost:8000/descontos/';
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar descontos: ${error.message}`);
+            return null;
+        }
+    }
+}
+
+class Gerente extends Funcionario {
+    constructor(cpf: number, login: string) {
+      super(cpf, login);
+    }
+    
+    getTipoFuncionario(): string {
+        return 'Gerente';
+    }
+
+    //FUNCIONARIOS
+    async cadastraFuncionario(
+        cpf: number,
+        username: string,
+        password: string,
+        isAdm: boolean
+      ): Promise<boolean> {
+        try {
+            const url = 'http://localhost:8000/funcionarios/';
+            const data = JSON.stringify({
+                cpf,
+                username,
+                password,
+                isAdm,
+            });
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: data,
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(
+                `Funcionário com CPF ${cpf}, username ${username} cadastrado com sucesso!`
+                );
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao cadastrar funcionário: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao cadastrar funcionário: ${error.message}`);
+            return false;
+        }
+    }
+
+    async removeFuncionario(cpf: number): Promise<boolean> {
+        try {
+          const url = `http://localhost:8000/funcionarios/${cpf}`;
+          const options = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+          };
+      
+          const response = await fetch(url, options);
+      
+          if (response.ok) {
+            console.log(`Funcionário com CPF ${cpf} removido com sucesso!`);
+            return true;
+          } else {
+            const errorMessage = await response.text();
+            throw new Error(`Erro ao remover funcionário: ${errorMessage}`);
+          }
+        } catch (error) {
+          console.error(`Erro ao remover funcionário: ${error.message}`);
+          return false;
+        }
+    }
+
+    async atualizaFuncionario(
+        cpf: number,
+        login: string,
+        senha: string
+      ): Promise<boolean> {
+        try {
+            const url = `http://localhost:8000/funcionarios/${cpf}`;
+            const data = JSON.stringify({
+                login,
+                senha,
+            });
+            const options = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: data,
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Funcionário com CPF ${cpf} atualizado com sucesso!`);
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao atualizar funcionário: ${errorMessage}`);
+            }
+        } catch (error) {
+          console.error(`Erro ao atualizar funcionário: ${error.message}`);
+          return false;
+        }
+    }
+
+    async consultaFuncionarios(): Promise<any> {
+        try {
+            const url = 'http://localhost:8000/funcionarios/';
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar funcionários: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar funcionários: ${error.message}`);
+            return null;
+        }
+    }
+
+    //PRODUTOS
+    async cadastraProduto(
+        nome: string,
+        valor: number,
+        quantidade: number
+      ): Promise<boolean> {
+        try {
+            const url = 'http://localhost:8000/produtos/';
+            const data = JSON.stringify({
+                nome,
+                valor,
+                quantidade,
+            });
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: data,
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Produto com nome ${nome} cadastrado com sucesso!`);
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao cadastrar produto: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao cadastrar produto: ${error.message}`);
+            return false;
+        }
+    }
+
+    async removeProduto(idProduto: number): Promise<boolean> {
+        try {
+            const url = `http://localhost:8000/produtos/${idProduto}`;
+            const options = {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Produto com ID ${idProduto} removido com sucesso!`);
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao remover produto: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao remover produto: ${error.message}`);
+            return false;
+        }
+    }
+
+    async atualizaProduto(
+        idProduto: number,
+        valor: number,
+        quantidade: number
+      ): Promise<boolean> {
+        try {
+            const url = `http://localhost:8000/produtos/${idProduto}`; // Use the ID in the URL
+            const data = JSON.stringify({
+                valor,
+                quantidade,
+            });
+            const options = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: data,
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Produto com ID ${idProduto} atualizado com sucesso!`);
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao atualizar produto: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao atualizar produto: ${error.message}`);
+            return false;
+        }
+    }
+
+    async consultaProdutos(): Promise<any> {
+        try {
+            const url = 'http://localhost:8000/produtos/';
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar produtos: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar produtos: ${error.message}`);
+            return null;
+        }
+    }
+
+    //DESCONTOS
+    async cadastraDesconto(
+        idProduto: number,
+        porcentagem: number
+      ): Promise<boolean> {
+        try {
+            const url = 'http://localhost:8000/descontos/';
+            const data = JSON.stringify({
+                idProduto,
+                porcentagem,
+            });
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: data,
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(
+                `Desconto de ${porcentagem}% para o produto com ID ${idProduto} cadastrado com sucesso!`
+                );
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao cadastrar desconto: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao cadastrar desconto: ${error.message}`);
+            return false;
+        }
+    }
+
+    async removeDesconto(idProduto: number): Promise<boolean> {
+        try {
+            const url = `http://localhost:8000/descontos/${idProduto}`;
+            const options = {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Desconto para o produto com ID ${idProduto} removido com sucesso!`);
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao remover desconto: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao remover desconto: ${error.message}`);
+            return false;
+        }
+    }
+
+    async atualizaDesconto(
+        idProduto: number,
+        porcentagem: number
+      ): Promise<boolean> {
+        try {
+            const url = `http://localhost:8000/descontos/${idProduto}`;
+            const data = JSON.stringify({
+                porcentagem,
+            });
+            const options = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: data,
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(
+                `Desconto para o produto com ID ${idProduto} atualizado com sucesso para ${porcentagem}%!`
+                );
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao atualizar desconto: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao atualizar desconto: ${error.message}`);
+            return false;
+        }
+    }
+    
+    async consultaDescontos(): Promise<any> {
+        try {
+            const url = 'http://localhost:8000/descontos/';
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar descontos: ${error.message}`);
             return null;
         }
     }
@@ -1109,30 +1694,27 @@ class Produto {
 }
 
 class Venda {
-        private data: Date;
-        private produtos: Produto[];
-        private cpfCliente: number;
-        private cpfFuncionario: number;
-        private codigo: number;
-  
+    private data: Date;
+    private produtos: Produto[];
+    private cpfCliente: number;
+    private cpfFuncionario: number;
+    private valorTotal: number;
+
     constructor(
         data: Date,
-        produtos: Produto[],
         cpfCliente: number,
         cpfFuncionario: number,
-        codigo: number
     ) {
         this.data = data;
-        this.produtos = produtos;
+        this.produtos = [];
         this.cpfCliente = cpfCliente;
         this.cpfFuncionario = cpfFuncionario;
-        this.codigo = codigo;
     }
-  
+
     adicionaProduto(produto: Produto): void {
         this.produtos.push(produto);
     }
-  
+
     removeProduto(codigoProduto: number): void {
         const index = this.produtos.findIndex((produto) => produto.getCodigo() === codigoProduto);
         if (index !== -1) {
@@ -1146,13 +1728,13 @@ class Venda {
             this.produtos[index].setQuantidade(qtd)
         }
     }
-  
+
     getValorVenda(): number {
-        let valorTotal = 0;
-        for (const produto of this.produtos) {
-          valorTotal += produto.getValor() * produto.getQuantidade();
-        }
-        return valorTotal;
+        return this.valorTotal;
+    }
+
+    setValorVenda(valor: number) {
+        this.valorTotal = valor
     }
 
     getData(): Date {
@@ -1162,310 +1744,386 @@ class Venda {
     getCpfCliente(): number {
         return this.cpfCliente
     }
-    
+
+    setCpfCliente(cpf: number) {
+        this.cpfCliente = cpf
+    }
+
     getCpfFuncionario(): number {
         return this.cpfFuncionario
     }
 
-    getCodigo(): number {
-        return this.codigo
+    setCpfFuncionario(cpf: number) {
+        this.cpfFuncionario = cpf
     }
 
     getProdutos(): Produto[] {
         return this.produtos
     }
-
 }
 
-interface Funcionario {
-    getTipoFuncionario(): string;
-}
+class Caixa implements ConstrutorVendaObserver {
+    private static _instance: Caixa;
 
-class Funcionario implements Funcionario{
-    private cpf: number;
-    private login: number;
+    private listaVendas: Venda[];
+    private funcionarioLogado: (Funcionario | Gerente) | null;
+    private aberto = false;
   
-    constructor(cpf: number, login: number) {
-        this.cpf = cpf;
-        this.login = login;
+    private constructor() {
+      this.listaVendas = [];
+      this.funcionarioLogado = null;
+    }
+
+    public static getInstance(): Caixa {
+        if (!this._instance) {
+            this._instance = new Caixa();
+        }
+        return this._instance;
+    }
+    trocarStatus() {
+        if(this.aberto) {
+            this.aberto = false;
+        } else {
+            this.aberto = true;
+        }
+    }
+    getStatus(): boolean {
+        return this.aberto;
+    }
+    getFuncionarioAtivo(): number | null {
+        if(this.funcionarioLogado) 
+        return this.funcionarioLogado.getCpf()
+
+        return null
+    }
+    getObjetoFuncionarioAtivo(): Funcionario | null {
+        return this.funcionarioLogado
+    }
+
+    //VENDAS
+    async cadastraVenda(
+        valorVenda: number,
+        idCliente: number,
+        idFuncionario: number,
+        data: Date
+      ): Promise<boolean> {
+        try {
+            const url = 'http://localhost:8000/vendas';
+            const vendaData = {
+                valorVenda,
+                idCliente,
+                idFuncionario,
+                data: data.toISOString(), // Converte Date para ISO pra ter compatibilidade com JSON
+            };
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(vendaData),
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Venda com valor ${valorVenda} para o cliente com ID ${idCliente} cadastrada com sucesso!`);
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao cadastrar venda: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao cadastrar venda: ${error.message}`);
+            return false;
+        }
+    }
+
+    async removeVenda(idVenda: number): Promise<boolean> {
+        try {
+            const url = `http://localhost:8000/vendas/${idVenda}`;
+            const options = {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Venda com ID ${idVenda} removida com sucesso!`);
+                return true;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao remover venda: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao remover venda: ${error.message}`);
+            return false;
+        }
     }
     
-    getTipoFuncionario(): string {
-        return 'Funcionario';
-    }
+    //Usar (this.funcionarioLogado as Gerente) para acessar métodos exclusivos de gerente
 
-    getCpf(): number {
-        return this.cpf;
-    }
-  
-    getLogin(): number {
-        return this.login;
-    }
-
-    async cadastraCliente(cpfCliente: number): Promise<void> {
+    async validaLogin(username: string, password: string): Promise<boolean> {
         try {
-        const response: AxiosResponse<{}> = await axios.post(
-            'http://localhost:8000/clientes/', // URL da API local
-            { cpf: cpfCliente },
-            { headers: { 'Content-Type': 'application/json' } }
-        );
-
-        console.log(`Cliente com CPF ${cpfCliente} cadastrado com sucesso!`);
-        } catch (error) {
-            console.error(`Erro ao cadastrar cliente: ${error.message}`);
-        }
-    }
-
-    async removeCliente(cpfCliente: number): Promise<void> {
-        try {
-        const response: AxiosResponse<{ message: string }> = await axios.delete(
-            `http://localhost:8000/clientes/${cpfCliente}/`, // URL da API local com o CPF
-            { headers: { 'Content-Type': 'application/json' } }
-        );
+            const url = `http://localhost:8000/funcionarios/login?username=${username}&password=${password}`;
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
         
-        console.log(response.data.message);
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                console.error(`Cliente com CPF ${cpfCliente} não encontrado.`);
-            } else {
-                console.error(`Erro ao remover cliente: ${error.message}`);
-            }
-        }
-    }
-  
-    async consultaCliente(cpfCliente: number): Promise<any> {
-        try {
-            const response: AxiosResponse<any> = await axios.get(
-                `http://localhost:8000/clientes/${cpfCliente}/`, // URL da API local com o CPF
-                { headers: { 'Content-Type': 'application/json' } }
-            );
+            const response = await fetch(url, options);
         
-            if (response.status === 200) {
-                console.log(`Cliente com CPF ${cpfCliente}:`);
-                console.log(response.data);
-            } else {
-                if (response.status === 404) {
-                console.error(`Cliente com CPF ${cpfCliente} não encontrado.`);
+            if (response.ok) {
+                const loginData = await response.json();
+                if (loginData.isAdmi) {
+                    this.funcionarioLogado = new Gerente(loginData.cpf, loginData.username);
+                    console.log('Login como gerente realizado com sucesso!');
+                    return true;
                 } else {
-                console.error(`Erro ao consultar cliente: ${response.statusText}`);
+                    this.funcionarioLogado = new Funcionario(loginData.cpf, loginData.username);
+                    console.log('Login como funcionário realizado com sucesso!');
+                    return true;
                 }
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao validar login: ${errorMessage}`);
             }
         } catch (error) {
-            console.error(`Erro ao consultar cliente: ${error.message}`);
+            console.error(`Erro ao validar login: ${error.message}`);
+            return false;
         }
     }
 
-    async pegaRelatorio(ano: number, mes: number): Promise<any> {
-        try {
-            const response: AxiosResponse<any> = await axios.get(
-                `http://localhost:8000/relatorio-vendas/${mes}/${ano}`, // URL da API local com ano e mês
-                { headers: { 'Content-Type': 'application/json' } }
-            );
+    //FUNÇÃO QUE CHAMA CADASTRAR VENDA E AUXILIARES
+    async concluiVenda(venda: Venda): Promise<boolean> {
+        this.atualizarEstoque(venda.getProdutos())
         
-            if (response.status === 200) {
-                console.log('Relatório de vendas obtido com sucesso!');
-                console.log(response.data);
-            } else {
-                if (response.status === 404) {
-                console.error(`Nenhuma venda encontrada para o mês ${mes} do ano ${ano}`);
-                } else {
-                console.error(`Erro ao obter relatório: ${response.statusText}`);
-                }
-            }
-        } catch (error) {
-            console.error(`Erro ao obter relatório: ${error.message}`);
-        }
+        const valorTotal = venda.getValorVenda()
+        const idCliente = venda.getCpfCliente()
+        const idFuncionario = venda.getCpfFuncionario()
+        const data = venda.getData()
+
+        this.listaVendas.push(venda)
+
+        return await this.cadastraVenda(valorTotal, idCliente, idFuncionario, data)
     }
 
-    requisitaReembolso(): void {
-        // Implementação do método requisitaReembolso
-    }
-}
-
-class Gerente extends Funcionario {
-    constructor(cpf: number, login: number) {
-      super(cpf, login);
-    }
-    
-    getTipoFuncionario(): string {
-        return 'Gerente';
-    }
-
-    async cadastraFuncionario(
-        cpf: number,
-        login: string,
-        senha: string,
-        isGerente: boolean
-      ): Promise<void> {
-        try {
-          const response: AxiosResponse<any> = await axios.post(
-            'http://localhost:8000/funcionarios/', // URL da API local
-            {
-                cpf,
-                login,
-                senha,
-                is_gerente: isGerente,
-            },
-            { headers: { 'Content-Type': 'application/json' } }
-          );
-    
-          if (response.status === 201) {
-                
-          } else {
-                if (response.status === 400) {
-                    console.error('CPF já registrado!');
-                } else {
-                    console.error(`Erro ao cadastrar funcionário: ${response.statusText}`);
-                }
-            }
-        } catch (error) {
-            console.error(`Erro ao cadastrar funcionário: ${error.message}`);
-        }
-    }
-
-    async consultaFuncionario(cpfFuncionario: number): Promise<any> {
-        try {
-            const response: AxiosResponse<any> = await axios.get(
-                `http://localhost:8000/funcionarios/${cpfFuncionario}/`, // URL da API local com o CPF
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-    
-            if (response.status === 200) {
-                console.log(`Funcionário com CPF ${cpfFuncionario}:`);
-                console.log(response.data);
-            } else {
-                if (response.status === 404) {
-                console.error(`Funcionário com CPF ${cpfFuncionario} não encontrado.`);
-                } else {
-                console.error(`Erro ao consultar funcionário: ${response.statusText}`);
-                }
-            }
-        } catch (error) {
-            console.error(`Erro ao consultar funcionário: ${error.message}`);
-        }
-    }
-  
-    alteraFuncionario(): void {
-      // Implementação do método alteraFuncionario
-    }
-  
-    removeFuncionario(): void {
-      // Implementação do método removeFuncionario
-    }
-  
-    async cadastraDesconto(idProduto: number, porcentagem: number): Promise<void> {
-        try {
-            const response: AxiosResponse<any> = await axios.post(
-                'http://localhost:8000/descontos/', // URL da API local
-                {
-                    id_produto: idProduto,
-                    porcentagem,
-                },
-                { headers: { 'Content-Type': 'application/json' } }
-            );
+    async atualizarEstoque(listaProdutos: Produto[]): Promise<void> {
+        for (const produto of listaProdutos) {
+            let quantidade = await this.consultaProduto(produto.getCodigo());
+            quantidade -= produto.getQuantidade() ;
         
-            if (response.status === 201) {
-                console.log('Desconto cadastrado com sucesso!');
-            } else {
-                console.error(`Erro ao cadastrar desconto: ${response.statusText}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao cadastrar desconto: ${error.message}`);
-        }
-    }
-  
-    async alteraDesconto(
-        idDesconto: number,
-        porcentagem: number,
-        idProduto: number
-      ): Promise<void> {
-        try {
-            const response: AxiosResponse<any> = await axios.put(
-                `http://localhost:8000/descontos/${idDesconto}`, // URL da API local com o ID do desconto
-                {
-                porcentagem,
-                id_produto: idProduto,
-                },
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-        
-            if (response.status === 200) {
-                console.log('Desconto alterado com sucesso!');
-            } else {
-                if (response.status === 404) {
-                console.error('Desconto não encontrado.');
-                } else {
-                console.error(`Erro ao alterar desconto: ${response.statusText}`);
-                }
-            }
-        } catch (error) {
-            console.error(`Erro ao alterar desconto: ${error.message}`);
-        }
-    }
-  
-    async removeDesconto(idDesconto: number): Promise<void> {
-        try {
-            const response: AxiosResponse<any> = await axios.delete(
-                `http://localhost:8000/descontos/${idDesconto}`, // URL da API local com o ID do desconto
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-    
-            if (response.status === 204) {
-                console.log('Desconto removido com sucesso!');
-            } else {
-                console.error(`Erro ao remover desconto: ${response.statusText}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao remover desconto: ${error.message}`);
+            await this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade);
         }
     }
 
-    async cadastraProduto(
-        quantidade: number,
+    async consultaProduto(idProduto: number): Promise<any> {
+        try {
+            const url = `http://localhost:8000/produtos/${idProduto}`;
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const produtoData = await response.json();
+                return produtoData;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar produto: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar produto: ${error.message}`);
+            return null;
+        }
+    }
+
+    async atualizaProduto(
+        idProduto: number,
         valor: number,
-        nome: string
-      ): Promise<void> {
+        quantidade: number
+      ): Promise<boolean> {
         try {
-            const response: AxiosResponse<any> = await axios.post(
-                'http://localhost:8000/produtos/', // URL da API local
-                {
-                quantidade_estoque: quantidade, // Envia a quantidade como parâmetro
-                valor, // Envia o valor como parâmetro
-                nome, // Envia o nome como parâmetro
-                },
-                { headers: { 'Content-Type': 'application/json' } } // Cabeçalho para JSON
-            );
-    
-            if (response.status === 201) { // Verifica se a requisição foi bem-sucedida (código 201)
-                console.log('Produto cadastrado com sucesso!');
-            } else {
-                console.error(`Erro ao cadastrar produto: ${response.statusText}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao cadastrar produto: ${error.message}`);
-        }
-    }
-  
-    async removeProduto(idProduto: number): Promise<void> {
-        try {
-            const response: AxiosResponse<any> = await axios.delete(
-                `http://localhost:8000/produtos/${idProduto}`, // URL da API local com o ID do produto
-                { headers: { 'Content-Type': 'application/json' } } // Cabeçalho para JSON
-            );
+            const url = `http://localhost:8000/produtos/${idProduto}`;
+            const data = JSON.stringify({
+                valor,
+                quantidade,
+            });
+            const options = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: data,
+            };
         
-            if (response.status === 204) { // Verifica se a requisição foi bem-sucedida (código 204)
-                console.log('Produto removido com sucesso!');
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Produto com ID ${idProduto} atualizado com sucesso!`);
+                return true;
             } else {
-                if (response.status === 404) {
-                console.error('Produto não encontrado.');
-                } else {
-                console.error(`Erro ao remover produto: ${response.statusText}`);
-                }
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao atualizar produto: ${errorMessage}`);
             }
         } catch (error) {
-            console.error(`Erro ao remover produto: ${error.message}`);
+            console.error(`Erro ao atualizar produto: ${error.message}`);
+            return false;
         }
     }
 }
+
+interface ConstrutorVendaObserver {
+    concluiVenda(venda: Venda): void;
+}
+
+class ConstrutorVenda {
+    vendaAtual: Venda | null
+
+    private observadores: ConstrutorVendaObserver[] = [];
+
+    public registrarObservador(observador: ConstrutorVendaObserver): void {
+        this.observadores.push(observador);
+    }
+
+    private update(venda: Venda): void {
+        for (const observador of this.observadores) {
+            observador.concluiVenda(venda);
+        }
+    }
+
+    cancelaVenda() {
+        this.vendaAtual = null
+    }
+
+    iniciaVenda() {
+        const data = new Date;
+        this.vendaAtual = new Venda(data, -1, -1);
+    }
+
+    async adicionarProdutoLido(codigo: number, quantidade: number) {
+        const produto = await this.consultaProduto(codigo)
+
+        const p = new Produto(codigo, quantidade, produto.valor);
+        
+        if(this.vendaAtual)
+        this.vendaAtual.adicionaProduto(p);
+    }
+
+    removeProdutoLido(codigo: string | null) {
+        if(this.vendaAtual &&  codigo)
+        this.vendaAtual.removeProduto(Number(codigo));
+    }
+
+    async encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number) {
+        if(this.vendaAtual){
+            this.vendaAtual.setCpfFuncionario(cpfFuncionario);
+            if(cpfCliente)
+                this.vendaAtual.setCpfCliente(cpfCliente);
+
+            const valor = await this.calculaValorTotal(this.vendaAtual.getProdutos(), cpfCliente)
+            this.vendaAtual.setValorVenda(valor)
+
+            this.update(this.vendaAtual);
+
+            this.vendaAtual = null;
+        }
+    }
+
+    async calculaValorTotal(produtos: Produto[], idCliente: number | null) {
+        let valorTotal = 0;
+
+        for (const produto of produtos) {
+            const descontoProduto = await this.consultaDesconto(produto.getCodigo());
+
+            if (descontoProduto > 0) {
+                valorTotal += produto.getValor() * (1 - descontoProduto / 100);
+            } else {
+                valorTotal += produto.getValor();
+            }
+        }
+
+        if (idCliente) {
+            const descontoFidelidade = await this.consultaFidelidade(idCliente);
+
+            if (descontoFidelidade > 0) {
+                valorTotal *= (1 - descontoFidelidade / 100);
+            }
+        }
+
+        return valorTotal;
+    }
+
+    async consultaFidelidade(idCliente: number): Promise<number> {
+        try {
+            const url = `http://localhost:8000/clientes/fidelidade/${idCliente}`;
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const fidelidadeData = await response.json();
+                return fidelidadeData.porcentagem;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar fidelidade: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar fidelidade: ${error.message}`);
+            return 0;
+        }
+    }
+
+    async consultaDesconto(idProduto: number): Promise<number> {
+        try {
+            const url = `http://localhost:8000/produtos/descontos/${idProduto}`;
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const descontoData = await response.json();
+                return descontoData.porcentagem;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar descontos: ${error.message}`);
+            return 0;
+        }
+    }
+
+    async consultaProduto(idProduto: number): Promise<any> {
+        try {
+            const url = `http://localhost:8000/produtos/${idProduto}`;
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const produtoData = await response.json();
+                return produtoData;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar produto: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar produto: ${error.message}`);
+            return null;
+        }
+    }
+}
+
+//Chamadas
+
+const my_app = new App();
 
 my_app.create_start_screen()
