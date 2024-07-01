@@ -1,9 +1,10 @@
 //A classe app tem como objetivo gerenciar a navegação pelas páginas da aplicação e chamar caixa para realizar alguma ação quando o usuário clicar em um botão
 
 //Se algum método não estiver funcionando tenta colocar .bind(this) no final
+import axios, { AxiosResponse } from 'axios';
 
 class App {
-    //const my_caixa = new Caixa() //Aqui vai ser instanciado um caixa quando a classe for criada
+    my_caixa = new Caixa()
 
     constructor() {}
 
@@ -867,5 +868,604 @@ class App {
 }
 
 const my_app = new App()
+
+class Caixa {
+    funcionarioAtivo: Funcionario | null;
+    listaVendas: Venda[];
+    status: boolean = false
+
+    constructor() {
+      this.funcionarioAtivo = null;
+      this.listaVendas = [];
+    }
+
+    getStatus() : boolean {
+        return this.status
+    }
+
+    setStatus() {
+        if (this.status === true) {
+            this.status = false
+        } else {
+            this.status = true
+        }
+    }
+
+    async cadastraVenda(
+      valorVenda: number,
+      idCliente: number,
+      idFuncionario: number,
+      data: string,
+      produtos: number[]
+    ): Promise<void> {
+        try {
+            const response: AxiosResponse<any> = await axios.post(
+            'http://localhost:8000/vendas/', // URL da API local
+            {
+                valor_venda: valorVenda,
+                id_cliente: idCliente,
+                id_funcionario: idFuncionario,
+                data: data,
+                produtos: produtos,
+            },
+            { headers: { 'Content-Type': 'application/json' } }
+            );
+    
+            if (response.status === 201) {
+            console.log('Venda criada com sucesso!');
+            } else {
+            console.error(`Erro ao criar venda: ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao criar venda: ${error.message}`);
+        }
+    }
+  
+    async consultaVenda(vendaId: number): Promise<any> {
+        try {
+            const response: AxiosResponse<any> = await axios.get(
+            `http://localhost:8000/vendas/${vendaId}`, // URL da API local com o ID da venda
+            { headers: { 'Content-Type': 'application/json' } }
+            );
+    
+            if (response.status === 200) {
+            console.log('Venda obtida com sucesso!');
+            console.log(response.data);
+            return response.data;
+            } else {
+            if (response.status === 404) {
+                console.error('Venda não encontrada.');
+                return null;
+            } else {
+                console.error(`Erro ao obter venda: ${response.statusText}`);
+                return null;
+            }
+            }
+        } catch (error) {
+            console.error(`Erro ao obter venda: ${error.message}`);
+            return null;
+        }
+    }
+  
+    async removeVenda(vendaId: number): Promise<void> {
+        try {
+            const response: AxiosResponse<any> = await axios.delete(
+            `http://localhost:8000/vendas/${vendaId}`, // URL da API local com o ID da venda
+            { headers: { 'Content-Type': 'application/json' } }
+            );
+    
+            if (response.status === 204) {
+            console.log('Venda deletada com sucesso!');
+            } else {
+            if (response.status === 404) {
+                console.error('Venda não encontrada.');
+            } else {
+                console.error(`Erro ao deletar venda: ${response.statusText}`);
+            }
+            }
+        } catch (error) {
+            console.error(`Erro ao deletar venda: ${error.message}`);
+        }
+    }
+
+    async consultaDesconto(idProduto: number): Promise<number> {
+        try {
+            const response: AxiosResponse<any> = await axios.get(
+                `http://localhost:8000/descontos/${idProduto}`, // URL da API local com o ID do produto
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+        
+            if (response.status === 200) {
+                const desconto = response.data.porcentagem;
+                return desconto;
+            } else {
+                if (response.status === 404) {
+                console.error('Desconto não encontrado para o produto.');
+                return 0;
+                } else {
+                console.error(`Erro ao consultar desconto: ${response.statusText}`);
+                return 0;
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar desconto: ${error.message}`);
+            return 0;
+        }
+    }
+
+    async consultaFidelidade(cpfCliente: number): Promise<number> {
+        try {
+            const response: AxiosResponse<number> = await axios.get(
+                `http://localhost:8000/fidelidade-cliente/${cpfCliente}`, // URL da API local com o CPF do cliente
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+        
+            if (response.status === 200) {
+                const porcentagemDesconto = response.data;
+                return porcentagemDesconto;
+            } else {
+                if (response.status === 404) {
+                console.error('Cliente não encontrado no programa de fidelidade.');
+                return 0;
+                } else {
+                console.error(`Erro ao consultar fidelidade: ${response.statusText}`);
+                return 0;
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar fidelidade: ${error.message}`);
+            return 0;
+        }
+    }
+
+    async validaLogin(login: string, senha: string): Promise<boolean> {
+        try {
+            const response: AxiosResponse<any> = await axios.post(
+                `http://localhost:8000/login/${login}/${senha}`, // URL da API local com login e senha
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+        
+            if (response.status === 200) {
+                const dadosFuncionario = response.data.funcionario;
+                const cpf = dadosFuncionario.cpf;
+                const loginFuncionario = dadosFuncionario.login;
+                const isAdm = dadosFuncionario.isAdm;
+        
+                if (isAdm) {
+                this.funcionarioAtivo = new Gerente(cpf, loginFuncionario);
+                } else {
+                this.funcionarioAtivo = new Funcionario(cpf, loginFuncionario);
+                }
+        
+                console.log('Login efetuado com sucesso!');
+                return true;
+            } else {
+                console.error(`Erro ao validar login: ${response.statusText}`);
+                return false;
+            }
+        } catch (error) {
+            console.error(`Erro ao validar login: ${error.message}`);
+            return false;
+        }
+    }
+
+    async consultaProduto(idProduto: number): Promise<Produto | null> {
+        try {
+            const response: AxiosResponse<any> = await axios.get(
+                `http://localhost:8000/produtos/${idProduto}`, // URL da API local com o ID do produto
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+        
+            if (response.status === 200) {
+                const produtoData = response.data;
+                const produto = new Produto(
+                produtoData.id_produto,
+                produtoData.valor,
+                produtoData.quantidade
+                );
+                return produto;
+            } else {
+                if (response.status === 404) {
+                console.error('Produto não encontrado.');
+                return null;
+                } else {
+                console.error(`Erro ao consultar produto: ${response.statusText}`);
+                return null;
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar produto: ${error.message}`);
+            return null;
+        }
+    }
+}
+
+class Produto {
+    private codigo: number;
+    private quantidade: number;
+    private valor: number;
+  
+    constructor(codigo: number, quantidade: number, valor: number) {
+        this.codigo = codigo;
+        this.quantidade = quantidade;
+        this.valor = valor;
+    }
+  
+    getValor(): number {
+        return this.valor;
+    }
+    
+    setQuantidade(qtd): void {
+        this.quantidade = qtd;
+    }
+
+    getQuantidade(): number {
+        return this.quantidade;
+    }
+
+    getCodigo(): number {
+        return this.codigo;
+    }
+}
+
+class Venda {
+        private data: Date;
+        private produtos: Produto[];
+        private cpfCliente: number;
+        private cpfFuncionario: number;
+        private codigo: number;
+  
+    constructor(
+        data: Date,
+        produtos: Produto[],
+        cpfCliente: number,
+        cpfFuncionario: number,
+        codigo: number
+    ) {
+        this.data = data;
+        this.produtos = produtos;
+        this.cpfCliente = cpfCliente;
+        this.cpfFuncionario = cpfFuncionario;
+        this.codigo = codigo;
+    }
+  
+    adicionaProduto(produto: Produto): void {
+        this.produtos.push(produto);
+    }
+  
+    removeProduto(codigoProduto: number): void {
+        const index = this.produtos.findIndex((produto) => produto.getCodigo() === codigoProduto);
+        if (index !== -1) {
+            this.produtos.splice(index, 1);
+        }
+    }
+
+    editaProduto(codigoProduto: number, qtd: number): void {
+        const index = this.produtos.findIndex((produto) => produto.getCodigo() === codigoProduto);
+        if (index !== -1) {
+            this.produtos[index].setQuantidade(qtd)
+        }
+    }
+  
+    getValorVenda(): number {
+        let valorTotal = 0;
+        for (const produto of this.produtos) {
+          valorTotal += produto.getValor() * produto.getQuantidade();
+        }
+        return valorTotal;
+    }
+
+    getData(): Date {
+        return this.data
+    }
+
+    getCpfCliente(): number {
+        return this.cpfCliente
+    }
+    
+    getCpfFuncionario(): number {
+        return this.cpfFuncionario
+    }
+
+    getCodigo(): number {
+        return this.codigo
+    }
+
+    getProdutos(): Produto[] {
+        return this.produtos
+    }
+
+}
+
+interface Funcionario {
+    getTipoFuncionario(): string;
+}
+
+class Funcionario implements Funcionario{
+    private cpf: number;
+    private login: number;
+  
+    constructor(cpf: number, login: number) {
+        this.cpf = cpf;
+        this.login = login;
+    }
+    
+    getTipoFuncionario(): string {
+        return 'Funcionario';
+    }
+
+    getCpf(): number {
+        return this.cpf;
+    }
+  
+    getLogin(): number {
+        return this.login;
+    }
+
+    async cadastraCliente(cpfCliente: number): Promise<void> {
+        try {
+        const response: AxiosResponse<{}> = await axios.post(
+            'http://localhost:8000/clientes/', // URL da API local
+            { cpf: cpfCliente },
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+
+        console.log(`Cliente com CPF ${cpfCliente} cadastrado com sucesso!`);
+        } catch (error) {
+            console.error(`Erro ao cadastrar cliente: ${error.message}`);
+        }
+    }
+
+    async removeCliente(cpfCliente: number): Promise<void> {
+        try {
+        const response: AxiosResponse<{ message: string }> = await axios.delete(
+            `http://localhost:8000/clientes/${cpfCliente}/`, // URL da API local com o CPF
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+        
+        console.log(response.data.message);
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                console.error(`Cliente com CPF ${cpfCliente} não encontrado.`);
+            } else {
+                console.error(`Erro ao remover cliente: ${error.message}`);
+            }
+        }
+    }
+  
+    async consultaCliente(cpfCliente: number): Promise<any> {
+        try {
+            const response: AxiosResponse<any> = await axios.get(
+                `http://localhost:8000/clientes/${cpfCliente}/`, // URL da API local com o CPF
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+        
+            if (response.status === 200) {
+                console.log(`Cliente com CPF ${cpfCliente}:`);
+                console.log(response.data);
+            } else {
+                if (response.status === 404) {
+                console.error(`Cliente com CPF ${cpfCliente} não encontrado.`);
+                } else {
+                console.error(`Erro ao consultar cliente: ${response.statusText}`);
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar cliente: ${error.message}`);
+        }
+    }
+
+    async pegaRelatorio(ano: number, mes: number): Promise<any> {
+        try {
+            const response: AxiosResponse<any> = await axios.get(
+                `http://localhost:8000/relatorio-vendas/${mes}/${ano}`, // URL da API local com ano e mês
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+        
+            if (response.status === 200) {
+                console.log('Relatório de vendas obtido com sucesso!');
+                console.log(response.data);
+            } else {
+                if (response.status === 404) {
+                console.error(`Nenhuma venda encontrada para o mês ${mes} do ano ${ano}`);
+                } else {
+                console.error(`Erro ao obter relatório: ${response.statusText}`);
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao obter relatório: ${error.message}`);
+        }
+    }
+
+    requisitaReembolso(): void {
+        // Implementação do método requisitaReembolso
+    }
+}
+
+class Gerente extends Funcionario {
+    constructor(cpf: number, login: number) {
+      super(cpf, login);
+    }
+    
+    getTipoFuncionario(): string {
+        return 'Gerente';
+    }
+
+    async cadastraFuncionario(
+        cpf: number,
+        login: string,
+        senha: string,
+        isGerente: boolean
+      ): Promise<void> {
+        try {
+          const response: AxiosResponse<any> = await axios.post(
+            'http://localhost:8000/funcionarios/', // URL da API local
+            {
+                cpf,
+                login,
+                senha,
+                is_gerente: isGerente,
+            },
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+    
+          if (response.status === 201) {
+                
+          } else {
+                if (response.status === 400) {
+                    console.error('CPF já registrado!');
+                } else {
+                    console.error(`Erro ao cadastrar funcionário: ${response.statusText}`);
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao cadastrar funcionário: ${error.message}`);
+        }
+    }
+
+    async consultaFuncionario(cpfFuncionario: number): Promise<any> {
+        try {
+            const response: AxiosResponse<any> = await axios.get(
+                `http://localhost:8000/funcionarios/${cpfFuncionario}/`, // URL da API local com o CPF
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+    
+            if (response.status === 200) {
+                console.log(`Funcionário com CPF ${cpfFuncionario}:`);
+                console.log(response.data);
+            } else {
+                if (response.status === 404) {
+                console.error(`Funcionário com CPF ${cpfFuncionario} não encontrado.`);
+                } else {
+                console.error(`Erro ao consultar funcionário: ${response.statusText}`);
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar funcionário: ${error.message}`);
+        }
+    }
+  
+    alteraFuncionario(): void {
+      // Implementação do método alteraFuncionario
+    }
+  
+    removeFuncionario(): void {
+      // Implementação do método removeFuncionario
+    }
+  
+    async cadastraDesconto(idProduto: number, porcentagem: number): Promise<void> {
+        try {
+            const response: AxiosResponse<any> = await axios.post(
+                'http://localhost:8000/descontos/', // URL da API local
+                {
+                    id_produto: idProduto,
+                    porcentagem,
+                },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+        
+            if (response.status === 201) {
+                console.log('Desconto cadastrado com sucesso!');
+            } else {
+                console.error(`Erro ao cadastrar desconto: ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao cadastrar desconto: ${error.message}`);
+        }
+    }
+  
+    async alteraDesconto(
+        idDesconto: number,
+        porcentagem: number,
+        idProduto: number
+      ): Promise<void> {
+        try {
+            const response: AxiosResponse<any> = await axios.put(
+                `http://localhost:8000/descontos/${idDesconto}`, // URL da API local com o ID do desconto
+                {
+                porcentagem,
+                id_produto: idProduto,
+                },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+        
+            if (response.status === 200) {
+                console.log('Desconto alterado com sucesso!');
+            } else {
+                if (response.status === 404) {
+                console.error('Desconto não encontrado.');
+                } else {
+                console.error(`Erro ao alterar desconto: ${response.statusText}`);
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao alterar desconto: ${error.message}`);
+        }
+    }
+  
+    async removeDesconto(idDesconto: number): Promise<void> {
+        try {
+            const response: AxiosResponse<any> = await axios.delete(
+                `http://localhost:8000/descontos/${idDesconto}`, // URL da API local com o ID do desconto
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+    
+            if (response.status === 204) {
+                console.log('Desconto removido com sucesso!');
+            } else {
+                console.error(`Erro ao remover desconto: ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao remover desconto: ${error.message}`);
+        }
+    }
+
+    async cadastraProduto(
+        quantidade: number,
+        valor: number,
+        nome: string
+      ): Promise<void> {
+        try {
+            const response: AxiosResponse<any> = await axios.post(
+                'http://localhost:8000/produtos/', // URL da API local
+                {
+                quantidade_estoque: quantidade, // Envia a quantidade como parâmetro
+                valor, // Envia o valor como parâmetro
+                nome, // Envia o nome como parâmetro
+                },
+                { headers: { 'Content-Type': 'application/json' } } // Cabeçalho para JSON
+            );
+    
+            if (response.status === 201) { // Verifica se a requisição foi bem-sucedida (código 201)
+                console.log('Produto cadastrado com sucesso!');
+            } else {
+                console.error(`Erro ao cadastrar produto: ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao cadastrar produto: ${error.message}`);
+        }
+    }
+  
+    async removeProduto(idProduto: number): Promise<void> {
+        try {
+            const response: AxiosResponse<any> = await axios.delete(
+                `http://localhost:8000/produtos/${idProduto}`, // URL da API local com o ID do produto
+                { headers: { 'Content-Type': 'application/json' } } // Cabeçalho para JSON
+            );
+        
+            if (response.status === 204) { // Verifica se a requisição foi bem-sucedida (código 204)
+                console.log('Produto removido com sucesso!');
+            } else {
+                if (response.status === 404) {
+                console.error('Produto não encontrado.');
+                } else {
+                console.error(`Erro ao remover produto: ${response.statusText}`);
+                }
+            }
+        } catch (error) {
+            console.error(`Erro ao remover produto: ${error.message}`);
+        }
+    }
+}
 
 my_app.create_start_screen()
