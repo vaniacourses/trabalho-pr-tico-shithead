@@ -1,5 +1,4 @@
 //A classe app tem como objetivo gerenciar a navegação pelas páginas da aplicação e chamar caixa para realizar alguma ação quando o usuário clicar em um botão
-//npm install es6-promise @types/es6-promise --save
 
 class App {
     caixa: Caixa = Caixa.getInstance();
@@ -35,6 +34,13 @@ class App {
             gerenciarClientesButton.textContent = 'Gerenciar Clientes';
             gerenciarClientesButton.addEventListener('click', this.create_client_management_screen.bind(this));
             divBotoes.appendChild(gerenciarClientesButton);
+
+            /*
+            const mostrarRelatorioButton = document.createElement('button');
+            mostrarRelatorioButton.textContent = 'Mostrar Relatório';
+            mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
+            divBotoes.appendChild(mostrarRelatorioButton);
+            */
 
             //Somente se o caixa estiver aberto
             if(this.caixa.getStatus() == true) {
@@ -89,13 +95,6 @@ class App {
             reembolsarButton.textContent = 'Reembolsar';
             reembolsarButton.addEventListener('click', this.create_refund_form.bind(this));
             divBotoes.appendChild(reembolsarButton);
-            */
-            
-            /*
-            const mostrarRelatorioButton = document.createElement('button');
-            mostrarRelatorioButton.textContent = 'Mostrar Relatório';
-            mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
-            divBotoes.appendChild(mostrarRelatorioButton);
             */
         }
 
@@ -636,7 +635,7 @@ class App {
     }
 
     //DESCONTO
-89
+
     create_discount_management_screen() {
         this.clear_body()
 
@@ -863,7 +862,7 @@ class App {
             }
         });
         sellRegisterScreen.appendChild(addButton);
-        sellRegisterScreen.appendChild(productList)
+        sellRegisterScreen.appendChild(productList);
 
         const backButton = document.createElement('button');
         backButton.textContent = 'Voltar';
@@ -1186,6 +1185,10 @@ class App {
     //EXTRA
     logando(username: string, password: string) {
         console.log(`Usuário: ${username}, Senha: ${password}`);
+
+        const response = this.caixa.validaLogin(username, password);
+
+        console.log(response)
     }
 
     reembolsando(vendaNumero: number) {

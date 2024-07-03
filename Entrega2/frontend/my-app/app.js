@@ -1,5 +1,4 @@
 //A classe app tem como objetivo gerenciar a navegação pelas páginas da aplicação e chamar caixa para realizar alguma ação quando o usuário clicar em um botão
-//npm install es6-promise @types/es6-promise --save
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -72,28 +71,6 @@ var App = /** @class */ (function () {
         header.appendChild(titulo);
         var divBotoes = document.createElement('div');
         divBotoes.className = 'botoes';
-        if (this.caixa.getStatus() == true) {
-            var registrarVendaButton = document.createElement('button');
-            registrarVendaButton.textContent = 'Registrar Venda';
-            registrarVendaButton.addEventListener('click', this.create_sell_registration_form.bind(this));
-            divBotoes.appendChild(registrarVendaButton);
-            var fecharCaixaButton = document.createElement('button');
-            fecharCaixaButton.textContent = 'Fechar Caixa';
-            fecharCaixaButton.addEventListener('click', function () {
-                _this.caixa.trocarStatus();
-                _this.create_start_screen();
-            });
-            divBotoes.appendChild(fecharCaixaButton);
-        }
-        else {
-            var abrirCaixaButton = document.createElement('button');
-            abrirCaixaButton.textContent = 'Abrir Caixa';
-            abrirCaixaButton.addEventListener('click', function () {
-                _this.caixa.trocarStatus();
-                _this.create_start_screen();
-            });
-            divBotoes.appendChild(abrirCaixaButton);
-        }
         //somente logado
         var funcionario = this.caixa.getObjetoFuncionarioAtivo();
         if (funcionario) {
@@ -101,7 +78,35 @@ var App = /** @class */ (function () {
             gerenciarClientesButton.textContent = 'Gerenciar Clientes';
             gerenciarClientesButton.addEventListener('click', this.create_client_management_screen.bind(this));
             divBotoes.appendChild(gerenciarClientesButton);
+            /*
+            const mostrarRelatorioButton = document.createElement('button');
+            mostrarRelatorioButton.textContent = 'Mostrar Relatório';
+            mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
+            divBotoes.appendChild(mostrarRelatorioButton);
+            */
             //Somente se o caixa estiver aberto
+            if (this.caixa.getStatus() == true) {
+                var registrarVendaButton = document.createElement('button');
+                registrarVendaButton.textContent = 'Registrar Venda';
+                registrarVendaButton.addEventListener('click', this.create_sell_registration_form.bind(this));
+                divBotoes.appendChild(registrarVendaButton);
+                var fecharCaixaButton = document.createElement('button');
+                fecharCaixaButton.textContent = 'Fechar Caixa';
+                fecharCaixaButton.addEventListener('click', function () {
+                    _this.caixa.trocarStatus();
+                    _this.create_start_screen();
+                });
+                divBotoes.appendChild(fecharCaixaButton);
+            }
+            else {
+                var abrirCaixaButton = document.createElement('button');
+                abrirCaixaButton.textContent = 'Abrir Caixa';
+                abrirCaixaButton.addEventListener('click', function () {
+                    _this.caixa.trocarStatus();
+                    _this.create_start_screen();
+                });
+                divBotoes.appendChild(abrirCaixaButton);
+            }
             //Somente gerente
             if (funcionario.getTipoFuncionario() == "Gerente") {
                 var gerenciarProdutosButton = document.createElement('button');
@@ -126,12 +131,6 @@ var App = /** @class */ (function () {
             reembolsarButton.textContent = 'Reembolsar';
             reembolsarButton.addEventListener('click', this.create_refund_form.bind(this));
             divBotoes.appendChild(reembolsarButton);
-            */
-            /*
-            const mostrarRelatorioButton = document.createElement('button');
-            mostrarRelatorioButton.textContent = 'Mostrar Relatório';
-            mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
-            divBotoes.appendChild(mostrarRelatorioButton);
             */
         }
         var botaoLogin = document.createElement('button');
@@ -555,6 +554,7 @@ var App = /** @class */ (function () {
     App.prototype.create_employee_list = function () {
         this.clear_body();
     };
+    //DESCONTO
     App.prototype.create_discount_management_screen = function () {
         this.clear_body();
         var discountManagementScreen = document.createElement('div');
@@ -1191,6 +1191,8 @@ var App = /** @class */ (function () {
     //EXTRA
     App.prototype.logando = function (username, password) {
         console.log("Usu\u00E1rio: ".concat(username, ", Senha: ").concat(password));
+        var response = this.caixa.validaLogin(username, password);
+        console.log(response);
     };
     App.prototype.reembolsando = function (vendaNumero) {
         console.log("N\u00BA da Venda: ".concat(vendaNumero));
