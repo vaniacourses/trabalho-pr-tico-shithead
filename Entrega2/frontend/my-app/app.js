@@ -1380,7 +1380,7 @@ var Gerente = /** @class */ (function (_super) {
         return 'Gerente';
     };
     //FUNCIONARIOS
-    Gerente.prototype.cadastraFuncionario = function (cpf, username, password, isAdm) {
+    Gerente.prototype.cadastraFuncionario = function (cpf, login, senha, is_gerente) {
         return __awaiter(this, void 0, void 0, function () {
             var url, data, options, response, errorMessage, error_5;
             return __generator(this, function (_a) {
@@ -1390,9 +1390,9 @@ var Gerente = /** @class */ (function (_super) {
                         url = 'http://localhost:8000/funcionarios/';
                         data = JSON.stringify({
                             cpf: cpf,
-                            login: username,
-                            senha: password,
-                            is_gerente: isAdm,
+                            login: login,
+                            senha: senha,
+                            is_gerente: is_gerente,
                         });
                         options = {
                             method: 'POST',
@@ -1403,7 +1403,7 @@ var Gerente = /** @class */ (function (_super) {
                     case 1:
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 2];
-                        console.log("Funcion\u00E1rio com CPF ".concat(cpf, ", username ").concat(username, " cadastrado com sucesso!"));
+                        console.log("Funcion\u00E1rio com CPF ".concat(cpf, ", username ").concat(login, " cadastrado com sucesso!"));
                         return [2 /*return*/, true];
                     case 2: return [4 /*yield*/, response.text()];
                     case 3:
@@ -2126,7 +2126,7 @@ var Caixa = /** @class */ (function () {
                         data = JSON.stringify({
                             valor: valor,
                             quantidade_estoque: quantidade,
-                            nome: ""
+                            nome: "oi"
                         });
                         options = {
                             method: 'PUT',

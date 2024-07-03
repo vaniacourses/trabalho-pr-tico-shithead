@@ -1336,17 +1336,17 @@ class Gerente extends Funcionario {
     //FUNCIONARIOS
     async cadastraFuncionario(
         cpf: number,
-        username: string,
-        password: string,
-        isAdm: boolean
+        login: string,
+        senha: string,
+        is_gerente: boolean
       ): Promise<boolean> {
         try {
             const url = 'http://localhost:8000/funcionarios/';
             const data = JSON.stringify({
                 cpf: cpf,
-                login: username,
-                senha: password,
-                is_gerente: isAdm,
+                login: login,
+                senha: senha,
+                is_gerente: is_gerente,
             });
             const options = {
                 method: 'POST',
@@ -1358,7 +1358,7 @@ class Gerente extends Funcionario {
         
             if (response.ok) {
                 console.log(
-                `Funcionário com CPF ${cpf}, username ${username} cadastrado com sucesso!`
+                `Funcionário com CPF ${cpf}, username ${login} cadastrado com sucesso!`
                 );
                 return true;
             } else {
@@ -1972,7 +1972,7 @@ class Caixa implements ConstrutorVendaObserver {
             const data = JSON.stringify({
                 valor: valor,
                 quantidade_estoque: quantidade,
-                nome: ""
+                nome: "oi"
             });
             const options = {
                 method: 'PUT',
