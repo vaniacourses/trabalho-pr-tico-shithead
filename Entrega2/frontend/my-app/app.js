@@ -1967,7 +1967,7 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/login?username=".concat(username, "&password=").concat(password);
+                        url = "http://localhost:8000/login/".concat(username, "/").concat(password);
                         options = {
                             method: 'GET',
                             headers: { 'Content-Type': 'application/json' },

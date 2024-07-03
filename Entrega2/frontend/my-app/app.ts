@@ -1866,7 +1866,7 @@ class Caixa implements ConstrutorVendaObserver {
 
     async validaLogin(username: string, password: string): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/login?username=${username}&password=${password}`;
+            const url = `http://localhost:8000/login/${username}/${password}`;
             const options = {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
