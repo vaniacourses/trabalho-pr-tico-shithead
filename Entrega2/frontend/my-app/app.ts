@@ -1458,9 +1458,9 @@ class Gerente extends Funcionario {
         try {
             const url = 'http://localhost:8000/produtos/';
             const data = JSON.stringify({
-                nome,
-                valor,
-                quantidade,
+                nome: nome,
+                valor: valor,
+                quantidade_estoque: quantidade,
             });
             const options = {
                 method: 'POST',

@@ -1534,7 +1534,7 @@ var Gerente = /** @class */ (function (_super) {
                         data = JSON.stringify({
                             nome: nome,
                             valor: valor,
-                            quantidade: quantidade,
+                            quantidade_estoque: quantidade,
                         });
                         options = {
                             method: 'POST',
