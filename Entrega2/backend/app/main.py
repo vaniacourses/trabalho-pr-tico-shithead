@@ -8,16 +8,9 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -228,11 +221,11 @@ def get_numero_vendas_por_cliente(cpf_cliente: int, db: Session = Depends(get_db
     return fidelidade
 
 #VERIFICA LOGIN
-@app.post("/login/{login}/{senha}")
+@app.get("/login/{login}/{senha}")
 def login_funcionario(login: str, senha: str, db: Session = Depends(get_db)):
-    is_valid = crud.validar_login_funcionario(db, login, senha)
-    if is_valid:
-        return {"message": "Login efetuado com sucesso"}
+    funcionario = crud.validar_login_funcionario(db, login, senha)
+    if funcionario is not None:
+        return funcionario
     else:
         raise HTTPException(status_code=401, detail="Login ou senha inválidos")
 

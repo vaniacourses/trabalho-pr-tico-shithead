@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from sqlalchemy import extract,and_
 from . import models, schemas
 
 #FUNCIONARIO
@@ -237,5 +237,5 @@ def validar_login_funcionario(db: Session, login: str, senha: str) -> bool:
         models.Funcionario.login == login, models.Funcionario.senha == senha
     ).first()
 
-    return funcionario is not None
+    return funcionario
 
