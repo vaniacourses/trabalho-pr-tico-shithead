@@ -439,7 +439,7 @@ var App = /** @class */ (function () {
         cpfLabel.textContent = 'CPF:';
         registrationForm.appendChild(cpfLabel);
         var cpfInput = document.createElement('input');
-        cpfInput.type = 'int';
+        cpfInput.type = 'number';
         cpfInput.id = 'cpf';
         registrationForm.appendChild(cpfInput);
         var usernameLabel = document.createElement('label');

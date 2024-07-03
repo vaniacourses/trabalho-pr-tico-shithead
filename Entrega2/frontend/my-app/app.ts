@@ -489,7 +489,7 @@ class App {
         registrationForm.appendChild(cpfLabel);
     
         const cpfInput = document.createElement('input');
-        cpfInput.type = 'int';
+        cpfInput.type = 'number';
         cpfInput.id = 'cpf';
         registrationForm.appendChild(cpfInput);
     
