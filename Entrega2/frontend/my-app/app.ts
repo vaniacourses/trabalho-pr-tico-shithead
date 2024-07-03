@@ -1176,6 +1176,7 @@ class App {
             if(data) {
                 alert("Desconto listados");
                 console.log(`${data}`);
+                this.create_start_screen();
             } else {
                 alert("Falha ao buscar descontos");
             }
@@ -1183,12 +1184,17 @@ class App {
     }
 
     //EXTRA
-    logando(username: string, password: string) {
+    async logando(username: string, password: string) {
         console.log(`Usuário: ${username}, Senha: ${password}`);
 
-        const response = this.caixa.validaLogin(username, password);
+        const sucess = await this.caixa.validaLogin(username, password);
 
-        console.log(response)
+        if(sucess) {
+            alert("Funcionario logado");
+            this.create_start_screen();
+        } else {
+            alert("Funcinario não logado");
+        }
     }
 
     reembolsando(vendaNumero: number) {
@@ -1876,12 +1882,12 @@ class Caixa implements ConstrutorVendaObserver {
         
             if (response.ok) {
                 const loginData = await response.json();
-                if (loginData.isAdmi) {
-                    this.funcionarioLogado = new Gerente(loginData.cpf, loginData.username);
+                if (loginData.is_gerente) {
+                    this.funcionarioLogado = new Gerente(loginData.cpf, loginData.login);
                     console.log('Login como gerente realizado com sucesso!');
                     return true;
                 } else {
-                    this.funcionarioLogado = new Funcionario(loginData.cpf, loginData.username);
+                    this.funcionarioLogado = new Funcionario(loginData.cpf, loginData.login);
                     console.log('Login como funcionário realizado com sucesso!');
                     return true;
                 }

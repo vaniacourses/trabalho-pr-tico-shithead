@@ -1178,6 +1178,7 @@ var App = /** @class */ (function () {
                         if (data) {
                             alert("Desconto listados");
                             console.log("".concat(data));
+                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao buscar descontos");
@@ -1190,9 +1191,26 @@ var App = /** @class */ (function () {
     };
     //EXTRA
     App.prototype.logando = function (username, password) {
-        console.log("Usu\u00E1rio: ".concat(username, ", Senha: ").concat(password));
-        var response = this.caixa.validaLogin(username, password);
-        console.log(response);
+        return __awaiter(this, void 0, void 0, function () {
+            var sucess;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log("Usu\u00E1rio: ".concat(username, ", Senha: ").concat(password));
+                        return [4 /*yield*/, this.caixa.validaLogin(username, password)];
+                    case 1:
+                        sucess = _a.sent();
+                        if (sucess) {
+                            alert("Funcionario logado");
+                            this.create_start_screen();
+                        }
+                        else {
+                            alert("Funcinario não logado");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     App.prototype.reembolsando = function (vendaNumero) {
         console.log("N\u00BA da Venda: ".concat(vendaNumero));
@@ -1979,13 +1997,13 @@ var Caixa = /** @class */ (function () {
                         return [4 /*yield*/, response.json()];
                     case 2:
                         loginData = _a.sent();
-                        if (loginData.isAdmi) {
-                            this.funcionarioLogado = new Gerente(loginData.cpf, loginData.username);
+                        if (loginData.is_gerente) {
+                            this.funcionarioLogado = new Gerente(loginData.cpf, loginData.login);
                             console.log('Login como gerente realizado com sucesso!');
                             return [2 /*return*/, true];
                         }
                         else {
-                            this.funcionarioLogado = new Funcionario(loginData.cpf, loginData.username);
+                            this.funcionarioLogado = new Funcionario(loginData.cpf, loginData.login);
                             console.log('Login como funcionário realizado com sucesso!');
                             return [2 /*return*/, true];
                         }
