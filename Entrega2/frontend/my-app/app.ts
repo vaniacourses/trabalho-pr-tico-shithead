@@ -1570,8 +1570,8 @@ class Gerente extends Funcionario {
         try {
             const url = 'http://localhost:8000/descontos/';
             const data = JSON.stringify({
-                idProduto,
-                porcentagem,
+                porcentagem:  porcentagem,
+                id_produto: idProduto,
             });
             const options = {
                 method: 'POST',
@@ -1626,7 +1626,7 @@ class Gerente extends Funcionario {
         try {
             const url = `http://localhost:8000/descontos/${idProduto}`;
             const data = JSON.stringify({
-                porcentagem,
+                porcentagem: porcentagem,
             });
             const options = {
                 method: 'PUT',

@@ -1676,8 +1676,8 @@ var Gerente = /** @class */ (function (_super) {
                         _a.trys.push([0, 5, , 6]);
                         url = 'http://localhost:8000/descontos/';
                         data = JSON.stringify({
-                            idProduto: idProduto,
                             porcentagem: porcentagem,
+                            id_produto: idProduto,
                         });
                         options = {
                             method: 'POST',
