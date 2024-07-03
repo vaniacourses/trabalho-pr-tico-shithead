@@ -1514,6 +1514,7 @@ class Gerente extends Funcionario {
         try {
             const url = `http://localhost:8000/produtos/${idProduto}`; // Use the ID in the URL
             const data = JSON.stringify({
+                nome: "oi",
                 valor: valor,
                 quantidade_estoque: quantidade,
             });
