@@ -1390,9 +1390,9 @@ var Gerente = /** @class */ (function (_super) {
                         url = 'http://localhost:8000/funcionarios/';
                         data = JSON.stringify({
                             cpf: cpf,
-                            username: username,
-                            password: password,
-                            isAdm: isAdm,
+                            login: username,
+                            senha: password,
+                            is_gerente: isAdm,
                         });
                         options = {
                             method: 'POST',
@@ -1451,7 +1451,8 @@ var Gerente = /** @class */ (function (_super) {
             });
         });
     };
-    Gerente.prototype.atualizaFuncionario = function (cpf, login, senha) {
+    Gerente.prototype.atualizaFuncionario = function (//Falta na api
+    cpf, login, senha) {
         return __awaiter(this, void 0, void 0, function () {
             var url, data, options, response, errorMessage, error_7;
             return __generator(this, function (_a) {
@@ -1603,7 +1604,7 @@ var Gerente = /** @class */ (function (_super) {
                         url = "http://localhost:8000/produtos/".concat(idProduto);
                         data = JSON.stringify({
                             valor: valor,
-                            quantidade: quantidade,
+                            quantidade_estoque: quantidade,
                         });
                         options = {
                             method: 'PUT',
@@ -1906,7 +1907,7 @@ var Caixa = /** @class */ (function () {
         return this.funcionarioLogado;
     };
     //VENDAS
-    Caixa.prototype.cadastraVenda = function (valorVenda, idCliente, idFuncionario, data) {
+    Caixa.prototype.cadastraVenda = function (valorVenda, idCliente, idFuncionario, data, listaProdutos) {
         return __awaiter(this, void 0, void 0, function () {
             var url, vendaData, options, response, errorMessage, error_17;
             return __generator(this, function (_a) {
@@ -1915,10 +1916,11 @@ var Caixa = /** @class */ (function () {
                         _a.trys.push([0, 5, , 6]);
                         url = 'http://localhost:8000/vendas';
                         vendaData = {
-                            valorVenda: valorVenda,
-                            idCliente: idCliente,
-                            idFuncionario: idFuncionario,
+                            valor_venda: valorVenda,
+                            id_cliente: idCliente,
+                            id_funcionario: idFuncionario,
                             data: data.toISOString(), // Converte Date para ISO pra ter compatibilidade com JSON
+                            produtos: listaProdutos
                         };
                         options = {
                             method: 'POST',
@@ -2025,25 +2027,35 @@ var Caixa = /** @class */ (function () {
     //FUNÇÃO QUE CHAMA CADASTRAR VENDA E AUXILIARES
     Caixa.prototype.concluiVenda = function (venda) {
         return __awaiter(this, void 0, void 0, function () {
-            var valorTotal, idCliente, idFuncionario, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var valorTotal, idCliente, idFuncionario, data, listaCodigos, _i, _a, produto, codigoProduto, quantidade, i;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         this.atualizarEstoque(venda.getProdutos());
                         valorTotal = venda.getValorVenda();
                         idCliente = venda.getCpfCliente();
                         idFuncionario = venda.getCpfFuncionario();
                         data = venda.getData();
+                        listaCodigos = [];
+                        for (_i = 0, _a = venda.getProdutos(); _i < _a.length; _i++) {
+                            produto = _a[_i];
+                            codigoProduto = produto.getCodigo();
+                            quantidade = produto.getQuantidade();
+                            // Adiciona o código do produto à lista a quantidade de vezes especificada
+                            for (i = 0; i < quantidade; i++) {
+                                listaCodigos.push(codigoProduto);
+                            }
+                        }
                         this.listaVendas.push(venda);
-                        return [4 /*yield*/, this.cadastraVenda(valorTotal, idCliente, idFuncionario, data)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                        return [4 /*yield*/, this.cadastraVenda(valorTotal, idCliente, idFuncionario, data, listaCodigos)];
+                    case 1: return [2 /*return*/, _b.sent()];
                 }
             });
         });
     };
     Caixa.prototype.atualizarEstoque = function (listaProdutos) {
         return __awaiter(this, void 0, void 0, function () {
-            var _i, listaProdutos_1, produto, quantidade;
+            var _i, listaProdutos_1, produto, produtoConsultado, quantidade;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2054,7 +2066,8 @@ var Caixa = /** @class */ (function () {
                         produto = listaProdutos_1[_i];
                         return [4 /*yield*/, this.consultaProduto(produto.getCodigo())];
                     case 2:
-                        quantidade = _a.sent();
+                        produtoConsultado = _a.sent();
+                        quantidade = produtoConsultado.quantidade_estoque;
                         quantidade -= produto.getQuantidade();
                         return [4 /*yield*/, this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade)];
                     case 3:
@@ -2112,7 +2125,8 @@ var Caixa = /** @class */ (function () {
                         url = "http://localhost:8000/produtos/".concat(idProduto);
                         data = JSON.stringify({
                             valor: valor,
-                            quantidade: quantidade,
+                            quantidade_estoque: quantidade,
+                            nome: ""
                         });
                         options = {
                             method: 'PUT',

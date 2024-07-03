@@ -1343,10 +1343,10 @@ class Gerente extends Funcionario {
         try {
             const url = 'http://localhost:8000/funcionarios/';
             const data = JSON.stringify({
-                cpf,
-                username,
-                password,
-                isAdm,
+                cpf: cpf,
+                login: username,
+                senha: password,
+                is_gerente: isAdm,
             });
             const options = {
                 method: 'POST',
@@ -1371,7 +1371,7 @@ class Gerente extends Funcionario {
         }
     }
 
-    async removeFuncionario(cpf: number): Promise<boolean> {
+    async removeFuncionario(cpf: number): Promise<boolean> { //Falta na api
         try {
           const url = `http://localhost:8000/funcionarios/${cpf}`;
           const options = {
@@ -1394,7 +1394,7 @@ class Gerente extends Funcionario {
         }
     }
 
-    async atualizaFuncionario(
+    async atualizaFuncionario( //Falta na api
         cpf: number,
         login: string,
         senha: string
@@ -1402,8 +1402,8 @@ class Gerente extends Funcionario {
         try {
             const url = `http://localhost:8000/funcionarios/${cpf}`;
             const data = JSON.stringify({
-                login,
-                senha,
+                login: login,
+                senha: senha,
             });
             const options = {
                 method: 'PUT',
@@ -1514,8 +1514,8 @@ class Gerente extends Funcionario {
         try {
             const url = `http://localhost:8000/produtos/${idProduto}`; // Use the ID in the URL
             const data = JSON.stringify({
-                valor,
-                quantidade,
+                valor: valor,
+                quantidade_estoque: quantidade,
             });
             const options = {
                 method: 'PUT',
@@ -1814,15 +1814,17 @@ class Caixa implements ConstrutorVendaObserver {
         valorVenda: number,
         idCliente: number,
         idFuncionario: number,
-        data: Date
+        data: Date,
+        listaProdutos: number[],
       ): Promise<boolean> {
         try {
             const url = 'http://localhost:8000/vendas';
             const vendaData = {
-                valorVenda,
-                idCliente,
-                idFuncionario,
+                valor_venda: valorVenda,
+                id_cliente: idCliente,
+                id_funcionario: idFuncionario,
                 data: data.toISOString(), // Converte Date para ISO pra ter compatibilidade com JSON
+                produtos: listaProdutos
             };
             const options = {
                 method: 'POST',
@@ -1910,14 +1912,27 @@ class Caixa implements ConstrutorVendaObserver {
         const idFuncionario = venda.getCpfFuncionario()
         const data = venda.getData()
 
+        let listaCodigos: number[] = []
+
+        for (const produto of venda.getProdutos()) {
+            const codigoProduto = produto.getCodigo();
+            const quantidade = produto.getQuantidade();
+        
+            // Adiciona o código do produto à lista a quantidade de vezes especificada
+            for (let i = 0; i < quantidade; i++) {
+              listaCodigos.push(codigoProduto);
+            }
+        }
+
         this.listaVendas.push(venda)
 
-        return await this.cadastraVenda(valorTotal, idCliente, idFuncionario, data)
+        return await this.cadastraVenda(valorTotal, idCliente, idFuncionario, data, listaCodigos)
     }
 
     async atualizarEstoque(listaProdutos: Produto[]): Promise<void> {
         for (const produto of listaProdutos) {
-            let quantidade = await this.consultaProduto(produto.getCodigo());
+            const produtoConsultado = await this.consultaProduto(produto.getCodigo());
+            let quantidade = produtoConsultado.quantidade_estoque
             quantidade -= produto.getQuantidade() ;
         
             await this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade);
@@ -1955,8 +1970,9 @@ class Caixa implements ConstrutorVendaObserver {
         try {
             const url = `http://localhost:8000/produtos/${idProduto}`;
             const data = JSON.stringify({
-                valor,
-                quantidade,
+                valor: valor,
+                quantidade_estoque: quantidade,
+                nome: ""
             });
             const options = {
                 method: 'PUT',
