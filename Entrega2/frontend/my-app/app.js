@@ -1140,18 +1140,16 @@ var App = /** @class */ (function () {
                     case 0:
                         console.log("ID Produto: ".concat(idProduto, ", Porcentagem: ").concat(porcentagem));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
+                        if (!funcionario) return [3 /*break*/, 3];
+                        return [4 /*yield*/, funcionario.consultaIdDesconto(idProduto)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 4];
-                        return [4 /*yield*/, funcionario.consultaDesconto(idProduto)];
-                    case 2:
                         idDesconto = _a.sent();
                         return [4 /*yield*/, funcionario.atualizaDesconto(idDesconto, idProduto, porcentagem)];
-                    case 3:
+                    case 2:
                         sucess = _a.sent();
-                        _a.label = 4;
-                    case 4:
+                        _a.label = 3;
+                    case 3:
                         if (sucess) {
                             alert("Desconto atualizado");
                             this.create_start_screen();
@@ -1370,7 +1368,7 @@ var Funcionario = /** @class */ (function () {
             });
         });
     };
-    Funcionario.prototype.consultaDesconto = function (idProduto) {
+    Funcionario.prototype.consultaIdDesconto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
             var url, options, response, descontoData, errorMessage, error_5;
             return __generator(this, function (_a) {
@@ -1389,7 +1387,7 @@ var Funcionario = /** @class */ (function () {
                         return [4 /*yield*/, response.json()];
                     case 2:
                         descontoData = _a.sent();
-                        return [2 /*return*/, descontoData.porcentagem];
+                        return [2 /*return*/, descontoData.id_desconto];
                     case 3: return [4 /*yield*/, response.text()];
                     case 4:
                         errorMessage = _a.sent();

@@ -1153,9 +1153,9 @@ class App {
 
         let sucess = false;
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo();
+        const funcionario = this.caixa.getObjetoFuncionarioAtivo();
         if(funcionario){
-            const idDesconto = await funcionario.consultaDesconto(idProduto);
+            const idDesconto = await funcionario.consultaIdDesconto(idProduto);
             sucess = await (funcionario as Gerente).atualizaDesconto(idDesconto, idProduto, porcentagem);
         }
 
@@ -1323,7 +1323,7 @@ class Funcionario implements FuncionarioInterface{
         }
     }
 
-    async consultaDesconto(idProduto: number): Promise<number> {
+    async consultaIdDesconto(idProduto: number): Promise<number> {
         try {
             const url = `http://localhost:8000/descontos/${idProduto}`;
             const options = {
@@ -1335,7 +1335,7 @@ class Funcionario implements FuncionarioInterface{
         
             if (response.ok) {
                 const descontoData = await response.json();
-                return descontoData.porcentagem;
+                return descontoData.id_desconto;
             } else {
                 const errorMessage = await response.text();
                 throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
