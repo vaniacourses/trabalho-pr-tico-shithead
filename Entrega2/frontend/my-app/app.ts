@@ -1155,7 +1155,7 @@ class App {
 
         const funcionario = this.caixa.getObjetoFuncionarioAtivo();
         if(funcionario){
-            const idDesconto = await funcionario.consultaIdDesconto(idProduto);
+            const idDesconto = Number(await funcionario.consultaIdDesconto(idProduto)); //Pega o id do desconto usando o id de um produto
             sucess = await (funcionario as Gerente).atualizaDesconto(idDesconto, idProduto, porcentagem);
         }
 
