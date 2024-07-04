@@ -1146,6 +1146,7 @@ var App = /** @class */ (function () {
                         return [4 /*yield*/, funcionario.consultaIdDesconto(idProduto)];
                     case 1:
                         idDesconto = _a.apply(void 0, [_b.sent()]);
+                        console.log("idDesconto: ".concat(idDesconto));
                         return [4 /*yield*/, funcionario.atualizaDesconto(idDesconto, idProduto, porcentagem)];
                     case 2:
                         sucess = _b.sent();
