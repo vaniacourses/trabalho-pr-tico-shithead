@@ -54,6 +54,7 @@ var App = /** @class */ (function () {
     function App() {
         this.caixa = Caixa.getInstance();
         this.constrVenda = new ConstrutorVenda();
+        this.constrVenda.registrarObservador(this.caixa);
     }
     App.prototype.clear_body = function () {
         var body = document.body;
@@ -2199,6 +2200,7 @@ var ConstrutorVenda = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!this.vendaAtual) return [3 /*break*/, 2];
+                        console.log("vendaAtual existe e entrou no if de encerra construção");
                         this.vendaAtual.setCpfFuncionario(cpfFuncionario);
                         if (cpfCliente)
                             this.vendaAtual.setCpfCliente(cpfCliente);
@@ -2206,7 +2208,9 @@ var ConstrutorVenda = /** @class */ (function () {
                     case 1:
                         valor = _a.sent();
                         this.vendaAtual.setValorVenda(valor);
+                        console.log("calculou o valor total da venda");
                         this.update(this.vendaAtual);
+                        console.log("fez a chamada de update");
                         this.vendaAtual = null;
                         _a.label = 2;
                     case 2: return [2 /*return*/];

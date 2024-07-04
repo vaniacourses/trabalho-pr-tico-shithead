@@ -2,9 +2,11 @@
 
 class App {
     caixa: Caixa = Caixa.getInstance();
-    constrVenda: ConstrutorVenda= new ConstrutorVenda()
+    constrVenda: ConstrutorVenda = new ConstrutorVenda();
 
-    constructor() {}
+    constructor() {
+        this.constrVenda.registrarObservador(this.caixa);
+    }
 
     clear_body() {
         const body = document.body;
@@ -1999,6 +2001,10 @@ interface ConstrutorVendaObserver {
 class ConstrutorVenda {
     vendaAtual: Venda | null
 
+    constructor() {
+
+    }
+
     private observadores: ConstrutorVendaObserver[] = [];
 
     public registrarObservador(observador: ConstrutorVendaObserver): void {
@@ -2036,6 +2042,7 @@ class ConstrutorVenda {
 
     async encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number) {
         if(this.vendaAtual){
+            console.log("vendaAtual existe e entrou no if de encerra construção")
             this.vendaAtual.setCpfFuncionario(cpfFuncionario);
             if(cpfCliente)
                 this.vendaAtual.setCpfCliente(cpfCliente);
@@ -2043,7 +2050,11 @@ class ConstrutorVenda {
             const valor = await this.calculaValorTotal(this.vendaAtual.getProdutos(), cpfCliente)
             this.vendaAtual.setValorVenda(valor)
 
+            console.log("calculou o valor total da venda")
+
             this.update(this.vendaAtual);
+
+            console.log("fez a chamada de update")
 
             this.vendaAtual = null;
         }
