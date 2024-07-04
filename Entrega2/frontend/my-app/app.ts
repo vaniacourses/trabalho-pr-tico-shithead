@@ -1118,6 +1118,7 @@ class App {
 
         const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
         if(funcionario){
+
             sucess = await (funcionario as Gerente).cadastraDesconto(idProduto, porcentagem);
         }
 
@@ -1150,11 +1151,12 @@ class App {
     async atualizandoDesconto(idProduto: number, porcentagem: number) {
         console.log(`ID Produto: ${idProduto}, Porcentagem: ${porcentagem}`);
 
-        let sucess = false
+        let sucess = false;
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        const funcionario = await this.caixa.getObjetoFuncionarioAtivo();
         if(funcionario){
-            sucess = await (funcionario as Gerente).atualizaDesconto(idProduto, porcentagem);
+            const idDesconto = await funcionario.consultaDesconto(idProduto);
+            sucess = await (funcionario as Gerente).atualizaDesconto(idDesconto, idProduto, porcentagem);
         }
 
         if(sucess) {
@@ -1297,7 +1299,7 @@ class Funcionario implements FuncionarioInterface{
         }
     }
 
-    //DESCONTOS  
+    //DESCONTOS
     async consultaDescontos(): Promise<any> {
         try {
             const url = 'http://localhost:8000/descontos/';
@@ -1318,6 +1320,29 @@ class Funcionario implements FuncionarioInterface{
         } catch (error) {
             console.error(`Erro ao consultar descontos: ${error.message}`);
             return null;
+        }
+    }
+
+    async consultaDesconto(idProduto: number): Promise<number> {
+        try {
+            const url = `http://localhost:8000/descontos/${idProduto}`;
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                const descontoData = await response.json();
+                return descontoData.porcentagem;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao consultar descontos: ${error.message}`);
+            return 0;
         }
     }
 }
@@ -1619,12 +1644,14 @@ class Gerente extends Funcionario {
 
     async atualizaDesconto(
         idDesconto: number,
+        idProduto: number,
         porcentagem: number
       ): Promise<boolean> {
         try {
             const url = `http://localhost:8000/descontos/${idDesconto}`;
             const data = JSON.stringify({
                 porcentagem: porcentagem,
+                idProduto: idProduto,
             });
             const options = {
                 method: 'PUT',
@@ -2071,9 +2098,7 @@ class ConstrutorVenda {
 
         if (idCliente) {
             const descontoFidelidade = await this.consultaFidelidade(idCliente);
-            console.log(`desconto fidelidade é: ${descontoFidelidade}`)
             if (descontoFidelidade > 0) {
-                console.log("desconto fidelidade > 0")
                 valorTotal *= (1 - descontoFidelidade / 100);
             }
         }

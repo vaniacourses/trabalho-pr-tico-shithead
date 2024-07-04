@@ -1134,7 +1134,7 @@ var App = /** @class */ (function () {
     };
     App.prototype.atualizandoDesconto = function (idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess, funcionario, idDesconto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1143,12 +1143,15 @@ var App = /** @class */ (function () {
                         return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
                     case 1:
                         funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.atualizaDesconto(idProduto, porcentagem)];
+                        if (!funcionario) return [3 /*break*/, 4];
+                        return [4 /*yield*/, funcionario.consultaDesconto(idProduto)];
                     case 2:
-                        sucess = _a.sent();
-                        _a.label = 3;
+                        idDesconto = _a.sent();
+                        return [4 /*yield*/, funcionario.atualizaDesconto(idDesconto, idProduto, porcentagem)];
                     case 3:
+                        sucess = _a.sent();
+                        _a.label = 4;
+                    case 4:
                         if (sucess) {
                             alert("Desconto atualizado");
                             this.create_start_screen();
@@ -1332,7 +1335,7 @@ var Funcionario = /** @class */ (function () {
             });
         });
     };
-    //DESCONTOS  
+    //DESCONTOS
     Funcionario.prototype.consultaDescontos = function () {
         return __awaiter(this, void 0, void 0, function () {
             var url, options, response, data, errorMessage, error_4;
@@ -1367,6 +1370,40 @@ var Funcionario = /** @class */ (function () {
             });
         });
     };
+    Funcionario.prototype.consultaDesconto = function (idProduto) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, options, response, descontoData, errorMessage, error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 6, , 7]);
+                        url = "http://localhost:8000/descontos/".concat(idProduto);
+                        options = {
+                            method: 'GET',
+                            headers: { 'Content-Type': 'application/json' },
+                        };
+                        return [4 /*yield*/, fetch(url, options)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response.ok) return [3 /*break*/, 3];
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        descontoData = _a.sent();
+                        return [2 /*return*/, descontoData.porcentagem];
+                    case 3: return [4 /*yield*/, response.text()];
+                    case 4:
+                        errorMessage = _a.sent();
+                        throw new Error("Erro ao consultar descontos: ".concat(errorMessage));
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_5 = _a.sent();
+                        console.error("Erro ao consultar descontos: ".concat(error_5.message));
+                        return [2 /*return*/, 0];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
     return Funcionario;
 }());
 var Gerente = /** @class */ (function (_super) {
@@ -1380,7 +1417,7 @@ var Gerente = /** @class */ (function (_super) {
     //FUNCIONARIOS
     Gerente.prototype.cadastraFuncionario = function (cpf, login, senha, is_gerente) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_5;
+            var url, data, options, response, errorMessage, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1409,8 +1446,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao cadastrar funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_5 = _a.sent();
-                        console.error("Erro ao cadastrar funcion\u00E1rio: ".concat(error_5.message));
+                        error_6 = _a.sent();
+                        console.error("Erro ao cadastrar funcion\u00E1rio: ".concat(error_6.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1419,7 +1456,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.removeFuncionario = function (cpf) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_6;
+            var url, options, response, errorMessage, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1441,8 +1478,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao remover funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_6 = _a.sent();
-                        console.error("Erro ao remover funcion\u00E1rio: ".concat(error_6.message));
+                        error_7 = _a.sent();
+                        console.error("Erro ao remover funcion\u00E1rio: ".concat(error_7.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1452,7 +1489,7 @@ var Gerente = /** @class */ (function (_super) {
     Gerente.prototype.atualizaFuncionario = function (//Falta na api
     cpf, login, senha) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_7;
+            var url, data, options, response, errorMessage, error_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1479,8 +1516,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_7 = _a.sent();
-                        console.error("Erro ao atualizar funcion\u00E1rio: ".concat(error_7.message));
+                        error_8 = _a.sent();
+                        console.error("Erro ao atualizar funcion\u00E1rio: ".concat(error_8.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1489,7 +1526,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.consultaFuncionarios = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_8;
+            var url, options, response, data, errorMessage, error_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1513,8 +1550,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao consultar funcion\u00E1rios: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_8 = _a.sent();
-                        console.error("Erro ao consultar funcion\u00E1rios: ".concat(error_8.message));
+                        error_9 = _a.sent();
+                        console.error("Erro ao consultar funcion\u00E1rios: ".concat(error_9.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -1524,7 +1561,7 @@ var Gerente = /** @class */ (function (_super) {
     //PRODUTOS
     Gerente.prototype.cadastraProduto = function (nome, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_9;
+            var url, data, options, response, errorMessage, error_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1552,8 +1589,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao cadastrar produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_9 = _a.sent();
-                        console.error("Erro ao cadastrar produto: ".concat(error_9.message));
+                        error_10 = _a.sent();
+                        console.error("Erro ao cadastrar produto: ".concat(error_10.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1562,7 +1599,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.removeProduto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_10;
+            var url, options, response, errorMessage, error_11;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1584,8 +1621,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao remover produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_10 = _a.sent();
-                        console.error("Erro ao remover produto: ".concat(error_10.message));
+                        error_11 = _a.sent();
+                        console.error("Erro ao remover produto: ".concat(error_11.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1594,7 +1631,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.atualizaProduto = function (idProduto, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_11;
+            var url, data, options, response, errorMessage, error_12;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1622,8 +1659,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_11 = _a.sent();
-                        console.error("Erro ao atualizar produto: ".concat(error_11.message));
+                        error_12 = _a.sent();
+                        console.error("Erro ao atualizar produto: ".concat(error_12.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1632,7 +1669,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.consultaProdutos = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_12;
+            var url, options, response, data, errorMessage, error_13;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1656,8 +1693,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao consultar produtos: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_12 = _a.sent();
-                        console.error("Erro ao consultar produtos: ".concat(error_12.message));
+                        error_13 = _a.sent();
+                        console.error("Erro ao consultar produtos: ".concat(error_13.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -1667,7 +1704,7 @@ var Gerente = /** @class */ (function (_super) {
     //DESCONTOS
     Gerente.prototype.cadastraDesconto = function (idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_13;
+            var url, data, options, response, errorMessage, error_14;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1694,8 +1731,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao cadastrar desconto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_13 = _a.sent();
-                        console.error("Erro ao cadastrar desconto: ".concat(error_13.message));
+                        error_14 = _a.sent();
+                        console.error("Erro ao cadastrar desconto: ".concat(error_14.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1704,7 +1741,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.removeDesconto = function (idDesconto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_14;
+            var url, options, response, errorMessage, error_15;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1726,17 +1763,17 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao remover desconto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_14 = _a.sent();
-                        console.error("Erro ao remover desconto: ".concat(error_14.message));
+                        error_15 = _a.sent();
+                        console.error("Erro ao remover desconto: ".concat(error_15.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
             });
         });
     };
-    Gerente.prototype.atualizaDesconto = function (idDesconto, porcentagem) {
+    Gerente.prototype.atualizaDesconto = function (idDesconto, idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_15;
+            var url, data, options, response, errorMessage, error_16;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1744,6 +1781,7 @@ var Gerente = /** @class */ (function (_super) {
                         url = "http://localhost:8000/descontos/".concat(idDesconto);
                         data = JSON.stringify({
                             porcentagem: porcentagem,
+                            idProduto: idProduto,
                         });
                         options = {
                             method: 'PUT',
@@ -1762,8 +1800,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar desconto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_15 = _a.sent();
-                        console.error("Erro ao atualizar desconto: ".concat(error_15.message));
+                        error_16 = _a.sent();
+                        console.error("Erro ao atualizar desconto: ".concat(error_16.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1772,7 +1810,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.consultaDescontos = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_16;
+            var url, options, response, data, errorMessage, error_17;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1796,8 +1834,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao consultar descontos: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_16 = _a.sent();
-                        console.error("Erro ao consultar descontos: ".concat(error_16.message));
+                        error_17 = _a.sent();
+                        console.error("Erro ao consultar descontos: ".concat(error_17.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -1908,7 +1946,7 @@ var Caixa = /** @class */ (function () {
     //VENDAS
     Caixa.prototype.cadastraVenda = function (valorVenda, idCliente, idFuncionario, data, listaProdutos) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, vendaData, options, response, errorMessage, error_17;
+            var url, vendaData, options, response, errorMessage, error_18;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1938,8 +1976,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao cadastrar venda: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_17 = _a.sent();
-                        console.error("Erro ao cadastrar venda: ".concat(error_17.message));
+                        error_18 = _a.sent();
+                        console.error("Erro ao cadastrar venda: ".concat(error_18.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1948,7 +1986,7 @@ var Caixa = /** @class */ (function () {
     };
     Caixa.prototype.removeVenda = function (idVenda) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_18;
+            var url, options, response, errorMessage, error_19;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1970,8 +2008,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao remover venda: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_18 = _a.sent();
-                        console.error("Erro ao remover venda: ".concat(error_18.message));
+                        error_19 = _a.sent();
+                        console.error("Erro ao remover venda: ".concat(error_19.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1981,7 +2019,7 @@ var Caixa = /** @class */ (function () {
     //Usar (this.funcionarioLogado as Gerente) para acessar métodos exclusivos de gerente
     Caixa.prototype.validaLogin = function (username, password) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, loginData, errorMessage, error_19;
+            var url, options, response, loginData, errorMessage, error_20;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2015,8 +2053,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao validar login: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_19 = _a.sent();
-                        console.error("Erro ao validar login: ".concat(error_19.message));
+                        error_20 = _a.sent();
+                        console.error("Erro ao validar login: ".concat(error_20.message));
                         return [2 /*return*/, false];
                     case 7: return [2 /*return*/];
                 }
@@ -2082,7 +2120,7 @@ var Caixa = /** @class */ (function () {
     };
     Caixa.prototype.consultaProduto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, produtoData, errorMessage, error_20;
+            var url, options, response, produtoData, errorMessage, error_21;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2106,8 +2144,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao consultar produto: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_20 = _a.sent();
-                        console.error("Erro ao consultar produto: ".concat(error_20.message));
+                        error_21 = _a.sent();
+                        console.error("Erro ao consultar produto: ".concat(error_21.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -2116,7 +2154,7 @@ var Caixa = /** @class */ (function () {
     };
     Caixa.prototype.atualizaProduto = function (idProduto, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_21;
+            var url, data, options, response, errorMessage, error_22;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2144,8 +2182,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao atualizar produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_21 = _a.sent();
-                        console.error("Erro ao atualizar produto: ".concat(error_21.message));
+                        error_22 = _a.sent();
+                        console.error("Erro ao atualizar produto: ".concat(error_22.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -2246,9 +2284,7 @@ var ConstrutorVenda = /** @class */ (function () {
                         return [4 /*yield*/, this.consultaFidelidade(idCliente)];
                     case 5:
                         descontoFidelidade = _a.sent();
-                        console.log("desconto fidelidade \u00E9: ".concat(descontoFidelidade));
                         if (descontoFidelidade > 0) {
-                            console.log("desconto fidelidade > 0");
                             valorTotal *= (1 - descontoFidelidade / 100);
                         }
                         _a.label = 6;
@@ -2259,7 +2295,7 @@ var ConstrutorVenda = /** @class */ (function () {
     };
     ConstrutorVenda.prototype.consultaFidelidade = function (idCliente) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, fidelidadeData, errorMessage, error_22;
+            var url, options, response, fidelidadeData, errorMessage, error_23;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2283,8 +2319,8 @@ var ConstrutorVenda = /** @class */ (function () {
                         throw new Error("Erro ao consultar fidelidade: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_22 = _a.sent();
-                        console.error("Erro ao consultar fidelidade: ".concat(error_22.message));
+                        error_23 = _a.sent();
+                        console.error("Erro ao consultar fidelidade: ".concat(error_23.message));
                         return [2 /*return*/, 0];
                     case 7: return [2 /*return*/];
                 }
@@ -2293,7 +2329,7 @@ var ConstrutorVenda = /** @class */ (function () {
     };
     ConstrutorVenda.prototype.consultaDesconto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, descontoData, errorMessage, error_23;
+            var url, options, response, descontoData, errorMessage, error_24;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2317,8 +2353,8 @@ var ConstrutorVenda = /** @class */ (function () {
                         throw new Error("Erro ao consultar descontos: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_23 = _a.sent();
-                        console.error("Erro ao consultar descontos: ".concat(error_23.message));
+                        error_24 = _a.sent();
+                        console.error("Erro ao consultar descontos: ".concat(error_24.message));
                         return [2 /*return*/, 0];
                     case 7: return [2 /*return*/];
                 }
@@ -2327,7 +2363,7 @@ var ConstrutorVenda = /** @class */ (function () {
     };
     ConstrutorVenda.prototype.consultaProduto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, produtoData, errorMessage, error_24;
+            var url, options, response, produtoData, errorMessage, error_25;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2351,8 +2387,8 @@ var ConstrutorVenda = /** @class */ (function () {
                         throw new Error("Erro ao consultar produto: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_24 = _a.sent();
-                        console.error("Erro ao consultar produto: ".concat(error_24.message));
+                        error_25 = _a.sent();
+                        console.error("Erro ao consultar produto: ".concat(error_25.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
