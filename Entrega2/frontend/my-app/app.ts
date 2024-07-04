@@ -802,6 +802,7 @@ class App {
 
     create_sell_registration_form() {
         this.clear_body()
+        this.constrVenda.iniciaVenda()
 
         const sellRegisterScreen = document.createElement('div');
         const productList = document.createElement('div');

@@ -686,6 +686,7 @@ var App = /** @class */ (function () {
     App.prototype.create_sell_registration_form = function () {
         var _this = this;
         this.clear_body();
+        this.constrVenda.iniciaVenda();
         var sellRegisterScreen = document.createElement('div');
         var productList = document.createElement('div');
         var cpfLabel = document.createElement('label');
