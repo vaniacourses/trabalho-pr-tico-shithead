@@ -1913,7 +1913,7 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = 'http://localhost:8000/vendas';
+                        url = 'http://localhost:8000/vendas/';
                         vendaData = {
                             valor_venda: valorVenda,
                             id_cliente: idCliente,
@@ -2265,7 +2265,7 @@ var ConstrutorVenda = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/clientes/fidelidade/".concat(idCliente);
+                        url = "http://localhost:8000/fidelidade-cliente/".concat(idCliente);
                         options = {
                             method: 'GET',
                             headers: { 'Content-Type': 'application/json' },
@@ -2299,7 +2299,7 @@ var ConstrutorVenda = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/produtos/descontos/".concat(idProduto);
+                        url = "http://localhost:8000/descontos/".concat(idProduto);
                         options = {
                             method: 'GET',
                             headers: { 'Content-Type': 'application/json' },

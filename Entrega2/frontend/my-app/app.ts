@@ -1817,7 +1817,7 @@ class Caixa implements ConstrutorVendaObserver {
         listaProdutos: number[],
       ): Promise<boolean> {
         try {
-            const url = 'http://localhost:8000/vendas';
+            const url = 'http://localhost:8000/vendas/';
             const vendaData = {
                 valor_venda: valorVenda,
                 id_cliente: idCliente,
@@ -2087,7 +2087,7 @@ class ConstrutorVenda {
 
     async consultaFidelidade(idCliente: number): Promise<number> {
         try {
-            const url = `http://localhost:8000/clientes/fidelidade/${idCliente}`;
+            const url = `http://localhost:8000/fidelidade-cliente/${idCliente}`;
             const options = {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
@@ -2110,7 +2110,7 @@ class ConstrutorVenda {
 
     async consultaDesconto(idProduto: number): Promise<number> {
         try {
-            const url = `http://localhost:8000/produtos/descontos/${idProduto}`;
+            const url = `http://localhost:8000/descontos/${idProduto}`;
             const options = {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
