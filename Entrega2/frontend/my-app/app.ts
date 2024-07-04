@@ -2043,7 +2043,6 @@ class ConstrutorVenda {
 
     async encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number) {
         if(this.vendaAtual){
-            console.log("vendaAtual existe e entrou no if de encerra construção")
             this.vendaAtual.setCpfFuncionario(cpfFuncionario);
             if(cpfCliente)
                 this.vendaAtual.setCpfCliente(cpfCliente);
@@ -2051,11 +2050,7 @@ class ConstrutorVenda {
             const valor = await this.calculaValorTotal(this.vendaAtual.getProdutos(), cpfCliente)
             this.vendaAtual.setValorVenda(valor)
 
-            console.log("calculou o valor total da venda")
-
             this.update(this.vendaAtual);
-
-            console.log("fez a chamada de update")
 
             this.vendaAtual = null;
         }
@@ -2068,16 +2063,17 @@ class ConstrutorVenda {
             const descontoProduto = await this.consultaDesconto(produto.getCodigo());
 
             if (descontoProduto > 0) {
-                valorTotal += produto.getValor() * (1 - descontoProduto / 100);
+                valorTotal += (produto.getValor() * (1 - descontoProduto / 100)) * produto.getQuantidade();
             } else {
-                valorTotal += produto.getValor();
+                valorTotal += produto.getValor() * produto.getQuantidade();
             }
         }
 
         if (idCliente) {
             const descontoFidelidade = await this.consultaFidelidade(idCliente);
-
+            console.log("idCliente existe")
             if (descontoFidelidade > 0) {
+                console.log("desconto fidelidade > 0")
                 valorTotal *= (1 - descontoFidelidade / 100);
             }
         }

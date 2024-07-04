@@ -2201,7 +2201,6 @@ var ConstrutorVenda = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!this.vendaAtual) return [3 /*break*/, 2];
-                        console.log("vendaAtual existe e entrou no if de encerra construção");
                         this.vendaAtual.setCpfFuncionario(cpfFuncionario);
                         if (cpfCliente)
                             this.vendaAtual.setCpfCliente(cpfCliente);
@@ -2209,9 +2208,7 @@ var ConstrutorVenda = /** @class */ (function () {
                     case 1:
                         valor = _a.sent();
                         this.vendaAtual.setValorVenda(valor);
-                        console.log("calculou o valor total da venda");
                         this.update(this.vendaAtual);
-                        console.log("fez a chamada de update");
                         this.vendaAtual = null;
                         _a.label = 2;
                     case 2: return [2 /*return*/];
@@ -2235,10 +2232,10 @@ var ConstrutorVenda = /** @class */ (function () {
                     case 2:
                         descontoProduto = _a.sent();
                         if (descontoProduto > 0) {
-                            valorTotal += produto.getValor() * (1 - descontoProduto / 100);
+                            valorTotal += (produto.getValor() * (1 - descontoProduto / 100)) * produto.getQuantidade();
                         }
                         else {
-                            valorTotal += produto.getValor();
+                            valorTotal += produto.getValor() * produto.getQuantidade();
                         }
                         _a.label = 3;
                     case 3:
@@ -2249,7 +2246,9 @@ var ConstrutorVenda = /** @class */ (function () {
                         return [4 /*yield*/, this.consultaFidelidade(idCliente)];
                     case 5:
                         descontoFidelidade = _a.sent();
+                        console.log("idCliente existe");
                         if (descontoFidelidade > 0) {
+                            console.log("desconto fidelidade > 0");
                             valorTotal *= (1 - descontoFidelidade / 100);
                         }
                         _a.label = 6;
