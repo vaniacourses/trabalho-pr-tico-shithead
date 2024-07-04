@@ -2071,7 +2071,7 @@ class ConstrutorVenda {
 
         if (idCliente) {
             const descontoFidelidade = await this.consultaFidelidade(idCliente);
-            console.log("idCliente existe")
+            console.log(`desconto fidelidade é: ${descontoFidelidade}`)
             if (descontoFidelidade > 0) {
                 console.log("desconto fidelidade > 0")
                 valorTotal *= (1 - descontoFidelidade / 100);
