@@ -1822,7 +1822,7 @@ class Caixa implements ConstrutorVendaObserver {
                 valor_venda: valorVenda,
                 id_cliente: idCliente,
                 id_funcionario: idFuncionario,
-                data: data, // Converte Date para ISO pra ter compatibilidade com JSON
+                data: data.toISOString().split('T')[0], // Converte Date para ISO pra ter compatibilidade com JSON
                 produtos: listaProdutos
             };
             const options = {
@@ -1905,7 +1905,7 @@ class Caixa implements ConstrutorVendaObserver {
     //FUNÇÃO QUE CHAMA CADASTRAR VENDA E AUXILIARES
     async concluiVenda(venda: Venda): Promise<boolean> {
         this.atualizarEstoque(venda.getProdutos())
-        
+
         const valorTotal = venda.getValorVenda()
         const idCliente = venda.getCpfCliente()
         const idFuncionario = venda.getCpfFuncionario()
