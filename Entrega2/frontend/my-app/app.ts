@@ -37,13 +37,11 @@ class App {
             gerenciarClientesButton.addEventListener('click', this.create_client_management_screen.bind(this));
             divBotoes.appendChild(gerenciarClientesButton);
 
-            /*
             const mostrarRelatorioButton = document.createElement('button');
             mostrarRelatorioButton.textContent = 'Mostrar Relatório';
             mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
             divBotoes.appendChild(mostrarRelatorioButton);
-            */
-
+            
             //Somente se o caixa estiver aberto
             if(this.caixa.getStatus() == true) {
                 const registrarVendaButton = document.createElement('button');
@@ -58,6 +56,12 @@ class App {
                     this.create_start_screen();
                 });
                 divBotoes.appendChild(fecharCaixaButton);
+
+                const reembolsarButton = document.createElement('button');
+                reembolsarButton.textContent = 'Reembolsar';
+                reembolsarButton.addEventListener('click', this.create_refund_form.bind(this));
+                divBotoes.appendChild(reembolsarButton);
+                
                 
             } else {
                 const abrirCaixaButton = document.createElement('button');
@@ -80,19 +84,7 @@ class App {
                 gerenciarFuncionariosButton.textContent = 'Gerenciar Funcionários';
                 gerenciarFuncionariosButton.addEventListener('click', this.create_employee_management_screen.bind(this));
                 divBotoes.appendChild(gerenciarFuncionariosButton);
-
-                const gerenciarDescontosButton = document.createElement('button');
-                gerenciarDescontosButton.textContent = 'Gerenciar Descontos';
-                gerenciarDescontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
-                divBotoes.appendChild(gerenciarDescontosButton);
             }
-
-            /*
-            const reembolsarButton = document.createElement('button');
-            reembolsarButton.textContent = 'Reembolsar';
-            reembolsarButton.addEventListener('click', this.create_refund_form.bind(this));
-            divBotoes.appendChild(reembolsarButton);
-            */
         }
 
         const botaoLogin = document.createElement('button');
@@ -275,6 +267,11 @@ class App {
         atualizarButton.textContent = 'Atualizar';
         atualizarButton.addEventListener('click', this.create_product_update_form.bind(this));
         productManagementScreen.appendChild(atualizarButton);
+
+        const descontosButton = document.createElement('button');
+        descontosButton.textContent = 'Gerenciar Descontos';
+        descontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
+        productManagementScreen.appendChild(descontosButton);
     
         const voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
@@ -431,8 +428,62 @@ class App {
         document.body.appendChild(updateForm);
     }
 
-    create_product_list() {
+    async create_product_list() {
         this.clear_body()
+
+        const header = document.createElement('div');
+        header.className = 'header';
+
+        const titulo = document.createElement('h1');
+        titulo.textContent = 'Lista de Produtos';
+        header.appendChild(titulo);
+
+        document.body.appendChild(header);
+
+        const productsData = await this.listandoProdutos();
+
+        if (productsData) {
+            console.error('Erro ao buscar produtos');
+            return;
+        }
+
+        // Cria tabela
+        const table = document.createElement('table');
+        table.className = 'product-list-table';
+
+        // Cria cabeçalho da tabela
+        const tableHeader = table.insertRow();
+        const headerCells = ['ID Produto', 'Nome', 'Valor', 'Quantidade', 'Desconto'];
+        for (const headerCellText of headerCells) {
+            const headerCell = tableHeader.insertCell();
+            headerCell.textContent = headerCellText;
+        }
+
+        // Cria linhas da labela
+        for (const product of productsData) {
+            const tableRow = table.insertRow();
+            const idCell = tableRow.insertCell();
+            idCell.textContent = product.id_produto;
+
+            const nameCell = tableRow.insertCell();
+            nameCell.textContent = product.nome;
+
+            const priceCell = tableRow.insertCell();
+            priceCell.textContent = product.valor.toFixed(2);
+
+            const quantityCell = tableRow.insertCell();
+            quantityCell.textContent = `${product.quantidade_estoque}%`;
+            
+            const discountCell = tableRow.insertCell();
+            discountCell.textContent = `${product.desconto}%`;
+        }
+
+        document.body.appendChild(table);
+
+        const voltarButton = document.createElement('button');
+        voltarButton.textContent = 'Voltar';
+        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+        document.body.appendChild(voltarButton);
 
     }
 
@@ -626,9 +677,57 @@ class App {
         document.body.appendChild(updateForm);
     }
 
-    create_employee_list() {
+    async create_employee_list() {
         this.clear_body()
 
+        const header = document.createElement('div');
+        header.className = 'header';
+
+        const titulo = document.createElement('h1');
+        titulo.textContent = 'Lista de Funcionários';
+        header.appendChild(titulo);
+
+        document.body.appendChild(header);
+
+        const employeeData = await this.listandoFuncionarios();
+
+        if (!employeeData) {
+            console.error('Erro ao buscar funcionários');
+            return;
+        }
+
+        // Create the HTML table
+        const table = document.createElement('table');
+        table.className = 'employee-list-table';
+
+        // Cria cabeçalho da tabela
+        const tableHeader = table.insertRow();
+        const headerCells = ['CPF', 'Login', 'É Gerente'];
+        for (const headerCellText of headerCells) {
+            const headerCell = tableHeader.insertCell();
+            headerCell.textContent = headerCellText;
+        }
+
+        // Cria linhas da tabela
+        for (const employee of employeeData) {
+            const tableRow = table.insertRow();
+            const cpfCell = tableRow.insertCell();
+            cpfCell.textContent = employee.cpf;
+
+            const loginCell = tableRow.insertCell();
+            loginCell.textContent = employee.login;
+
+            const gerenteCell = tableRow.insertCell();
+            gerenteCell.textContent = employee.is_gerente ? 'Sim' : 'Não';
+        }
+
+        document.body.appendChild(table);
+
+        // Cria botão voltar
+        const voltarButton = document.createElement('button');
+        voltarButton.textContent = 'Voltar';
+        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+        document.body.appendChild(voltarButton);
     }
 
     //DESCONTO
@@ -660,7 +759,7 @@ class App {
     
         const voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
-        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+        voltarButton.addEventListener('click', this.create_product_management_screen.bind(this));
         discountManagementScreen.appendChild(voltarButton);
     
         document.body.appendChild(discountManagementScreen);
@@ -723,7 +822,7 @@ class App {
         removalForm.appendChild(title);
     
         const idProdutoLabel = document.createElement('label');
-        idProdutoLabel.textContent = 'ID Desconto:';
+        idProdutoLabel.textContent = 'ID Produto:';
         removalForm.appendChild(idProdutoLabel);
     
         const idProdutoInput = document.createElement('input');
@@ -791,11 +890,6 @@ class App {
         alteracaoForm.appendChild(voltarButton);
     
         document.body.appendChild(alteracaoForm);
-    }
-    
-    create_discount_list() {
-        this.clear_body()
-
     }
 
     //VENDA
@@ -918,7 +1012,88 @@ class App {
     }
 
     create_monthly_report() {
-        this.clear_body()
+        this.clear_body();
+
+        const header = document.createElement('div');
+        header.className = 'header';
+
+        const titulo = document.createElement('h1');
+        titulo.textContent = 'Relatório de Vendas';
+        header.appendChild(titulo);
+
+        document.body.appendChild(header);
+
+        const monthInput = document.createElement('input');
+        monthInput.type = 'number';
+        monthInput.id = 'monthInput';
+
+        const yearInput = document.createElement('input');
+        yearInput.type = 'number';
+        yearInput.id = 'yearInput';
+
+        //Bptão de gerar relatório
+        const buscarRelatorioButton = document.createElement('button');
+        buscarRelatorioButton.textContent = 'Buscar Relatório';
+        buscarRelatorioButton.addEventListener('click', async () => {
+            const selectedMonth = (document.getElementById('monthInput') as HTMLInputElement).valueAsNumber;
+            const selectedYear = (document.getElementById('yearInput') as HTMLInputElement).valueAsNumber;
+
+            if (!selectedMonth || !selectedYear) {
+                alert('Selecione o mês e o ano para gerar o relatório.');
+                return;
+            }
+
+            const salesData = await this.criandoRelatorioVendas(selectedMonth, selectedYear);
+
+            if (!salesData) {
+                console.error('Error fetching sales data');
+                return;
+            }
+
+            document.body.removeChild(monthInput);
+            document.body.removeChild(yearInput);
+            document.body.removeChild(buscarRelatorioButton);
+
+            //Cria tabela de vendas
+            const salesTable = document.createElement('table');
+            salesTable.className = 'sales-table';
+
+            //Cria cabeçalho da tabela
+            const tableHeader = salesTable.insertRow();
+            const headerCells = ['Valor da Venda', 'Data', 'ID Cliente', 'ID Funcionário'];
+            for (const headerCellText of headerCells) {
+            const headerCell = tableHeader.insertCell();
+            headerCell.textContent = headerCellText;
+            }
+
+            //Cria linhas da tabela
+            for (const sale of salesData) {
+            const tableRow = salesTable.insertRow();
+            const valorVendaCell = tableRow.insertCell();
+            valorVendaCell.textContent = sale.valor_venda.toFixed(2);
+
+            const dataCell = tableRow.insertCell();
+            dataCell.textContent = sale.data;
+
+            const idClienteCell = tableRow.insertCell();
+            idClienteCell.textContent = sale.id_cliente ? sale.id_cliente : '-';
+
+            const idFuncionarioCell = tableRow.insertCell();
+            idFuncionarioCell.textContent = sale.id_funcionario;
+            }
+
+            document.body.appendChild(salesTable);
+
+            const voltarButton = document.createElement('button');
+            voltarButton.textContent = 'Voltar';
+            voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+            document.body.appendChild(voltarButton);
+        });
+
+        // Append elements to the body
+        document.body.appendChild(monthInput);
+        document.body.appendChild(yearInput);
+        document.body.appendChild(buscarRelatorioButton);
 
     }
 
@@ -930,6 +1105,36 @@ class App {
 
         if(cpfFuncionario)
         this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario)
+    }
+
+    async reembolsando(vendaNumero: number) {
+        console.log(`Reembolsando venda: ${vendaNumero}`);
+
+        let sucess = false
+
+        sucess = await this.caixa.removeVenda(vendaNumero);
+
+        if(sucess) {
+            alert("Venda reembolsada");
+            this.create_start_screen();
+        } else {
+            alert("Falha ao reembolsar cliente");
+        }
+
+    }
+
+    async criandoRelatorioVendas(mes: number, ano: number): Promise<any> {
+        console.log(`Buscando relatório de vendas de ${mes}/${ano}`);
+
+        const data = await this.caixa.relatorioVendasMensais(mes, ano);
+
+        if(data) {
+            alert("Relatório mensal criado");
+            console.log(`${data}`);
+            return data;
+        } else {
+            alert("Falha ao buscar relatório mensal");
+        }
     }
 
     //CLIENTE
@@ -1025,8 +1230,8 @@ class App {
         }
     }
 
-    async listandoFuncionarios() {
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+    async listandoFuncionarios(): Promise <any> {
+        const funcionario = this.caixa.getObjetoFuncionarioAtivo();
         
         if(funcionario){
             const data = await (funcionario as Gerente).consultaFuncionarios();
@@ -1034,6 +1239,7 @@ class App {
             if(data) {
                 alert("Funcionários listados");
                 console.log(`${data}`);
+                return data;
             } else {
                 alert("Falha ao buscar funcionários");
             }
@@ -1095,8 +1301,8 @@ class App {
         }
     }
 
-    async listandoProdutos() {
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+    async listandoProdutos(): Promise<any> {
+        const funcionario = this.caixa.getObjetoFuncionarioAtivo();
         
         if(funcionario){
             const data = await funcionario.consultaProdutos();
@@ -1104,6 +1310,7 @@ class App {
             if(data) {
                 alert("Produtos listados");
                 console.log(`${data}`);
+                return data;
             } else {
                 alert("Falha ao buscar produtos");
             }
@@ -1116,10 +1323,9 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        const funcionario = this.caixa.getObjetoFuncionarioAtivo()
         if(funcionario){
-
-            sucess = await (funcionario as Gerente).cadastraDesconto(idProduto, porcentagem);
+            sucess = await (funcionario as Gerente).atualizaDesconto(idProduto, porcentagem);
         }
 
         if(sucess) {
@@ -1135,9 +1341,9 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
+        const funcionario = this.caixa.getObjetoFuncionarioAtivo()
         if(funcionario){
-            sucess = await (funcionario as Gerente).removeDesconto(idProduto);
+            sucess = await (funcionario as Gerente).atualizaDesconto(idProduto, 0);
         }
 
         if(sucess) {
@@ -1155,9 +1361,7 @@ class App {
 
         const funcionario = this.caixa.getObjetoFuncionarioAtivo();
         if(funcionario){
-            const idDesconto = Number(await funcionario.consultaIdDesconto(idProduto)); //Pega o id do desconto usando o id de um produto
-            console.log(`idDesconto: ${idDesconto}`)
-            sucess = await (funcionario as Gerente).atualizaDesconto(idDesconto, idProduto, porcentagem);
+            sucess = await (funcionario as Gerente).atualizaDesconto(idProduto, porcentagem);
         }
 
         if(sucess) {
@@ -1168,21 +1372,7 @@ class App {
         }
     }
 
-    async listandoDescontos() {
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-
-        if(funcionario){
-            const data = await funcionario.consultaDescontos();
-
-            if(data) {
-                alert("Desconto listados");
-                console.log(`${data}`);
-                this.create_start_screen();
-            } else {
-                alert("Falha ao buscar descontos");
-            }
-        }
-    }
+    listandoDescontos() {}
 
     //EXTRA
     async logando(username: string, password: string) {
@@ -1196,10 +1386,6 @@ class App {
         } else {
             alert("Funcinario não logado");
         }
-    }
-
-    reembolsando(vendaNumero: number) {
-        console.log(`Nº da Venda: ${vendaNumero}`);
     }
 }
 
@@ -1301,51 +1487,7 @@ class Funcionario implements FuncionarioInterface{
     }
 
     //DESCONTOS
-    async consultaDescontos(): Promise<any> {
-        try {
-            const url = 'http://localhost:8000/descontos/';
-            const options = {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            };
-        
-            const response = await fetch(url, options);
-        
-            if (response.ok) {
-                const data = await response.json();
-                return data;
-            } else {
-                const errorMessage = await response.text();
-                throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao consultar descontos: ${error.message}`);
-            return null;
-        }
-    }
-
-    async consultaIdDesconto(idProduto: number): Promise<number> {
-        try {
-            const url = `http://localhost:8000/descontos/${idProduto}`;
-            const options = {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            };
-        
-            const response = await fetch(url, options);
-        
-            if (response.ok) {
-                const descontoData = await response.json();
-                return descontoData.id_desconto;
-            } else {
-                const errorMessage = await response.text();
-                throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao consultar descontos: ${error.message}`);
-            return 0;
-        }
-    }
+    consultaDescontos() {}
 }
 
 class Gerente extends Funcionario {
@@ -1587,72 +1729,18 @@ class Gerente extends Funcionario {
     }
 
     //DESCONTOS
-    async cadastraDesconto(
-        idProduto: number,
-        porcentagem: number
-      ): Promise<boolean> {
-        try {
-            const url = 'http://localhost:8000/descontos/';
-            const data = JSON.stringify({
-                porcentagem:  porcentagem,
-                id_produto: idProduto,
-            });
-            const options = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: data,
-            };
-        
-            const response = await fetch(url, options);
-        
-            if (response.ok) {
-                console.log(
-                `Desconto de ${porcentagem}% para o produto com ID ${idProduto} cadastrado com sucesso!`
-                );
-                return true;
-            } else {
-                const errorMessage = await response.text();
-                throw new Error(`Erro ao cadastrar desconto: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao cadastrar desconto: ${error.message}`);
-            return false;
-        }
-    }
+    cadastraDesconto() {}
 
-    async removeDesconto(idDesconto: number): Promise<boolean> {
-        try {
-            const url = `http://localhost:8000/descontos/${idDesconto}`;
-            const options = {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-            };
-        
-            const response = await fetch(url, options);
-        
-            if (response.ok) {
-                console.log(`Desconto para o produto com ID ${idDesconto} removido com sucesso!`);
-                return true;
-            } else {
-                const errorMessage = await response.text();
-                throw new Error(`Erro ao remover desconto: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao remover desconto: ${error.message}`);
-            return false;
-        }
-    }
+    removeDesconto() {}
 
     async atualizaDesconto(
-        idDesconto: number,
         idProduto: number,
-        porcentagem: number
+        porcentagem: number,
       ): Promise<boolean> {
         try {
             const url = `http://localhost:8000/descontos/${idProduto}`;
             const data = JSON.stringify({
                 porcentagem: porcentagem,
-                id_produto: idProduto,
             });
             const options = {
                 method: 'PUT',
@@ -1664,7 +1752,7 @@ class Gerente extends Funcionario {
         
             if (response.ok) {
                 console.log(
-                `Desconto com ID ${idDesconto} atualizado com sucesso para ${porcentagem}%!`
+                `Desconto do Produto com ID ${idProduto} atualizado com sucesso para ${porcentagem}%!`
                 );
                 return true;
             } else {
@@ -1676,40 +1764,19 @@ class Gerente extends Funcionario {
             return false;
         }
     }
-    
-    async consultaDescontos(): Promise<any> {
-        try {
-            const url = 'http://localhost:8000/descontos/';
-            const options = {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            };
-        
-            const response = await fetch(url, options);
-        
-            if (response.ok) {
-                const data = await response.json();
-                return data;
-            } else {
-                const errorMessage = await response.text();
-                throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao consultar descontos: ${error.message}`);
-            return null;
-        }
-    }
 }
 
 class Produto {
     private codigo: number;
     private quantidade: number;
     private valor: number;
+    private desconto: number;
   
-    constructor(codigo: number, quantidade: number, valor: number) {
+    constructor(codigo: number, quantidade: number, valor: number, desconto: number) {
         this.codigo = codigo;
         this.quantidade = quantidade;
         this.valor = valor;
+        this.desconto = desconto;
     }
   
     getValor(): number {
@@ -1726,6 +1793,10 @@ class Produto {
 
     getCodigo(): number {
         return this.codigo;
+    }
+
+    getDesconto(): number {
+        return this.desconto;
     }
 }
 
@@ -1897,6 +1968,29 @@ class Caixa implements ConstrutorVendaObserver {
         }
     }
     
+    async relatorioVendasMensais(mes: number, ano: number): Promise<any> {
+        try {
+            const url = `http://localhost:8000/relatorio-vendas/${mes}/${ano}/`;
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            };
+        
+            const response = await fetch(url, options);
+        
+            if (response.ok) {
+                console.log(`Relatório de vendas de ${mes}/${ano} lido com sucesso!`);
+                return response.json;
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro pegar relatorio de venda: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro pegar relatorio de venda: ${error.message}`);
+            return null;
+        }
+    }
+
     //Usar (this.funcionarioLogado as Gerente) para acessar métodos exclusivos de gerente
 
     async validaLogin(username: string, password: string): Promise<boolean> {
@@ -1962,7 +2056,7 @@ class Caixa implements ConstrutorVendaObserver {
             let quantidade = produtoConsultado.quantidade_estoque
             quantidade -= produto.getQuantidade() ;
         
-            await this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade);
+            await this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade, produto.getDesconto());
         }
     }
 
@@ -1992,13 +2086,15 @@ class Caixa implements ConstrutorVendaObserver {
     async atualizaProduto(
         idProduto: number,
         valor: number,
-        quantidade: number
+        quantidade: number,
+        desconto: number,
       ): Promise<boolean> {
         try {
             const url = `http://localhost:8000/produtos/${idProduto}`;
             const data = JSON.stringify({
                 valor: valor,
                 quantidade_estoque: quantidade,
+                desconto: desconto,
                 nome: "oi"
             });
             const options = {
@@ -2058,7 +2154,7 @@ class ConstrutorVenda {
     async adicionarProdutoLido(codigo: number, quantidade: number) {
         const produto = await this.consultaProduto(codigo)
 
-        const p = new Produto(codigo, quantidade, produto.valor);
+        const p = new Produto(codigo, quantidade, produto.valor, produto.desconto);
         
         if(this.vendaAtual)
         this.vendaAtual.adicionaProduto(p);
@@ -2088,7 +2184,7 @@ class ConstrutorVenda {
         let valorTotal = 0;
 
         for (const produto of produtos) {
-            const descontoProduto = await this.consultaDesconto(produto.getCodigo());
+            const descontoProduto = produto.getDesconto();
 
             if (descontoProduto > 0) {
                 valorTotal += (produto.getValor() * (1 - descontoProduto / 100)) * produto.getQuantidade();
@@ -2126,29 +2222,6 @@ class ConstrutorVenda {
             }
         } catch (error) {
             console.error(`Erro ao consultar fidelidade: ${error.message}`);
-            return 0;
-        }
-    }
-
-    async consultaDesconto(idProduto: number): Promise<number> {
-        try {
-            const url = `http://localhost:8000/descontos/${idProduto}`;
-            const options = {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            };
-        
-            const response = await fetch(url, options);
-        
-            if (response.ok) {
-                const descontoData = await response.json();
-                return descontoData.porcentagem;
-            } else {
-                const errorMessage = await response.text();
-                throw new Error(`Erro ao consultar descontos: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao consultar descontos: ${error.message}`);
             return 0;
         }
     }

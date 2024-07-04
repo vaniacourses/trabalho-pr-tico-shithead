@@ -79,12 +79,10 @@ var App = /** @class */ (function () {
             gerenciarClientesButton.textContent = 'Gerenciar Clientes';
             gerenciarClientesButton.addEventListener('click', this.create_client_management_screen.bind(this));
             divBotoes.appendChild(gerenciarClientesButton);
-            /*
-            const mostrarRelatorioButton = document.createElement('button');
+            var mostrarRelatorioButton = document.createElement('button');
             mostrarRelatorioButton.textContent = 'Mostrar Relatório';
             mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
             divBotoes.appendChild(mostrarRelatorioButton);
-            */
             //Somente se o caixa estiver aberto
             if (this.caixa.getStatus() == true) {
                 var registrarVendaButton = document.createElement('button');
@@ -98,6 +96,10 @@ var App = /** @class */ (function () {
                     _this.create_start_screen();
                 });
                 divBotoes.appendChild(fecharCaixaButton);
+                var reembolsarButton = document.createElement('button');
+                reembolsarButton.textContent = 'Reembolsar';
+                reembolsarButton.addEventListener('click', this.create_refund_form.bind(this));
+                divBotoes.appendChild(reembolsarButton);
             }
             else {
                 var abrirCaixaButton = document.createElement('button');
@@ -118,17 +120,7 @@ var App = /** @class */ (function () {
                 gerenciarFuncionariosButton.textContent = 'Gerenciar Funcionários';
                 gerenciarFuncionariosButton.addEventListener('click', this.create_employee_management_screen.bind(this));
                 divBotoes.appendChild(gerenciarFuncionariosButton);
-                var gerenciarDescontosButton = document.createElement('button');
-                gerenciarDescontosButton.textContent = 'Gerenciar Descontos';
-                gerenciarDescontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
-                divBotoes.appendChild(gerenciarDescontosButton);
             }
-            /*
-            const reembolsarButton = document.createElement('button');
-            reembolsarButton.textContent = 'Reembolsar';
-            reembolsarButton.addEventListener('click', this.create_refund_form.bind(this));
-            divBotoes.appendChild(reembolsarButton);
-            */
         }
         var botaoLogin = document.createElement('button');
         botaoLogin.textContent = 'Login';
@@ -271,6 +263,10 @@ var App = /** @class */ (function () {
         atualizarButton.textContent = 'Atualizar';
         atualizarButton.addEventListener('click', this.create_product_update_form.bind(this));
         productManagementScreen.appendChild(atualizarButton);
+        var descontosButton = document.createElement('button');
+        descontosButton.textContent = 'Gerenciar Descontos';
+        descontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
+        productManagementScreen.appendChild(descontosButton);
         var voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
         voltarButton.addEventListener('click', this.create_start_screen.bind(this));
@@ -396,7 +392,58 @@ var App = /** @class */ (function () {
         document.body.appendChild(updateForm);
     };
     App.prototype.create_product_list = function () {
-        this.clear_body();
+        return __awaiter(this, void 0, void 0, function () {
+            var header, titulo, productsData, table, tableHeader, headerCells, _i, headerCells_1, headerCellText, headerCell, _a, productsData_1, product, tableRow, idCell, nameCell, priceCell, quantityCell, discountCell, voltarButton;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.clear_body();
+                        header = document.createElement('div');
+                        header.className = 'header';
+                        titulo = document.createElement('h1');
+                        titulo.textContent = 'Lista de Produtos';
+                        header.appendChild(titulo);
+                        document.body.appendChild(header);
+                        return [4 /*yield*/, this.listandoProdutos()];
+                    case 1:
+                        productsData = _b.sent();
+                        if (productsData) {
+                            console.error('Erro ao buscar produtos');
+                            return [2 /*return*/];
+                        }
+                        table = document.createElement('table');
+                        table.className = 'product-list-table';
+                        tableHeader = table.insertRow();
+                        headerCells = ['ID Produto', 'Nome', 'Valor', 'Quantidade', 'Desconto'];
+                        for (_i = 0, headerCells_1 = headerCells; _i < headerCells_1.length; _i++) {
+                            headerCellText = headerCells_1[_i];
+                            headerCell = tableHeader.insertCell();
+                            headerCell.textContent = headerCellText;
+                        }
+                        // Cria linhas da labela
+                        for (_a = 0, productsData_1 = productsData; _a < productsData_1.length; _a++) {
+                            product = productsData_1[_a];
+                            tableRow = table.insertRow();
+                            idCell = tableRow.insertCell();
+                            idCell.textContent = product.id_produto;
+                            nameCell = tableRow.insertCell();
+                            nameCell.textContent = product.nome;
+                            priceCell = tableRow.insertCell();
+                            priceCell.textContent = product.valor.toFixed(2);
+                            quantityCell = tableRow.insertCell();
+                            quantityCell.textContent = "".concat(product.quantidade_estoque, "%");
+                            discountCell = tableRow.insertCell();
+                            discountCell.textContent = "".concat(product.desconto, "%");
+                        }
+                        document.body.appendChild(table);
+                        voltarButton = document.createElement('button');
+                        voltarButton.textContent = 'Voltar';
+                        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+                        document.body.appendChild(voltarButton);
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     //FUNCIONARIO
     App.prototype.create_employee_management_screen = function () {
@@ -549,7 +596,54 @@ var App = /** @class */ (function () {
         document.body.appendChild(updateForm);
     };
     App.prototype.create_employee_list = function () {
-        this.clear_body();
+        return __awaiter(this, void 0, void 0, function () {
+            var header, titulo, employeeData, table, tableHeader, headerCells, _i, headerCells_2, headerCellText, headerCell, _a, employeeData_1, employee, tableRow, cpfCell, loginCell, gerenteCell, voltarButton;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.clear_body();
+                        header = document.createElement('div');
+                        header.className = 'header';
+                        titulo = document.createElement('h1');
+                        titulo.textContent = 'Lista de Funcionários';
+                        header.appendChild(titulo);
+                        document.body.appendChild(header);
+                        return [4 /*yield*/, this.listandoFuncionarios()];
+                    case 1:
+                        employeeData = _b.sent();
+                        if (!employeeData) {
+                            console.error('Erro ao buscar funcionários');
+                            return [2 /*return*/];
+                        }
+                        table = document.createElement('table');
+                        table.className = 'employee-list-table';
+                        tableHeader = table.insertRow();
+                        headerCells = ['CPF', 'Login', 'É Gerente'];
+                        for (_i = 0, headerCells_2 = headerCells; _i < headerCells_2.length; _i++) {
+                            headerCellText = headerCells_2[_i];
+                            headerCell = tableHeader.insertCell();
+                            headerCell.textContent = headerCellText;
+                        }
+                        // Cria linhas da tabela
+                        for (_a = 0, employeeData_1 = employeeData; _a < employeeData_1.length; _a++) {
+                            employee = employeeData_1[_a];
+                            tableRow = table.insertRow();
+                            cpfCell = tableRow.insertCell();
+                            cpfCell.textContent = employee.cpf;
+                            loginCell = tableRow.insertCell();
+                            loginCell.textContent = employee.login;
+                            gerenteCell = tableRow.insertCell();
+                            gerenteCell.textContent = employee.is_gerente ? 'Sim' : 'Não';
+                        }
+                        document.body.appendChild(table);
+                        voltarButton = document.createElement('button');
+                        voltarButton.textContent = 'Voltar';
+                        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+                        document.body.appendChild(voltarButton);
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     //DESCONTO
     App.prototype.create_discount_management_screen = function () {
@@ -573,7 +667,7 @@ var App = /** @class */ (function () {
         discountManagementScreen.appendChild(atualizarButton);
         var voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
-        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+        voltarButton.addEventListener('click', this.create_product_management_screen.bind(this));
         discountManagementScreen.appendChild(voltarButton);
         document.body.appendChild(discountManagementScreen);
     };
@@ -623,7 +717,7 @@ var App = /** @class */ (function () {
         title.textContent = 'Remover Desconto';
         removalForm.appendChild(title);
         var idProdutoLabel = document.createElement('label');
-        idProdutoLabel.textContent = 'ID Desconto:';
+        idProdutoLabel.textContent = 'ID Produto:';
         removalForm.appendChild(idProdutoLabel);
         var idProdutoInput = document.createElement('input');
         idProdutoInput.type = 'number';
@@ -678,9 +772,6 @@ var App = /** @class */ (function () {
         voltarButton.addEventListener('click', this.create_discount_management_screen.bind(this));
         alteracaoForm.appendChild(voltarButton);
         document.body.appendChild(alteracaoForm);
-    };
-    App.prototype.create_discount_list = function () {
-        this.clear_body();
     };
     //VENDA
     App.prototype.create_sell_registration_form = function () {
@@ -779,7 +870,79 @@ var App = /** @class */ (function () {
         document.body.appendChild(reembolsoForm);
     };
     App.prototype.create_monthly_report = function () {
+        var _this = this;
         this.clear_body();
+        var header = document.createElement('div');
+        header.className = 'header';
+        var titulo = document.createElement('h1');
+        titulo.textContent = 'Relatório de Vendas';
+        header.appendChild(titulo);
+        document.body.appendChild(header);
+        var monthInput = document.createElement('input');
+        monthInput.type = 'number';
+        monthInput.id = 'monthInput';
+        var yearInput = document.createElement('input');
+        yearInput.type = 'number';
+        yearInput.id = 'yearInput';
+        //Bptão de gerar relatório
+        var buscarRelatorioButton = document.createElement('button');
+        buscarRelatorioButton.textContent = 'Buscar Relatório';
+        buscarRelatorioButton.addEventListener('click', function () { return __awaiter(_this, void 0, void 0, function () {
+            var selectedMonth, selectedYear, salesData, salesTable, tableHeader, headerCells, _i, headerCells_3, headerCellText, headerCell, _a, salesData_1, sale, tableRow, valorVendaCell, dataCell, idClienteCell, idFuncionarioCell, voltarButton;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        selectedMonth = document.getElementById('monthInput').valueAsNumber;
+                        selectedYear = document.getElementById('yearInput').valueAsNumber;
+                        if (!selectedMonth || !selectedYear) {
+                            alert('Selecione o mês e o ano para gerar o relatório.');
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, this.criandoRelatorioVendas(selectedMonth, selectedYear)];
+                    case 1:
+                        salesData = _b.sent();
+                        if (!salesData) {
+                            console.error('Error fetching sales data');
+                            return [2 /*return*/];
+                        }
+                        document.body.removeChild(monthInput);
+                        document.body.removeChild(yearInput);
+                        document.body.removeChild(buscarRelatorioButton);
+                        salesTable = document.createElement('table');
+                        salesTable.className = 'sales-table';
+                        tableHeader = salesTable.insertRow();
+                        headerCells = ['Valor da Venda', 'Data', 'ID Cliente', 'ID Funcionário'];
+                        for (_i = 0, headerCells_3 = headerCells; _i < headerCells_3.length; _i++) {
+                            headerCellText = headerCells_3[_i];
+                            headerCell = tableHeader.insertCell();
+                            headerCell.textContent = headerCellText;
+                        }
+                        //Cria linhas da tabela
+                        for (_a = 0, salesData_1 = salesData; _a < salesData_1.length; _a++) {
+                            sale = salesData_1[_a];
+                            tableRow = salesTable.insertRow();
+                            valorVendaCell = tableRow.insertCell();
+                            valorVendaCell.textContent = sale.valor_venda.toFixed(2);
+                            dataCell = tableRow.insertCell();
+                            dataCell.textContent = sale.data;
+                            idClienteCell = tableRow.insertCell();
+                            idClienteCell.textContent = sale.id_cliente ? sale.id_cliente : '-';
+                            idFuncionarioCell = tableRow.insertCell();
+                            idFuncionarioCell.textContent = sale.id_funcionario;
+                        }
+                        document.body.appendChild(salesTable);
+                        voltarButton = document.createElement('button');
+                        voltarButton.textContent = 'Voltar';
+                        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+                        document.body.appendChild(voltarButton);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        // Append elements to the body
+        document.body.appendChild(monthInput);
+        document.body.appendChild(yearInput);
+        document.body.appendChild(buscarRelatorioButton);
     };
     //As funções a seguir devem apenas chamar os métodos das classes onde os códigos foram implementados
     //VENDA
@@ -787,6 +950,52 @@ var App = /** @class */ (function () {
         console.log("Cadastrando compra de ".concat(cpfCliente, " gerenciado por ").concat(cpfFuncionario));
         if (cpfFuncionario)
             this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario);
+    };
+    App.prototype.reembolsando = function (vendaNumero) {
+        return __awaiter(this, void 0, void 0, function () {
+            var sucess;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log("Reembolsando venda: ".concat(vendaNumero));
+                        sucess = false;
+                        return [4 /*yield*/, this.caixa.removeVenda(vendaNumero)];
+                    case 1:
+                        sucess = _a.sent();
+                        if (sucess) {
+                            alert("Venda reembolsada");
+                            this.create_start_screen();
+                        }
+                        else {
+                            alert("Falha ao reembolsar cliente");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    App.prototype.criandoRelatorioVendas = function (mes, ano) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log("Buscando relat\u00F3rio de vendas de ".concat(mes, "/").concat(ano));
+                        return [4 /*yield*/, this.caixa.relatorioVendasMensais(mes, ano)];
+                    case 1:
+                        data = _a.sent();
+                        if (data) {
+                            alert("Relatório mensal criado");
+                            console.log("".concat(data));
+                            return [2 /*return*/, data];
+                        }
+                        else {
+                            alert("Falha ao buscar relatório mensal");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     //CLIENTE
     App.prototype.cadastrandoCliente = function (cpfCliente) {
@@ -940,22 +1149,22 @@ var App = /** @class */ (function () {
             var funcionario, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
-                    case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
+                    case 0:
+                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
+                        if (!funcionario) return [3 /*break*/, 2];
                         return [4 /*yield*/, funcionario.consultaFuncionarios()];
-                    case 2:
+                    case 1:
                         data = _a.sent();
                         if (data) {
                             alert("Funcionários listados");
                             console.log("".concat(data));
+                            return [2 /*return*/, data];
                         }
                         else {
                             alert("Falha ao buscar funcionários");
                         }
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });
@@ -1053,22 +1262,22 @@ var App = /** @class */ (function () {
             var funcionario, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
-                    case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
+                    case 0:
+                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
+                        if (!funcionario) return [3 /*break*/, 2];
                         return [4 /*yield*/, funcionario.consultaProdutos()];
-                    case 2:
+                    case 1:
                         data = _a.sent();
                         if (data) {
                             alert("Produtos listados");
                             console.log("".concat(data));
+                            return [2 /*return*/, data];
                         }
                         else {
                             alert("Falha ao buscar produtos");
                         }
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });
@@ -1082,15 +1291,13 @@ var App = /** @class */ (function () {
                     case 0:
                         console.log("ID Produto: ".concat(idProduto, ", Porcentagem: ").concat(porcentagem));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
+                        if (!funcionario) return [3 /*break*/, 2];
+                        return [4 /*yield*/, funcionario.atualizaDesconto(idProduto, porcentagem)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.cadastraDesconto(idProduto, porcentagem)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Desconto registrado");
                             this.create_start_screen();
@@ -1111,15 +1318,13 @@ var App = /** @class */ (function () {
                     case 0:
                         console.log("ID Produto: ".concat(idProduto));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
+                        if (!funcionario) return [3 /*break*/, 2];
+                        return [4 /*yield*/, funcionario.atualizaDesconto(idProduto, 0)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.removeDesconto(idProduto)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Desconto removido");
                             this.create_start_screen();
@@ -1134,24 +1339,19 @@ var App = /** @class */ (function () {
     };
     App.prototype.atualizandoDesconto = function (idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario, idDesconto, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var sucess, funcionario;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         console.log("ID Produto: ".concat(idProduto, ", Porcentagem: ").concat(porcentagem));
                         sucess = false;
                         funcionario = this.caixa.getObjetoFuncionarioAtivo();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        _a = Number;
-                        return [4 /*yield*/, funcionario.consultaIdDesconto(idProduto)];
+                        if (!funcionario) return [3 /*break*/, 2];
+                        return [4 /*yield*/, funcionario.atualizaDesconto(idProduto, porcentagem)];
                     case 1:
-                        idDesconto = _a.apply(void 0, [_b.sent()]);
-                        console.log("idDesconto: ".concat(idDesconto));
-                        return [4 /*yield*/, funcionario.atualizaDesconto(idDesconto, idProduto, porcentagem)];
+                        sucess = _a.sent();
+                        _a.label = 2;
                     case 2:
-                        sucess = _b.sent();
-                        _b.label = 3;
-                    case 3:
                         if (sucess) {
                             alert("Desconto atualizado");
                             this.create_start_screen();
@@ -1164,32 +1364,7 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.listandoDescontos = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var funcionario, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
-                    case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.consultaDescontos()];
-                    case 2:
-                        data = _a.sent();
-                        if (data) {
-                            alert("Desconto listados");
-                            console.log("".concat(data));
-                            this.create_start_screen();
-                        }
-                        else {
-                            alert("Falha ao buscar descontos");
-                        }
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
+    App.prototype.listandoDescontos = function () { };
     //EXTRA
     App.prototype.logando = function (username, password) {
         return __awaiter(this, void 0, void 0, function () {
@@ -1212,9 +1387,6 @@ var App = /** @class */ (function () {
                 }
             });
         });
-    };
-    App.prototype.reembolsando = function (vendaNumero) {
-        console.log("N\u00BA da Venda: ".concat(vendaNumero));
     };
     return App;
 }());
@@ -1336,74 +1508,7 @@ var Funcionario = /** @class */ (function () {
         });
     };
     //DESCONTOS
-    Funcionario.prototype.consultaDescontos = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        url = 'http://localhost:8000/descontos/';
-                        options = {
-                            method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
-                        };
-                        return [4 /*yield*/, fetch(url, options)];
-                    case 1:
-                        response = _a.sent();
-                        if (!response.ok) return [3 /*break*/, 3];
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        data = _a.sent();
-                        return [2 /*return*/, data];
-                    case 3: return [4 /*yield*/, response.text()];
-                    case 4:
-                        errorMessage = _a.sent();
-                        throw new Error("Erro ao consultar descontos: ".concat(errorMessage));
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_4 = _a.sent();
-                        console.error("Erro ao consultar descontos: ".concat(error_4.message));
-                        return [2 /*return*/, null];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Funcionario.prototype.consultaIdDesconto = function (idProduto) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, descontoData, errorMessage, error_5;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/descontos/".concat(idProduto);
-                        options = {
-                            method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
-                        };
-                        return [4 /*yield*/, fetch(url, options)];
-                    case 1:
-                        response = _a.sent();
-                        if (!response.ok) return [3 /*break*/, 3];
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        descontoData = _a.sent();
-                        return [2 /*return*/, descontoData.id_desconto];
-                    case 3: return [4 /*yield*/, response.text()];
-                    case 4:
-                        errorMessage = _a.sent();
-                        throw new Error("Erro ao consultar descontos: ".concat(errorMessage));
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_5 = _a.sent();
-                        console.error("Erro ao consultar descontos: ".concat(error_5.message));
-                        return [2 /*return*/, 0];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
-    };
+    Funcionario.prototype.consultaDescontos = function () { };
     return Funcionario;
 }());
 var Gerente = /** @class */ (function (_super) {
@@ -1417,7 +1522,7 @@ var Gerente = /** @class */ (function (_super) {
     //FUNCIONARIOS
     Gerente.prototype.cadastraFuncionario = function (cpf, login, senha, is_gerente) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_6;
+            var url, data, options, response, errorMessage, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1446,8 +1551,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao cadastrar funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_6 = _a.sent();
-                        console.error("Erro ao cadastrar funcion\u00E1rio: ".concat(error_6.message));
+                        error_4 = _a.sent();
+                        console.error("Erro ao cadastrar funcion\u00E1rio: ".concat(error_4.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1456,7 +1561,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.removeFuncionario = function (cpf) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_7;
+            var url, options, response, errorMessage, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1478,8 +1583,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao remover funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_7 = _a.sent();
-                        console.error("Erro ao remover funcion\u00E1rio: ".concat(error_7.message));
+                        error_5 = _a.sent();
+                        console.error("Erro ao remover funcion\u00E1rio: ".concat(error_5.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1489,7 +1594,7 @@ var Gerente = /** @class */ (function (_super) {
     Gerente.prototype.atualizaFuncionario = function (//Falta na api
     cpf, login, senha) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_8;
+            var url, data, options, response, errorMessage, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1516,8 +1621,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_8 = _a.sent();
-                        console.error("Erro ao atualizar funcion\u00E1rio: ".concat(error_8.message));
+                        error_6 = _a.sent();
+                        console.error("Erro ao atualizar funcion\u00E1rio: ".concat(error_6.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1526,7 +1631,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.consultaFuncionarios = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_9;
+            var url, options, response, data, errorMessage, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1550,8 +1655,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao consultar funcion\u00E1rios: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_9 = _a.sent();
-                        console.error("Erro ao consultar funcion\u00E1rios: ".concat(error_9.message));
+                        error_7 = _a.sent();
+                        console.error("Erro ao consultar funcion\u00E1rios: ".concat(error_7.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -1561,7 +1666,7 @@ var Gerente = /** @class */ (function (_super) {
     //PRODUTOS
     Gerente.prototype.cadastraProduto = function (nome, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_10;
+            var url, data, options, response, errorMessage, error_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1589,8 +1694,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao cadastrar produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_10 = _a.sent();
-                        console.error("Erro ao cadastrar produto: ".concat(error_10.message));
+                        error_8 = _a.sent();
+                        console.error("Erro ao cadastrar produto: ".concat(error_8.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1599,7 +1704,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.removeProduto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_11;
+            var url, options, response, errorMessage, error_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1621,8 +1726,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao remover produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_11 = _a.sent();
-                        console.error("Erro ao remover produto: ".concat(error_11.message));
+                        error_9 = _a.sent();
+                        console.error("Erro ao remover produto: ".concat(error_9.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1631,7 +1736,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.atualizaProduto = function (idProduto, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_12;
+            var url, data, options, response, errorMessage, error_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1659,8 +1764,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_12 = _a.sent();
-                        console.error("Erro ao atualizar produto: ".concat(error_12.message));
+                        error_10 = _a.sent();
+                        console.error("Erro ao atualizar produto: ".concat(error_10.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1669,7 +1774,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.consultaProdutos = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_13;
+            var url, options, response, data, errorMessage, error_11;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1693,8 +1798,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao consultar produtos: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_13 = _a.sent();
-                        console.error("Erro ao consultar produtos: ".concat(error_13.message));
+                        error_11 = _a.sent();
+                        console.error("Erro ao consultar produtos: ".concat(error_11.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -1702,78 +1807,11 @@ var Gerente = /** @class */ (function (_super) {
         });
     };
     //DESCONTOS
-    Gerente.prototype.cadastraDesconto = function (idProduto, porcentagem) {
+    Gerente.prototype.cadastraDesconto = function () { };
+    Gerente.prototype.removeDesconto = function () { };
+    Gerente.prototype.atualizaDesconto = function (idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_14;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        url = 'http://localhost:8000/descontos/';
-                        data = JSON.stringify({
-                            porcentagem: porcentagem,
-                            id_produto: idProduto,
-                        });
-                        options = {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: data,
-                        };
-                        return [4 /*yield*/, fetch(url, options)];
-                    case 1:
-                        response = _a.sent();
-                        if (!response.ok) return [3 /*break*/, 2];
-                        console.log("Desconto de ".concat(porcentagem, "% para o produto com ID ").concat(idProduto, " cadastrado com sucesso!"));
-                        return [2 /*return*/, true];
-                    case 2: return [4 /*yield*/, response.text()];
-                    case 3:
-                        errorMessage = _a.sent();
-                        throw new Error("Erro ao cadastrar desconto: ".concat(errorMessage));
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_14 = _a.sent();
-                        console.error("Erro ao cadastrar desconto: ".concat(error_14.message));
-                        return [2 /*return*/, false];
-                    case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Gerente.prototype.removeDesconto = function (idDesconto) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_15;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/descontos/".concat(idDesconto);
-                        options = {
-                            method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json' },
-                        };
-                        return [4 /*yield*/, fetch(url, options)];
-                    case 1:
-                        response = _a.sent();
-                        if (!response.ok) return [3 /*break*/, 2];
-                        console.log("Desconto para o produto com ID ".concat(idDesconto, " removido com sucesso!"));
-                        return [2 /*return*/, true];
-                    case 2: return [4 /*yield*/, response.text()];
-                    case 3:
-                        errorMessage = _a.sent();
-                        throw new Error("Erro ao remover desconto: ".concat(errorMessage));
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_15 = _a.sent();
-                        console.error("Erro ao remover desconto: ".concat(error_15.message));
-                        return [2 /*return*/, false];
-                    case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Gerente.prototype.atualizaDesconto = function (idDesconto, idProduto, porcentagem) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_16;
+            var url, data, options, response, errorMessage, error_12;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1781,7 +1819,6 @@ var Gerente = /** @class */ (function (_super) {
                         url = "http://localhost:8000/descontos/".concat(idProduto);
                         data = JSON.stringify({
                             porcentagem: porcentagem,
-                            id_produto: idProduto,
                         });
                         options = {
                             method: 'PUT',
@@ -1792,7 +1829,7 @@ var Gerente = /** @class */ (function (_super) {
                     case 1:
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 2];
-                        console.log("Desconto com ID ".concat(idDesconto, " atualizado com sucesso para ").concat(porcentagem, "%!"));
+                        console.log("Desconto do Produto com ID ".concat(idProduto, " atualizado com sucesso para ").concat(porcentagem, "%!"));
                         return [2 /*return*/, true];
                     case 2: return [4 /*yield*/, response.text()];
                     case 3:
@@ -1800,44 +1837,10 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar desconto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_16 = _a.sent();
-                        console.error("Erro ao atualizar desconto: ".concat(error_16.message));
+                        error_12 = _a.sent();
+                        console.error("Erro ao atualizar desconto: ".concat(error_12.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Gerente.prototype.consultaDescontos = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_17;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        url = 'http://localhost:8000/descontos/';
-                        options = {
-                            method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
-                        };
-                        return [4 /*yield*/, fetch(url, options)];
-                    case 1:
-                        response = _a.sent();
-                        if (!response.ok) return [3 /*break*/, 3];
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        data = _a.sent();
-                        return [2 /*return*/, data];
-                    case 3: return [4 /*yield*/, response.text()];
-                    case 4:
-                        errorMessage = _a.sent();
-                        throw new Error("Erro ao consultar descontos: ".concat(errorMessage));
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_17 = _a.sent();
-                        console.error("Erro ao consultar descontos: ".concat(error_17.message));
-                        return [2 /*return*/, null];
-                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -1845,10 +1848,11 @@ var Gerente = /** @class */ (function (_super) {
     return Gerente;
 }(Funcionario));
 var Produto = /** @class */ (function () {
-    function Produto(codigo, quantidade, valor) {
+    function Produto(codigo, quantidade, valor, desconto) {
         this.codigo = codigo;
         this.quantidade = quantidade;
         this.valor = valor;
+        this.desconto = desconto;
     }
     Produto.prototype.getValor = function () {
         return this.valor;
@@ -1861,6 +1865,9 @@ var Produto = /** @class */ (function () {
     };
     Produto.prototype.getCodigo = function () {
         return this.codigo;
+    };
+    Produto.prototype.getDesconto = function () {
+        return this.desconto;
     };
     return Produto;
 }());
@@ -1946,7 +1953,7 @@ var Caixa = /** @class */ (function () {
     //VENDAS
     Caixa.prototype.cadastraVenda = function (valorVenda, idCliente, idFuncionario, data, listaProdutos) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, vendaData, options, response, errorMessage, error_18;
+            var url, vendaData, options, response, errorMessage, error_13;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1976,8 +1983,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao cadastrar venda: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_18 = _a.sent();
-                        console.error("Erro ao cadastrar venda: ".concat(error_18.message));
+                        error_13 = _a.sent();
+                        console.error("Erro ao cadastrar venda: ".concat(error_13.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1986,7 +1993,7 @@ var Caixa = /** @class */ (function () {
     };
     Caixa.prototype.removeVenda = function (idVenda) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_19;
+            var url, options, response, errorMessage, error_14;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2008,9 +2015,41 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao remover venda: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_19 = _a.sent();
-                        console.error("Erro ao remover venda: ".concat(error_19.message));
+                        error_14 = _a.sent();
+                        console.error("Erro ao remover venda: ".concat(error_14.message));
                         return [2 /*return*/, false];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Caixa.prototype.relatorioVendasMensais = function (mes, ano) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, options, response, errorMessage, error_15;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        url = "http://localhost:8000/relatorio-vendas/".concat(mes, "/").concat(ano, "/");
+                        options = {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        };
+                        return [4 /*yield*/, fetch(url, options)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response.ok) return [3 /*break*/, 2];
+                        console.log("Relat\u00F3rio de vendas de ".concat(mes, "/").concat(ano, " lido com sucesso!"));
+                        return [2 /*return*/, response.json];
+                    case 2: return [4 /*yield*/, response.text()];
+                    case 3:
+                        errorMessage = _a.sent();
+                        throw new Error("Erro pegar relatorio de venda: ".concat(errorMessage));
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_15 = _a.sent();
+                        console.error("Erro pegar relatorio de venda: ".concat(error_15.message));
+                        return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
                 }
             });
@@ -2019,7 +2058,7 @@ var Caixa = /** @class */ (function () {
     //Usar (this.funcionarioLogado as Gerente) para acessar métodos exclusivos de gerente
     Caixa.prototype.validaLogin = function (username, password) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, loginData, errorMessage, error_20;
+            var url, options, response, loginData, errorMessage, error_16;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2053,8 +2092,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao validar login: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_20 = _a.sent();
-                        console.error("Erro ao validar login: ".concat(error_20.message));
+                        error_16 = _a.sent();
+                        console.error("Erro ao validar login: ".concat(error_16.message));
                         return [2 /*return*/, false];
                     case 7: return [2 /*return*/];
                 }
@@ -2106,7 +2145,7 @@ var Caixa = /** @class */ (function () {
                         produtoConsultado = _a.sent();
                         quantidade = produtoConsultado.quantidade_estoque;
                         quantidade -= produto.getQuantidade();
-                        return [4 /*yield*/, this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade)];
+                        return [4 /*yield*/, this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade, produto.getDesconto())];
                     case 3:
                         _a.sent();
                         _a.label = 4;
@@ -2120,7 +2159,7 @@ var Caixa = /** @class */ (function () {
     };
     Caixa.prototype.consultaProduto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, produtoData, errorMessage, error_21;
+            var url, options, response, produtoData, errorMessage, error_17;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2144,17 +2183,17 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao consultar produto: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_21 = _a.sent();
-                        console.error("Erro ao consultar produto: ".concat(error_21.message));
+                        error_17 = _a.sent();
+                        console.error("Erro ao consultar produto: ".concat(error_17.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
             });
         });
     };
-    Caixa.prototype.atualizaProduto = function (idProduto, valor, quantidade) {
+    Caixa.prototype.atualizaProduto = function (idProduto, valor, quantidade, desconto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_22;
+            var url, data, options, response, errorMessage, error_18;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2163,6 +2202,7 @@ var Caixa = /** @class */ (function () {
                         data = JSON.stringify({
                             valor: valor,
                             quantidade_estoque: quantidade,
+                            desconto: desconto,
                             nome: "oi"
                         });
                         options = {
@@ -2182,8 +2222,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao atualizar produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_22 = _a.sent();
-                        console.error("Erro ao atualizar produto: ".concat(error_22.message));
+                        error_18 = _a.sent();
+                        console.error("Erro ao atualizar produto: ".concat(error_18.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -2220,7 +2260,7 @@ var ConstrutorVenda = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.consultaProduto(codigo)];
                     case 1:
                         produto = _a.sent();
-                        p = new Produto(codigo, quantidade, produto.valor);
+                        p = new Produto(codigo, quantidade, produto.valor, produto.desconto);
                         if (this.vendaAtual)
                             this.vendaAtual.adicionaProduto(p);
                         return [2 /*return*/];
@@ -2261,41 +2301,32 @@ var ConstrutorVenda = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         valorTotal = 0;
-                        _i = 0, produtos_1 = produtos;
-                        _a.label = 1;
-                    case 1:
-                        if (!(_i < produtos_1.length)) return [3 /*break*/, 4];
-                        produto = produtos_1[_i];
-                        return [4 /*yield*/, this.consultaDesconto(produto.getCodigo())];
-                    case 2:
-                        descontoProduto = _a.sent();
-                        if (descontoProduto > 0) {
-                            valorTotal += (produto.getValor() * (1 - descontoProduto / 100)) * produto.getQuantidade();
+                        for (_i = 0, produtos_1 = produtos; _i < produtos_1.length; _i++) {
+                            produto = produtos_1[_i];
+                            descontoProduto = produto.getDesconto();
+                            if (descontoProduto > 0) {
+                                valorTotal += (produto.getValor() * (1 - descontoProduto / 100)) * produto.getQuantidade();
+                            }
+                            else {
+                                valorTotal += produto.getValor() * produto.getQuantidade();
+                            }
                         }
-                        else {
-                            valorTotal += produto.getValor() * produto.getQuantidade();
-                        }
-                        _a.label = 3;
-                    case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4:
-                        if (!idCliente) return [3 /*break*/, 6];
+                        if (!idCliente) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.consultaFidelidade(idCliente)];
-                    case 5:
+                    case 1:
                         descontoFidelidade = _a.sent();
                         if (descontoFidelidade > 0) {
                             valorTotal *= (1 - descontoFidelidade / 100);
                         }
-                        _a.label = 6;
-                    case 6: return [2 /*return*/, valorTotal];
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, valorTotal];
                 }
             });
         });
     };
     ConstrutorVenda.prototype.consultaFidelidade = function (idCliente) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, fidelidadeData, errorMessage, error_23;
+            var url, options, response, fidelidadeData, errorMessage, error_19;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2319,42 +2350,8 @@ var ConstrutorVenda = /** @class */ (function () {
                         throw new Error("Erro ao consultar fidelidade: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_23 = _a.sent();
-                        console.error("Erro ao consultar fidelidade: ".concat(error_23.message));
-                        return [2 /*return*/, 0];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ConstrutorVenda.prototype.consultaDesconto = function (idProduto) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, descontoData, errorMessage, error_24;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/descontos/".concat(idProduto);
-                        options = {
-                            method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
-                        };
-                        return [4 /*yield*/, fetch(url, options)];
-                    case 1:
-                        response = _a.sent();
-                        if (!response.ok) return [3 /*break*/, 3];
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        descontoData = _a.sent();
-                        return [2 /*return*/, descontoData.porcentagem];
-                    case 3: return [4 /*yield*/, response.text()];
-                    case 4:
-                        errorMessage = _a.sent();
-                        throw new Error("Erro ao consultar descontos: ".concat(errorMessage));
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_24 = _a.sent();
-                        console.error("Erro ao consultar descontos: ".concat(error_24.message));
+                        error_19 = _a.sent();
+                        console.error("Erro ao consultar fidelidade: ".concat(error_19.message));
                         return [2 /*return*/, 0];
                     case 7: return [2 /*return*/];
                 }
@@ -2363,7 +2360,7 @@ var ConstrutorVenda = /** @class */ (function () {
     };
     ConstrutorVenda.prototype.consultaProduto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, produtoData, errorMessage, error_25;
+            var url, options, response, produtoData, errorMessage, error_20;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2387,8 +2384,8 @@ var ConstrutorVenda = /** @class */ (function () {
                         throw new Error("Erro ao consultar produto: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_25 = _a.sent();
-                        console.error("Erro ao consultar produto: ".concat(error_25.message));
+                        error_20 = _a.sent();
+                        console.error("Erro ao consultar produto: ".concat(error_20.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
