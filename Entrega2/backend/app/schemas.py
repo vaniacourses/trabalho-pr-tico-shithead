@@ -38,7 +38,7 @@ class VendaBase(BaseModel):
 
 
 class VendaCreate(VendaBase):
-    produtos : list[Produto] = []
+    produtos : list[int] = []
 
 
 class Venda(VendaBase):
@@ -91,7 +91,13 @@ class DescontoCreate(DescontoBase):
     pass
 
 
+
 class Desconto(DescontoBase):
+    pass
 
     class Config:
         orm_mode = True
+
+
+class Fidelidade:
+    porcentagem: float

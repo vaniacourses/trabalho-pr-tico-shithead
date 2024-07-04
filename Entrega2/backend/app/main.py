@@ -192,16 +192,16 @@ def read_descontos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
     descontos = crud.get_descontos(db, skip=skip, limit=limit)
     return descontos
 
-@app.get("/descontos/{id_desconto}", response_model=schemas.Desconto)
-def read_desconto(id_desconto: int, db: Session = Depends(get_db)):
-    db_desconto = crud.get_desconto_by_id(db, id_desconto=id_desconto)
+@app.get("/descontos/{id_produto}", response_model=schemas.Desconto)
+def read_desconto(id_produto: int, db: Session = Depends(get_db)):
+    db_desconto = crud.get_desconto_by_id(db, id_produto=id_produto)
     if db_desconto is None:
         raise HTTPException(status_code=404, detail="Desconto não encontrado")
     return db_desconto
 
-@app.put("/descontos/{id_desconto}", response_model=schemas.Desconto)
-def update_desconto(id_desconto: int, desconto_update: schemas.Desconto, db: Session = Depends(get_db)):
-    db_desconto = crud.update_desconto(db=db, id_desconto=id_desconto, desconto_update=desconto_update)
+@app.put("/descontos/{id_produto}", response_model=schemas.DescontoCreate)
+def update_desconto(id_produto: int, desconto_update: schemas.DescontoCreate, db: Session = Depends(get_db)):
+    db_desconto = crud.update_desconto(db=db, id_desconto=id_produto, desconto_update=desconto_update)
     if db_desconto is None:
         raise HTTPException(status_code=404, detail="Desconto não encontrado")
     return db

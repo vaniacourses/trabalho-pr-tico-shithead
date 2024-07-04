@@ -141,6 +141,7 @@ def update_venda(db: Session, venda_id: int, venda_update: schemas.Venda):
     return db_venda
 
 def delete_venda(db: Session, venda_id: int):
+    db.query(models.ProdutoVenda).filter(models.ProdutoVenda.id_venda == venda_id).delete()
     db.query(models.Venda).filter(models.Venda.id_venda == venda_id).delete()
     db.commit()
 
@@ -173,8 +174,8 @@ def delete_venda(db: Session, venda_id: int):
 
 #DESCONTO
 
-def get_desconto_by_id(db: Session, id_desconto: int):
-    return db.query(models.Desconto).filter(models.Desconto.id_desconto == id_desconto).first()
+def get_desconto_by_id(db: Session, id_produto: int):
+    return db.query(models.Desconto).filter(models.Desconto.id_produto == id_produto).first()
 
 
 def get_descontos(db: Session, skip: int = 0, limit: int = 100):
@@ -195,12 +196,12 @@ def create_desconto(db: Session, desconto: schemas.DescontoCreate):
 
 
 def update_desconto(db: Session, id_desconto: int, desconto_update: schemas.DescontoCreate):
-    db_desconto = get_desconto_by_id(db, id_desconto)
+    db_desconto = db.query(models.Desconto).filter(models.Desconto.id_produto==id_desconto).first()
     if not db_desconto:
         raise Exception(f"Desconto with ID {id_desconto} not found")
 
     db_desconto.porcentagem = desconto_update.porcentagem
-    db_desconto.id_produto = desconto_update.id_produto
+
     db.commit()
     db.refresh(db_desconto)
     return db_desconto
