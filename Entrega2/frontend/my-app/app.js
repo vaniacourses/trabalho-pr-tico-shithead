@@ -2276,7 +2276,7 @@ var ConstrutorVenda = /** @class */ (function () {
                         return [4 /*yield*/, response.json()];
                     case 2:
                         fidelidadeData = _a.sent();
-                        return [2 /*return*/, fidelidadeData.porcentagem];
+                        return [2 /*return*/, fidelidadeData];
                     case 3: return [4 /*yield*/, response.text()];
                     case 4:
                         errorMessage = _a.sent();

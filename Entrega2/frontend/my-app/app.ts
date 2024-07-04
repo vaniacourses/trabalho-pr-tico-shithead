@@ -2093,7 +2093,7 @@ class ConstrutorVenda {
         
             if (response.ok) {
                 const fidelidadeData = await response.json();
-                return fidelidadeData.porcentagem;
+                return fidelidadeData;
             } else {
                 const errorMessage = await response.text();
                 throw new Error(`Erro ao consultar fidelidade: ${errorMessage}`);
