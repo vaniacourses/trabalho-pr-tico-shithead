@@ -121,10 +121,6 @@ var App = /** @class */ (function () {
                 gerenciarDescontosButton.textContent = 'Gerenciar Descontos';
                 gerenciarDescontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
                 divBotoes.appendChild(gerenciarDescontosButton);
-                var botaoCadastro = document.createElement('button');
-                botaoCadastro.textContent = 'Cadastro';
-                botaoCadastro.addEventListener('click', this.create_employee_registration_form.bind(this));
-                divBotoes.appendChild(botaoCadastro);
             }
             /*
             const reembolsarButton = document.createElement('button');
@@ -626,7 +622,7 @@ var App = /** @class */ (function () {
         title.textContent = 'Remover Desconto';
         removalForm.appendChild(title);
         var idProdutoLabel = document.createElement('label');
-        idProdutoLabel.textContent = 'ID Produto:';
+        idProdutoLabel.textContent = 'ID Desconto:';
         removalForm.appendChild(idProdutoLabel);
         var idProdutoInput = document.createElement('input');
         idProdutoInput.type = 'number';
@@ -654,7 +650,7 @@ var App = /** @class */ (function () {
         title.textContent = 'Alterar Desconto';
         alteracaoForm.appendChild(title);
         var idProdutoLabel = document.createElement('label');
-        idProdutoLabel.textContent = 'ID Produto:';
+        idProdutoLabel.textContent = 'ID Desconto:';
         alteracaoForm.appendChild(idProdutoLabel);
         var idProdutoInput = document.createElement('input');
         idProdutoInput.type = 'number';
@@ -696,21 +692,21 @@ var App = /** @class */ (function () {
         sellRegisterScreen.appendChild(cpfLabel);
         var cpfInput = document.createElement('input');
         cpfInput.type = 'number';
-        cpfInput.id = 'cpfCliente:';
+        cpfInput.id = 'cpfCliente';
         sellRegisterScreen.appendChild(cpfInput);
         var idProdutoLabel = document.createElement('label');
         idProdutoLabel.textContent = 'ID do produto:';
         sellRegisterScreen.appendChild(idProdutoLabel);
         var productIdInput = document.createElement('input');
         productIdInput.type = 'number';
-        productIdInput.id = 'idProduto:';
+        productIdInput.id = 'idProduto';
         sellRegisterScreen.appendChild(productIdInput);
         var qtdProdutoLabel = document.createElement('label');
         qtdProdutoLabel.textContent = 'Quantidade do produto:';
         sellRegisterScreen.appendChild(qtdProdutoLabel);
         var productQtdInput = document.createElement('input');
         productQtdInput.type = 'number';
-        productQtdInput.id = 'qtdProduto:';
+        productQtdInput.id = 'qtdProduto';
         sellRegisterScreen.appendChild(productQtdInput);
         var addButton = document.createElement('button');
         addButton.textContent = 'Adicionar';
@@ -786,7 +782,7 @@ var App = /** @class */ (function () {
     //As funções a seguir devem apenas chamar os métodos das classes onde os códigos foram implementados
     //VENDA
     App.prototype.cadastrandoVenda = function (cpfCliente, cpfFuncionario) {
-        console.log("Cadastrano compra de ".concat(cpfCliente, " gerenciado por ").concat(cpfFuncionario));
+        console.log("Cadastrando compra de ".concat(cpfCliente, " gerenciado por ").concat(cpfFuncionario));
         if (cpfFuncionario)
             this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario);
     };
@@ -1704,14 +1700,14 @@ var Gerente = /** @class */ (function (_super) {
             });
         });
     };
-    Gerente.prototype.removeDesconto = function (idProduto) {
+    Gerente.prototype.removeDesconto = function (idDesconto) {
         return __awaiter(this, void 0, void 0, function () {
             var url, options, response, errorMessage, error_14;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/descontos/".concat(idProduto);
+                        url = "http://localhost:8000/descontos/".concat(idDesconto);
                         options = {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' },
@@ -1720,7 +1716,7 @@ var Gerente = /** @class */ (function (_super) {
                     case 1:
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 2];
-                        console.log("Desconto para o produto com ID ".concat(idProduto, " removido com sucesso!"));
+                        console.log("Desconto para o produto com ID ".concat(idDesconto, " removido com sucesso!"));
                         return [2 /*return*/, true];
                     case 2: return [4 /*yield*/, response.text()];
                     case 3:
@@ -1736,14 +1732,14 @@ var Gerente = /** @class */ (function (_super) {
             });
         });
     };
-    Gerente.prototype.atualizaDesconto = function (idProduto, porcentagem) {
+    Gerente.prototype.atualizaDesconto = function (idDesconto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
             var url, data, options, response, errorMessage, error_15;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/descontos/".concat(idProduto);
+                        url = "http://localhost:8000/descontos/".concat(idDesconto);
                         data = JSON.stringify({
                             porcentagem: porcentagem,
                         });
@@ -1756,7 +1752,7 @@ var Gerente = /** @class */ (function (_super) {
                     case 1:
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 2];
-                        console.log("Desconto para o produto com ID ".concat(idProduto, " atualizado com sucesso para ").concat(porcentagem, "%!"));
+                        console.log("Desconto com ID ".concat(idDesconto, " atualizado com sucesso para ").concat(porcentagem, "%!"));
                         return [2 /*return*/, true];
                     case 2: return [4 /*yield*/, response.text()];
                     case 3:

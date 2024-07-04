@@ -83,11 +83,6 @@ class App {
                 gerenciarDescontosButton.textContent = 'Gerenciar Descontos';
                 gerenciarDescontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
                 divBotoes.appendChild(gerenciarDescontosButton);
-
-                const botaoCadastro = document.createElement('button');
-                botaoCadastro.textContent = 'Cadastro';
-                botaoCadastro.addEventListener('click', this.create_employee_registration_form.bind(this));
-                divBotoes.appendChild(botaoCadastro);
             }
 
             /*
@@ -726,7 +721,7 @@ class App {
         removalForm.appendChild(title);
     
         const idProdutoLabel = document.createElement('label');
-        idProdutoLabel.textContent = 'ID Produto:';
+        idProdutoLabel.textContent = 'ID Desconto:';
         removalForm.appendChild(idProdutoLabel);
     
         const idProdutoInput = document.createElement('input');
@@ -761,7 +756,7 @@ class App {
         alteracaoForm.appendChild(title);
     
         const idProdutoLabel = document.createElement('label');
-        idProdutoLabel.textContent = 'ID Produto:';
+        idProdutoLabel.textContent = 'ID Desconto:';
         alteracaoForm.appendChild(idProdutoLabel);
     
         const idProdutoInput = document.createElement('input');
@@ -815,7 +810,7 @@ class App {
 
         const cpfInput = document.createElement('input');
         cpfInput.type = 'number';
-        cpfInput.id = 'cpfCliente:';
+        cpfInput.id = 'cpfCliente';
         sellRegisterScreen.appendChild(cpfInput)
 
         const idProdutoLabel = document.createElement('label');
@@ -824,8 +819,8 @@ class App {
 
         const productIdInput = document.createElement('input');
         productIdInput.type = 'number';
-        productIdInput.id = 'idProduto:';
-        sellRegisterScreen.appendChild(productIdInput)
+        productIdInput.id = 'idProduto';
+        sellRegisterScreen.appendChild(productIdInput);
 
         const qtdProdutoLabel = document.createElement('label');
         qtdProdutoLabel.textContent = 'Quantidade do produto:';
@@ -833,7 +828,7 @@ class App {
 
         const productQtdInput = document.createElement('input');
         productQtdInput.type = 'number';
-        productQtdInput.id = 'qtdProduto:';
+        productQtdInput.id = 'qtdProduto';
         sellRegisterScreen.appendChild(productQtdInput)
 
         const addButton = document.createElement('button');
@@ -928,7 +923,7 @@ class App {
 
     //VENDA
     cadastrandoVenda(cpfCliente: number, cpfFuncionario: number | null) {
-        console.log(`Cadastrano compra de ${cpfCliente} gerenciado por ${cpfFuncionario}`)
+        console.log(`Cadastrando compra de ${cpfCliente} gerenciado por ${cpfFuncionario}`)
 
         if(cpfFuncionario)
         this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario)
@@ -1596,9 +1591,9 @@ class Gerente extends Funcionario {
         }
     }
 
-    async removeDesconto(idProduto: number): Promise<boolean> {
+    async removeDesconto(idDesconto: number): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/descontos/${idProduto}`;
+            const url = `http://localhost:8000/descontos/${idDesconto}`;
             const options = {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
@@ -1607,7 +1602,7 @@ class Gerente extends Funcionario {
             const response = await fetch(url, options);
         
             if (response.ok) {
-                console.log(`Desconto para o produto com ID ${idProduto} removido com sucesso!`);
+                console.log(`Desconto para o produto com ID ${idDesconto} removido com sucesso!`);
                 return true;
             } else {
                 const errorMessage = await response.text();
@@ -1620,11 +1615,11 @@ class Gerente extends Funcionario {
     }
 
     async atualizaDesconto(
-        idProduto: number,
+        idDesconto: number,
         porcentagem: number
       ): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/descontos/${idProduto}`;
+            const url = `http://localhost:8000/descontos/${idDesconto}`;
             const data = JSON.stringify({
                 porcentagem: porcentagem,
             });
@@ -1638,7 +1633,7 @@ class Gerente extends Funcionario {
         
             if (response.ok) {
                 console.log(
-                `Desconto para o produto com ID ${idProduto} atualizado com sucesso para ${porcentagem}%!`
+                `Desconto com ID ${idDesconto} atualizado com sucesso para ${porcentagem}%!`
                 );
                 return true;
             } else {
