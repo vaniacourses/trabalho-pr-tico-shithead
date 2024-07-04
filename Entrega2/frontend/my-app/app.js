@@ -651,7 +651,7 @@ var App = /** @class */ (function () {
         title.textContent = 'Alterar Desconto';
         alteracaoForm.appendChild(title);
         var idProdutoLabel = document.createElement('label');
-        idProdutoLabel.textContent = 'ID Desconto:';
+        idProdutoLabel.textContent = 'ID Produto:';
         alteracaoForm.appendChild(idProdutoLabel);
         var idProdutoInput = document.createElement('input');
         idProdutoInput.type = 'number';
@@ -1781,7 +1781,7 @@ var Gerente = /** @class */ (function (_super) {
                         url = "http://localhost:8000/descontos/".concat(idDesconto);
                         data = JSON.stringify({
                             porcentagem: porcentagem,
-                            idProduto: idProduto,
+                            id_produto: idProduto,
                         });
                         options = {
                             method: 'PUT',

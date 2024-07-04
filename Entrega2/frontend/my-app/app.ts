@@ -758,7 +758,7 @@ class App {
         alteracaoForm.appendChild(title);
     
         const idProdutoLabel = document.createElement('label');
-        idProdutoLabel.textContent = 'ID Desconto:';
+        idProdutoLabel.textContent = 'ID Produto:';
         alteracaoForm.appendChild(idProdutoLabel);
     
         const idProdutoInput = document.createElement('input');
@@ -1651,7 +1651,7 @@ class Gerente extends Funcionario {
             const url = `http://localhost:8000/descontos/${idDesconto}`;
             const data = JSON.stringify({
                 porcentagem: porcentagem,
-                idProduto: idProduto,
+                id_produto: idProduto,
             });
             const options = {
                 method: 'PUT',
