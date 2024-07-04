@@ -1155,7 +1155,7 @@ class App {
 
         const funcionario = this.caixa.getObjetoFuncionarioAtivo();
         if(funcionario){
-            const idDesconto = Number(await funcionario.consultaIdDesconto(idProduto)); //Pega o id do desconto usando o id de um produto
+            const idDesconto = await funcionario.consultaIdDesconto(idProduto); //Pega o id do desconto usando o id de um produto
             sucess = await (funcionario as Gerente).atualizaDesconto(idDesconto, idProduto, porcentagem);
         }
 
@@ -1648,8 +1648,9 @@ class Gerente extends Funcionario {
         porcentagem: number
       ): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/descontos/${idDesconto}`;
+            const url = `http://localhost:8000/descontos/`;
             const data = JSON.stringify({
+                id_desconto: idDesconto,
                 porcentagem: porcentagem,
                 id_produto: idProduto,
             });
