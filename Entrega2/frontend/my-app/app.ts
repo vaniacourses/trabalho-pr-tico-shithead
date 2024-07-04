@@ -1822,7 +1822,7 @@ class Caixa implements ConstrutorVendaObserver {
                 valor_venda: valorVenda,
                 id_cliente: idCliente,
                 id_funcionario: idFuncionario,
-                data: data.toISOString(), // Converte Date para ISO pra ter compatibilidade com JSON
+                data: data, // Converte Date para ISO pra ter compatibilidade com JSON
                 produtos: listaProdutos
             };
             const options = {
