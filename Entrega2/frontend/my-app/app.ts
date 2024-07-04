@@ -1649,7 +1649,7 @@ class Gerente extends Funcionario {
         porcentagem: number
       ): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/descontos/`;
+            const url = `http://localhost:8000/descontos/${idDesconto}`;
             const data = JSON.stringify({
                 id_desconto: idDesconto,
                 porcentagem: porcentagem,
