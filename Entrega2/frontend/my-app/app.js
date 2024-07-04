@@ -1134,21 +1134,22 @@ var App = /** @class */ (function () {
     };
     App.prototype.atualizandoDesconto = function (idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario, idDesconto;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var sucess, funcionario, idDesconto, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         console.log("ID Produto: ".concat(idProduto, ", Porcentagem: ").concat(porcentagem));
                         sucess = false;
                         funcionario = this.caixa.getObjetoFuncionarioAtivo();
                         if (!funcionario) return [3 /*break*/, 3];
+                        _a = Number;
                         return [4 /*yield*/, funcionario.consultaIdDesconto(idProduto)];
                     case 1:
-                        idDesconto = _a.sent();
+                        idDesconto = _a.apply(void 0, [_b.sent()]);
                         return [4 /*yield*/, funcionario.atualizaDesconto(idDesconto, idProduto, porcentagem)];
                     case 2:
-                        sucess = _a.sent();
-                        _a.label = 3;
+                        sucess = _b.sent();
+                        _b.label = 3;
                     case 3:
                         if (sucess) {
                             alert("Desconto atualizado");
