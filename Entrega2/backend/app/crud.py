@@ -25,6 +25,28 @@ def create_funcionario(db: Session, funcionario: schemas.FuncionarioCreate):
     db.refresh(db_funcionario)
     return db_funcionario
 
+def update_funcionario(cpf:int, db:Session,funcionario:schemas.Funcionario):
+    db_funcionario = get_funcionario_by_cpf(db,cpf)
+    if not db_funcionario:
+        raise Exception(f"Funcionário with CPF {cpf} not found")
+    
+    db_funcionario.login = funcionario.login
+    db_funcionario.senha = funcionario.senha
+    db_funcionario.cpf = funcionario.cpf
+    db_funcionario.is_gerente = funcionario.is_gerente
+
+    db.commit()
+    db.refresh(db_funcionario)
+    return db_funcionario
+
+def delete_funcionario(cpf:int, db:Session):
+    db_funcionario = get_funcionario_by_cpf(db,cpf)
+    if not db_funcionario:
+        raise Exception(f"Funcionário with CPF {cpf} not found")
+    
+    db.delete(db_funcionario)
+    db.commit()
+
 
 #CLIENTE
 
@@ -146,74 +168,27 @@ def delete_venda(db: Session, venda_id: int):
     db.commit()
 
 
-#PRODUTO-VENDA
-
-#def create_produto_venda(db: Session, produto_venda: schemas.ProdutoVenda):
-#    produto = db.query(models.Produto).filter(models.Produto.id_produto == produto_venda.id_produto).first()
-#    venda = db.query(models.Venda).filter(models.Venda.id_venda == produto_venda.id_venda).first()
-#
-#    db_produto_venda = models.ProdutoVenda(
-#        produto=produto,
-#        venda=venda
-#    )
-#
-#    db.add(db_produto_venda)
-#    db.commit()
-#    return db_produto_venda
-#
-#def get_produto_vendas(db: Session, skip: int = 0, limit: int = 100):
-#    return db.query(ProdutoVenda).offset(skip).limit(limit).all()
-#
-#def get_produto_venda_by_ids(db: Session, id_produto: int, id_venda: int):
-#    return db.query(ProdutoVenda).filter(ProdutoVenda.id_produto == id_produto, ProdutoVenda.id_venda == id_venda).first()
-#
-#def delete_produto_venda(db: Session, id_produto: int, id_venda: int):
-#    db.query(ProdutoVenda).filter(ProdutoVenda.id_produto == id_produto, ProdutoVenda.id_venda == id_venda).delete()
-#    db.commit()
 
 
 #DESCONTO
 
 def get_desconto_by_id(db: Session, id_produto: int):
-    return db.query(models.Desconto).filter(models.Desconto.id_produto == id_produto).first()
+    db_produto = db.query(models.Produto).filter(models.Produto.id_produto == id_produto).first()
+    return db_produto.desconto
 
 
-def get_descontos(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Desconto).offset(skip).limit(limit).all()
 
+def update_desconto(db: Session, id_produto: int, produto_update: schemas.Produto):
+    db_produto = get_produto_by_id(db, id_produto)
+    if not db_produto:
+        raise Exception(f"Produto com id {id_produto} não encontrado")
 
-def create_desconto(db: Session, desconto: schemas.DescontoCreate):
-    db_produto = db.query(models.Produto).filter(models.Produto.id_produto == desconto.id_produto).first()
-
-    db_desconto = models.Desconto(
-        porcentagem=desconto.porcentagem,
-        id_produto=db_produto.id_produto,
-    )
-    db.add(db_desconto)
-    db.commit()
-    db.refresh(db_desconto)
-    return db_desconto
-
-
-def update_desconto(db: Session, id_desconto: int, desconto_update: schemas.DescontoCreate):
-    db_desconto = db.query(models.Desconto).filter(models.Desconto.id_produto==id_desconto).first()
-    if not db_desconto:
-        raise Exception(f"Desconto with ID {id_desconto} not found")
-
-    db_desconto.porcentagem = desconto_update.porcentagem
+    db_produto.desconto = produto_update.desconto
 
     db.commit()
-    db.refresh(db_desconto)
-    return db_desconto
+    return db_produto
 
 
-def delete_desconto(db: Session, id_desconto: int) -> None:
-    db_desconto = get_desconto_by_id(db, id_desconto)
-    if not db_desconto:
-        raise Exception(f"Desconto with ID {id_desconto} not found")
-
-    db.delete(db_desconto)
-    db.commit()
 #FIDELIDADE
 
 def get_fidelidade(db: Session, id_cliente: int) -> int:

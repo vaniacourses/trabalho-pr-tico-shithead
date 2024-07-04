@@ -7,6 +7,7 @@ from datetime import date
 class ProdutoBase(BaseModel):
     valor: float
     quantidade_estoque: int
+    nome : str
 
 
 
@@ -16,10 +17,8 @@ class ProdutoCreate(ProdutoBase):
     nome:str
 
 
-class Produto(ProdutoBase):
-    valor: float
-    quantidade_estoque: int
-    nome : str
+class Produto(BaseModel):
+    desconto: int
 
 
     class Config:
@@ -68,36 +67,17 @@ class FuncionarioBase(BaseModel):
     cpf: int
     login: str
     is_gerente: bool
-
+    senha: str
 
 class FuncionarioCreate(FuncionarioBase):
-    senha: str 
+    pass; 
 
 
 class Funcionario(FuncionarioBase):
-    vendas: list[Venda] = []
-    
-    class Config:
-        orm_mode = True
-
-
-#-------------------------------------------
-
-class DescontoBase(BaseModel):
-    porcentagem: float
-    id_produto: int
-
-class DescontoCreate(DescontoBase):
-    pass
-
-
-
-class Desconto(DescontoBase):
     pass
 
     class Config:
         orm_mode = True
 
 
-class Fidelidade:
-    porcentagem: float
+
