@@ -218,6 +218,7 @@ var App = /** @class */ (function () {
         cadastrarButton.addEventListener('click', function () {
             var cpfCliente = document.getElementById('cpfCliente').valueAsNumber;
             _this.facade.cadastrandoCliente(cpfCliente);
+            _this.create_client_management_screen();
         });
         registrationForm.appendChild(cadastrarButton);
         var voltarButton = document.createElement('button');
@@ -246,6 +247,7 @@ var App = /** @class */ (function () {
         removerButton.addEventListener('click', function () {
             var cpfCliente = document.getElementById('cpfCliente').valueAsNumber;
             _this.facade.removendoCliente(cpfCliente);
+            _this.create_client_management_screen();
         });
         removalForm.appendChild(removerButton);
         var voltarButton = document.createElement('button');
@@ -325,6 +327,7 @@ var App = /** @class */ (function () {
             var valor = document.getElementById('valor').valueAsNumber;
             var quantidade = document.getElementById('quantidade').valueAsNumber;
             _this.facade.cadastrandoProduto(nome, valor, quantidade);
+            _this.create_product_management_screen();
         });
         registrationForm.appendChild(cadastrarButton);
         var voltarButton = document.createElement('button');
@@ -353,6 +356,7 @@ var App = /** @class */ (function () {
         removerButton.addEventListener('click', function () {
             var id = document.getElementById('id').valueAsNumber;
             _this.facade.removendoProduto(id);
+            _this.create_product_management_screen();
         });
         removalForm.appendChild(removerButton);
         var voltarButton = document.createElement('button');
@@ -398,6 +402,7 @@ var App = /** @class */ (function () {
             var valor = document.getElementById('valor').valueAsNumber;
             var quantidade = document.getElementById('quantidade').valueAsNumber;
             _this.facade.atualizandoProduto(id, valor, quantidade);
+            _this.create_product_management_screen();
         });
         updateForm.appendChild(atualizarButton);
         var voltarButton = document.createElement('button');
@@ -534,6 +539,7 @@ var App = /** @class */ (function () {
             var password = document.getElementById('password').value;
             var isAdmin = document.getElementById('adm').checked;
             _this.facade.cadastrandoFuncionario(cpf, username, password, isAdmin);
+            _this.create_employee_management_screen();
         });
         registrationForm.appendChild(registerButton);
         var voltarButton = document.createElement('button');
@@ -562,6 +568,7 @@ var App = /** @class */ (function () {
         removerButton.addEventListener('click', function () {
             var cpf = document.getElementById('cpf').valueAsNumber;
             _this.facade.removendoFuncionario(cpf);
+            _this.create_employee_management_screen();
         });
         removalForm.appendChild(removerButton);
         var voltarButton = document.createElement('button');
@@ -606,6 +613,7 @@ var App = /** @class */ (function () {
             var login = document.getElementById('login').value;
             var senha = document.getElementById('senha').value;
             _this.facade.atualizandoFuncionario(cpf, login, senha);
+            _this.create_employee_management_screen();
         });
         updateForm.appendChild(atualizarButton);
         var voltarButton = document.createElement('button');
@@ -719,6 +727,7 @@ var App = /** @class */ (function () {
             var idProduto = document.getElementById('idProduto').valueAsNumber;
             var porcentagem = document.getElementById('porcentagem').valueAsNumber;
             _this.facade.cadastrandoDesconto(idProduto, porcentagem);
+            _this.create_discount_management_screen();
         });
         cadastroForm.appendChild(cadastrarButton);
         var voltarButton = document.createElement('button');
@@ -747,6 +756,7 @@ var App = /** @class */ (function () {
         removerButton.addEventListener('click', function () {
             var idProduto = document.getElementById('idProduto').valueAsNumber;
             _this.facade.removendoDesconto(idProduto);
+            _this.create_discount_management_screen();
         });
         removalForm.appendChild(removerButton);
         var voltarButton = document.createElement('button');
@@ -784,6 +794,7 @@ var App = /** @class */ (function () {
             var idProduto = document.getElementById('idProduto').valueAsNumber;
             var porcentagem = document.getElementById('porcentagem').valueAsNumber;
             _this.facade.atualizandoDesconto(idProduto, porcentagem);
+            _this.create_discount_management_screen();
         });
         alteracaoForm.appendChild(alterarButton);
         var voltarButton = document.createElement('button');
@@ -858,6 +869,7 @@ var App = /** @class */ (function () {
             if (funcionario) {
                 var cpfFuncionario = funcionario;
                 _this.facade.cadastrandoVenda(cpfCliente, cpfFuncionario);
+                _this.create_start_screen();
             }
         });
         sellRegisterScreen.appendChild(submitButton);
@@ -883,6 +895,7 @@ var App = /** @class */ (function () {
         reembolsarButton.addEventListener('click', function () {
             var vendaNumero = document.getElementById('vendaNumero').valueAsNumber;
             _this.facade.reembolsando(vendaNumero);
+            _this.create_start_screen();
         });
         reembolsoForm.appendChild(reembolsarButton);
         var voltarButton = document.createElement('button');
@@ -1064,9 +1077,29 @@ var Facade = /** @class */ (function () {
     };
     //VENDA
     Facade.prototype.cadastrandoVenda = function (cpfCliente, cpfFuncionario) {
-        console.log("Cadastrando compra de ".concat(cpfCliente, " gerenciado por ").concat(cpfFuncionario));
-        if (cpfFuncionario)
-            this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario);
+        return __awaiter(this, void 0, void 0, function () {
+            var sucess;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log("Cadastrando compra de ".concat(cpfCliente, " gerenciado por ").concat(cpfFuncionario));
+                        sucess = false;
+                        if (!cpfFuncionario) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario)];
+                    case 1:
+                        sucess = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        if (sucess) {
+                            alert("Venda registrada");
+                        }
+                        else {
+                            alert("Falha ao registrar venda");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     Facade.prototype.reembolsando = function (vendaNumero) {
         return __awaiter(this, void 0, void 0, function () {
@@ -1102,7 +1135,6 @@ var Facade = /** @class */ (function () {
                         data = _a.sent();
                         if (data) {
                             alert("Relatório mensal criado");
-                            console.log("".concat(data));
                             return [2 /*return*/, data];
                         }
                         else {
@@ -1253,7 +1285,6 @@ var Facade = /** @class */ (function () {
                         data = _a.sent();
                         if (data) {
                             alert("Funcionários listados");
-                            console.log("".concat(data));
                             return [2 /*return*/, data];
                         }
                         else {
@@ -1483,7 +1514,14 @@ var Facade = /** @class */ (function () {
         this.constrVenda.removeProdutoLido(codigo);
     };
     Facade.prototype.encerraConstrucao = function (cpfCliente, cpfFuncionario) {
-        this.encerraConstrucao(cpfCliente, cpfFuncionario);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
     };
     return Facade;
 }());
@@ -2073,7 +2111,7 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = ' https://light-killdeer-grateful.ngrok-free.app/vendas/';
+                        url = 'https://light-killdeer-grateful.ngrok-free.app/vendas/';
                         vendaData = {
                             valor_venda: valorVenda,
                             id_cliente: idCliente,
@@ -2179,11 +2217,13 @@ var Caixa = /** @class */ (function () {
     //FUNÇÃO QUE CHAMA CADASTRAR VENDA E AUXILIARES
     Caixa.prototype.concluiVenda = function (venda) {
         return __awaiter(this, void 0, void 0, function () {
-            var valorTotal, idCliente, idFuncionario, data, listaCodigos, _i, _a, produto, codigoProduto, quantidade, i;
+            var estoqueAtualizado, valorTotal, idCliente, idFuncionario, data, listaCodigos, _i, _a, produto, codigoProduto, quantidade, i;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0:
-                        this.atualizarEstoque(venda.getProdutos());
+                    case 0: return [4 /*yield*/, this.atualizarEstoque(venda.getProdutos())];
+                    case 1:
+                        estoqueAtualizado = _b.sent();
+                        if (!estoqueAtualizado) return [3 /*break*/, 3];
                         valorTotal = venda.getValorVenda();
                         idCliente = venda.getCpfCliente();
                         idFuncionario = venda.getCpfFuncionario();
@@ -2200,7 +2240,8 @@ var Caixa = /** @class */ (function () {
                         }
                         this.listaVendas.push(venda);
                         return [4 /*yield*/, this.cadastraVenda(valorTotal, idCliente, idFuncionario, data, listaCodigos)];
-                    case 1: return [2 /*return*/, _b.sent()];
+                    case 2: return [2 /*return*/, _b.sent()];
+                    case 3: return [2 /*return*/, false];
                 }
             });
         });
@@ -2214,21 +2255,21 @@ var Caixa = /** @class */ (function () {
                         _i = 0, listaProdutos_1 = listaProdutos;
                         _a.label = 1;
                     case 1:
-                        if (!(_i < listaProdutos_1.length)) return [3 /*break*/, 5];
+                        if (!(_i < listaProdutos_1.length)) return [3 /*break*/, 6];
                         produto = listaProdutos_1[_i];
                         return [4 /*yield*/, this.consultaProduto(produto.getCodigo())];
                     case 2:
                         produtoConsultado = _a.sent();
                         quantidade = produtoConsultado.quantidade_estoque;
-                        quantidade -= produto.getQuantidade();
+                        quantidade = quantidade - produto.getQuantidade();
+                        if (!(quantidade >= 0)) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade, produto.getDesconto())];
-                    case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4:
+                    case 3: return [2 /*return*/, _a.sent()];
+                    case 4: return [2 /*return*/, false];
+                    case 5:
                         _i++;
                         return [3 /*break*/, 1];
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/, false];
                 }
             });
         });
@@ -2321,10 +2362,28 @@ var ConstrutorVenda = /** @class */ (function () {
         this.observadores.push(observador);
     };
     ConstrutorVenda.prototype.update = function (venda) {
-        for (var _i = 0, _a = this.observadores; _i < _a.length; _i++) {
-            var observador = _a[_i];
-            observador.concluiVenda(venda);
-        }
+        return __awaiter(this, void 0, void 0, function () {
+            var updated, _i, _a, observador;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        updated = false;
+                        _i = 0, _a = this.observadores;
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        observador = _a[_i];
+                        return [4 /*yield*/, observador.concluiVenda(venda)];
+                    case 2:
+                        updated = _b.sent();
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, updated];
+                }
+            });
+        });
     };
     //RESTO
     ConstrutorVenda.prototype.cancelaVenda = function () {
@@ -2356,22 +2415,28 @@ var ConstrutorVenda = /** @class */ (function () {
     };
     ConstrutorVenda.prototype.encerraConstrucao = function (cpfCliente, cpfFuncionario) {
         return __awaiter(this, void 0, void 0, function () {
-            var valor;
+            var valor, updated;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.vendaAtual) return [3 /*break*/, 2];
+                        if (!this.vendaAtual) return [3 /*break*/, 3];
                         this.vendaAtual.setCpfFuncionario(cpfFuncionario);
-                        if (cpfCliente)
+                        if (cpfCliente) {
                             this.vendaAtual.setCpfCliente(cpfCliente);
+                        }
+                        else {
+                            this.vendaAtual.setCpfCliente(1);
+                        }
                         return [4 /*yield*/, this.calculaValorTotal(this.vendaAtual.getProdutos(), cpfCliente)];
                     case 1:
                         valor = _a.sent();
                         this.vendaAtual.setValorVenda(valor);
-                        this.update(this.vendaAtual);
+                        return [4 /*yield*/, this.update(this.vendaAtual)];
+                    case 2:
+                        updated = _a.sent();
                         this.vendaAtual = null;
-                        _a.label = 2;
-                    case 2: return [2 /*return*/];
+                        return [2 /*return*/, updated];
+                    case 3: return [2 /*return*/, false];
                 }
             });
         });
@@ -2393,7 +2458,7 @@ var ConstrutorVenda = /** @class */ (function () {
                                 valorTotal += produto.getValor() * produto.getQuantidade();
                             }
                         }
-                        if (!idCliente) return [3 /*break*/, 2];
+                        if (!(idCliente && idCliente != 1)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.consultaFidelidade(idCliente)];
                     case 1:
                         descontoFidelidade = _a.sent();

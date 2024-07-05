@@ -195,6 +195,7 @@ class App implements InterfaceGraficaInterface {
         cadastrarButton.addEventListener('click', () => {
             const cpfCliente = (document.getElementById('cpfCliente') as HTMLInputElement).valueAsNumber;
             this.facade.cadastrandoCliente(cpfCliente);
+            this.create_client_management_screen();
         });
         registrationForm.appendChild(cadastrarButton);
     
@@ -230,6 +231,7 @@ class App implements InterfaceGraficaInterface {
         removerButton.addEventListener('click', () => {
             const cpfCliente = (document.getElementById('cpfCliente') as HTMLInputElement).valueAsNumber;
             this.facade.removendoCliente(cpfCliente);
+            this.create_client_management_screen();
         });
         removalForm.appendChild(removerButton);
     
@@ -331,6 +333,7 @@ class App implements InterfaceGraficaInterface {
             const valor = (document.getElementById('valor') as HTMLInputElement).valueAsNumber;
             const quantidade = (document.getElementById('quantidade') as HTMLInputElement).valueAsNumber;
             this.facade.cadastrandoProduto(nome, valor, quantidade);
+            this.create_product_management_screen();
         });
         registrationForm.appendChild(cadastrarButton);
     
@@ -366,6 +369,7 @@ class App implements InterfaceGraficaInterface {
             removerButton.addEventListener('click', () => {
             const id = (document.getElementById('id') as HTMLInputElement).valueAsNumber;
             this.facade.removendoProduto(id);
+            this.create_product_management_screen();
         });
         removalForm.appendChild(removerButton);
     
@@ -422,6 +426,7 @@ class App implements InterfaceGraficaInterface {
             const valor = (document.getElementById('valor') as HTMLInputElement).valueAsNumber;
             const quantidade = (document.getElementById('quantidade') as HTMLInputElement).valueAsNumber;
             this.facade.atualizandoProduto(id, valor, quantidade);
+            this.create_product_management_screen();
         });
         updateForm.appendChild(atualizarButton);
     
@@ -586,6 +591,7 @@ class App implements InterfaceGraficaInterface {
             const password = (document.getElementById('password') as HTMLInputElement).value;
             const isAdmin = (document.getElementById('adm') as HTMLInputElement).checked;
             this.facade.cadastrandoFuncionario(cpf, username, password, isAdmin);
+            this.create_employee_management_screen();
         });
         registrationForm.appendChild(registerButton);
 
@@ -619,8 +625,9 @@ class App implements InterfaceGraficaInterface {
         const removerButton = document.createElement('button');
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', () => {
-        const cpf = (document.getElementById('cpf') as HTMLInputElement).valueAsNumber;
-        this.facade.removendoFuncionario(cpf);
+            const cpf = (document.getElementById('cpf') as HTMLInputElement).valueAsNumber;
+            this.facade.removendoFuncionario(cpf);
+            this.create_employee_management_screen();
         });
         removalForm.appendChild(removerButton);
     
@@ -672,10 +679,11 @@ class App implements InterfaceGraficaInterface {
         const atualizarButton = document.createElement('button');
         atualizarButton.textContent = 'Atualizar';
         atualizarButton.addEventListener('click', () => {
-        const cpf = (document.getElementById('cpf') as HTMLInputElement).valueAsNumber;
-        const login = (document.getElementById('login') as HTMLInputElement).value;
-        const senha = (document.getElementById('senha') as HTMLInputElement).value;
-        this.facade.atualizandoFuncionario(cpf, login, senha);
+            const cpf = (document.getElementById('cpf') as HTMLInputElement).valueAsNumber;
+            const login = (document.getElementById('login') as HTMLInputElement).value;
+            const senha = (document.getElementById('senha') as HTMLInputElement).value;
+            this.facade.atualizandoFuncionario(cpf, login, senha);
+            this.create_employee_management_screen();
         });
         updateForm.appendChild(atualizarButton);
     
@@ -810,6 +818,7 @@ class App implements InterfaceGraficaInterface {
             const idProduto = (document.getElementById('idProduto') as HTMLInputElement).valueAsNumber;
             const porcentagem = (document.getElementById('porcentagem') as HTMLInputElement).valueAsNumber;
             this.facade.cadastrandoDesconto(idProduto, porcentagem);
+            this.create_discount_management_screen();
         });
         cadastroForm.appendChild(cadastrarButton);
     
@@ -843,8 +852,9 @@ class App implements InterfaceGraficaInterface {
         const removerButton = document.createElement('button');
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', () => {
-        const idProduto = (document.getElementById('idProduto') as HTMLInputElement).valueAsNumber;
-        this.facade.removendoDesconto(idProduto);
+            const idProduto = (document.getElementById('idProduto') as HTMLInputElement).valueAsNumber;
+            this.facade.removendoDesconto(idProduto);
+            this.create_discount_management_screen();
         });
         removalForm.appendChild(removerButton);
     
@@ -891,6 +901,7 @@ class App implements InterfaceGraficaInterface {
             const idProduto = (document.getElementById('idProduto') as HTMLInputElement).valueAsNumber;
             const porcentagem = (document.getElementById('porcentagem') as HTMLInputElement).valueAsNumber;
             this.facade.atualizandoDesconto(idProduto, porcentagem);
+            this.create_discount_management_screen();
         });
         alteracaoForm.appendChild(alterarButton);
     
@@ -982,6 +993,7 @@ class App implements InterfaceGraficaInterface {
             if(funcionario){
                 const cpfFuncionario = funcionario;
                 this.facade.cadastrandoVenda(cpfCliente, cpfFuncionario);
+                this.create_start_screen();
             }
         });
         sellRegisterScreen.appendChild(submitButton)
@@ -1013,6 +1025,7 @@ class App implements InterfaceGraficaInterface {
         reembolsarButton.addEventListener('click', () => {
             const vendaNumero = (document.getElementById('vendaNumero') as HTMLInputElement).valueAsNumber;
             this.facade.reembolsando(vendaNumero);
+            this.create_start_screen();
         });
         reembolsoForm.appendChild(reembolsarButton);
 
@@ -1208,7 +1221,7 @@ interface FacadeInterface {
     adicionarProdutoLido(codigo: number, quantidade: number): void;
     removeProdutoLido(codigo: string | null): void;
 
-    encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): void;
+    encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): Promise<boolean>;
 }
 
 interface FuncionarioInterface {
@@ -1272,7 +1285,7 @@ interface CaixaInterface extends ConstrutorVendaObserver {
     relatorioVendasMensais(mes: number, ano: number): Promise<any>;
 
     //AUXILIAR VENDA
-    atualizarEstoque(listaProdutos: ProdutoInterface[]): Promise<void>;
+    atualizarEstoque(listaProdutos: ProdutoInterface[]): Promise<boolean>;
 
     //PRODUTO
     consultaProduto(idProduto: number): Promise<any>;
@@ -1286,7 +1299,7 @@ interface ConstrutorVendaInterface {
     adicionarProdutoLido(codigo: number, quantidade: number): void;
     removeProdutoLido(codigo: string | null): void;
 
-    encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): void;
+    encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): Promise<boolean>;
     calculaValorTotal(produtos: ProdutoInterface[], idCliente: number | null): void;
 
     //CONSULTAS AO BANCO DE DADOS
@@ -1378,11 +1391,21 @@ class Facade implements FacadeInterface {
     }
 
     //VENDA
-    cadastrandoVenda(cpfCliente: number, cpfFuncionario: number | null) {
+    async cadastrandoVenda(cpfCliente: number, cpfFuncionario: number | null) {
         console.log(`Cadastrando compra de ${cpfCliente} gerenciado por ${cpfFuncionario}`)
 
-        if(cpfFuncionario)
-        this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario)
+        let sucess = false;
+
+        if(cpfFuncionario) {
+            sucess = await this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario)
+        }
+
+        if(sucess) {
+            alert("Venda registrada");
+        } else {
+            alert("Falha ao registrar venda");
+        }
+        
     }
 
     async reembolsando(vendaNumero: number) {
@@ -1407,7 +1430,6 @@ class Facade implements FacadeInterface {
 
         if(data) {
             alert("Relatório mensal criado");
-            console.log(`${data}`);
             return data;
         } else {
             alert("Falha ao buscar relatório mensal");
@@ -1505,7 +1527,6 @@ class Facade implements FacadeInterface {
 
             if(data) {
                 alert("Funcionários listados");
-                console.log(`${data}`);
                 return data;
             } else {
                 alert("Falha ao buscar funcionários");
@@ -1661,8 +1682,8 @@ class Facade implements FacadeInterface {
         this.constrVenda.removeProdutoLido(codigo);
     }
 
-    encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): void {
-        this.encerraConstrucao(cpfCliente, cpfFuncionario);
+    async encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): Promise<boolean> {
+        return await this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario);
     }
 }
 
@@ -2288,38 +2309,45 @@ class Caixa implements CaixaInterface {
 
     //FUNÇÃO QUE CHAMA CADASTRAR VENDA E AUXILIARES
     async concluiVenda(venda: VendaInterface): Promise<boolean> {
-        this.atualizarEstoque(venda.getProdutos())
+        const estoqueAtualizado = await this.atualizarEstoque(venda.getProdutos())
 
-        const valorTotal = venda.getValorVenda()
-        const idCliente = venda.getCpfCliente()
-        const idFuncionario = venda.getCpfFuncionario()
-        const data = venda.getData()
+        if(estoqueAtualizado) {
+            const valorTotal = venda.getValorVenda()
+            const idCliente = venda.getCpfCliente()
+            const idFuncionario = venda.getCpfFuncionario()
+            const data = venda.getData()
 
-        let listaCodigos: number[] = []
+            let listaCodigos: number[] = []
 
-        for (const produto of venda.getProdutos()) {
-            const codigoProduto = produto.getCodigo();
-            const quantidade = produto.getQuantidade();
-        
-            // Adiciona o código do produto à lista a quantidade de vezes especificada
-            for (let i = 0; i < quantidade; i++) {
-              listaCodigos.push(codigoProduto);
+            for (const produto of venda.getProdutos()) {
+                const codigoProduto = produto.getCodigo();
+                const quantidade = produto.getQuantidade();
+            
+                // Adiciona o código do produto à lista a quantidade de vezes especificada
+                for (let i = 0; i < quantidade; i++) {
+                listaCodigos.push(codigoProduto);
+                }
+            }
+            this.listaVendas.push(venda)
+            return await this.cadastraVenda(valorTotal, idCliente, idFuncionario, data, listaCodigos)
+        }
+
+        return false;
+    }
+
+    async atualizarEstoque(listaProdutos: ProdutoInterface[]): Promise<boolean> {
+        for (const produto of listaProdutos) {
+            const produtoConsultado = await this.consultaProduto(produto.getCodigo());
+            let quantidade = produtoConsultado.quantidade_estoque;
+            quantidade = quantidade - produto.getQuantidade();
+            if(quantidade >= 0){
+                return await this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade, produto.getDesconto());
+            } else {
+                return false;
             }
         }
 
-        this.listaVendas.push(venda)
-
-        return await this.cadastraVenda(valorTotal, idCliente, idFuncionario, data, listaCodigos)
-    }
-
-    async atualizarEstoque(listaProdutos: ProdutoInterface[]): Promise<void> {
-        for (const produto of listaProdutos) {
-            const produtoConsultado = await this.consultaProduto(produto.getCodigo());
-            let quantidade = produtoConsultado.quantidade_estoque
-            quantidade -= produto.getQuantidade() ;
-        
-            await this.atualizaProduto(produto.getCodigo(), produto.getValor(), quantidade, produto.getDesconto());
-        }
+        return false;
     }
 
     async consultaProduto(idProduto: number): Promise<any> {
@@ -2397,10 +2425,13 @@ class ConstrutorVenda  implements ConstrutorVendaInterface {
         this.observadores.push(observador);
     }
 
-    private update(venda: VendaInterface): void {
+    private async update(venda: VendaInterface): Promise<boolean> {
+        let updated: boolean = false;
         for (const observador of this.observadores) {
-            observador.concluiVenda(venda);
+            updated = await observador.concluiVenda(venda);
         }
+
+        return updated;
     }
 
     //RESTO
@@ -2427,19 +2458,26 @@ class ConstrutorVenda  implements ConstrutorVendaInterface {
         this.vendaAtual.removeProduto(Number(codigo));
     }
 
-    async encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number) {
+    async encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): Promise<boolean> {
         if(this.vendaAtual){
             this.vendaAtual.setCpfFuncionario(cpfFuncionario);
-            if(cpfCliente)
+            if(cpfCliente) {
                 this.vendaAtual.setCpfCliente(cpfCliente);
+            } else {
+                this.vendaAtual.setCpfCliente(1);
+            }
 
             const valor = await this.calculaValorTotal(this.vendaAtual.getProdutos(), cpfCliente)
             this.vendaAtual.setValorVenda(valor)
 
-            this.update(this.vendaAtual);
+            const updated: boolean = await this.update(this.vendaAtual);
 
             this.vendaAtual = null;
+
+            return updated;
         }
+
+        return false;
     }
 
     async calculaValorTotal(produtos: ProdutoInterface[], idCliente: number | null) {
@@ -2455,7 +2493,7 @@ class ConstrutorVenda  implements ConstrutorVendaInterface {
             }
         }
 
-        if (idCliente) {
+        if (idCliente && idCliente != 1) {
             const descontoFidelidade = await this.consultaFidelidade(idCliente);
             if (descontoFidelidade > 0) {
                 valorTotal *= (1 - descontoFidelidade / 100);
