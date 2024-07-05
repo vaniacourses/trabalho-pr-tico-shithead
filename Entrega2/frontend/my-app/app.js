@@ -52,9 +52,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var App = /** @class */ (function () {
     function App() {
-        this.caixa = Caixa.getInstance();
-        this.constrVenda = new ConstrutorVenda();
-        this.constrVenda.registrarObservador(this.caixa);
+        this.facade = new Facade();
     }
     App.prototype.clear_body = function () {
         var body = document.body;
@@ -73,8 +71,7 @@ var App = /** @class */ (function () {
         var divBotoes = document.createElement('div');
         divBotoes.className = 'botoes';
         //somente logado
-        var funcionario = this.caixa.getObjetoFuncionarioAtivo();
-        if (funcionario) {
+        if (this.facade.getLogado()) {
             var gerenciarClientesButton = document.createElement('button');
             gerenciarClientesButton.textContent = 'Gerenciar Clientes';
             gerenciarClientesButton.addEventListener('click', this.create_client_management_screen.bind(this));
@@ -84,7 +81,7 @@ var App = /** @class */ (function () {
             mostrarRelatorioButton.addEventListener('click', this.create_monthly_report.bind(this));
             divBotoes.appendChild(mostrarRelatorioButton);
             //Somente se o caixa estiver aberto
-            if (this.caixa.getStatus() == true) {
+            if (this.facade.getStatusCaixa() == true) {
                 var registrarVendaButton = document.createElement('button');
                 registrarVendaButton.textContent = 'Registrar Venda';
                 registrarVendaButton.addEventListener('click', this.create_sell_registration_form.bind(this));
@@ -92,7 +89,7 @@ var App = /** @class */ (function () {
                 var fecharCaixaButton = document.createElement('button');
                 fecharCaixaButton.textContent = 'Fechar Caixa';
                 fecharCaixaButton.addEventListener('click', function () {
-                    _this.caixa.trocarStatus();
+                    _this.facade.trocaStatusCaixa();
                     _this.create_start_screen();
                 });
                 divBotoes.appendChild(fecharCaixaButton);
@@ -105,13 +102,13 @@ var App = /** @class */ (function () {
                 var abrirCaixaButton = document.createElement('button');
                 abrirCaixaButton.textContent = 'Abrir Caixa';
                 abrirCaixaButton.addEventListener('click', function () {
-                    _this.caixa.trocarStatus();
+                    _this.facade.trocaStatusCaixa();
                     _this.create_start_screen();
                 });
                 divBotoes.appendChild(abrirCaixaButton);
             }
             //Somente gerente
-            if (funcionario.getTipoFuncionario() == "Gerente") {
+            if (this.facade.getTipoFuncionario() == "Gerente") {
                 var gerenciarProdutosButton = document.createElement('button');
                 gerenciarProdutosButton.textContent = 'Gerenciar Produtos';
                 gerenciarProdutosButton.addEventListener('click', this.create_product_management_screen.bind(this));
@@ -122,10 +119,12 @@ var App = /** @class */ (function () {
                 divBotoes.appendChild(gerenciarFuncionariosButton);
             }
         }
-        var botaoLogin = document.createElement('button');
-        botaoLogin.textContent = 'Login';
-        botaoLogin.addEventListener('click', this.create_login_form.bind(this));
-        divBotoes.appendChild(botaoLogin);
+        else {
+            var botaoLogin = document.createElement('button');
+            botaoLogin.textContent = 'Login';
+            botaoLogin.addEventListener('click', this.create_login_form.bind(this));
+            divBotoes.appendChild(botaoLogin);
+        }
         header.appendChild(divBotoes);
         document.body.appendChild(header);
     };
@@ -153,11 +152,23 @@ var App = /** @class */ (function () {
         loginForm.appendChild(passwordInput);
         var loginButton = document.createElement('button');
         loginButton.textContent = 'Logar';
-        loginButton.addEventListener('click', function () {
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
-            _this.logando(username, password);
-        });
+        loginButton.addEventListener('click', function () { return __awaiter(_this, void 0, void 0, function () {
+            var username, password, logado;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        username = document.getElementById('username').value;
+                        password = document.getElementById('password').value;
+                        return [4 /*yield*/, this.facade.logando(username, password)];
+                    case 1:
+                        logado = _a.sent();
+                        if (logado) {
+                            this.create_start_screen();
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        }); });
         loginForm.appendChild(loginButton);
         var voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
@@ -206,7 +217,7 @@ var App = /** @class */ (function () {
         cadastrarButton.textContent = 'Cadastrar';
         cadastrarButton.addEventListener('click', function () {
             var cpfCliente = document.getElementById('cpfCliente').valueAsNumber;
-            _this.cadastrandoCliente(cpfCliente);
+            _this.facade.cadastrandoCliente(cpfCliente);
         });
         registrationForm.appendChild(cadastrarButton);
         var voltarButton = document.createElement('button');
@@ -234,7 +245,7 @@ var App = /** @class */ (function () {
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', function () {
             var cpfCliente = document.getElementById('cpfCliente').valueAsNumber;
-            _this.removendoCliente(cpfCliente);
+            _this.facade.removendoCliente(cpfCliente);
         });
         removalForm.appendChild(removerButton);
         var voltarButton = document.createElement('button');
@@ -313,7 +324,7 @@ var App = /** @class */ (function () {
             var nome = document.getElementById('nome').value;
             var valor = document.getElementById('valor').valueAsNumber;
             var quantidade = document.getElementById('quantidade').valueAsNumber;
-            _this.cadastrandoProduto(nome, valor, quantidade);
+            _this.facade.cadastrandoProduto(nome, valor, quantidade);
         });
         registrationForm.appendChild(cadastrarButton);
         var voltarButton = document.createElement('button');
@@ -341,7 +352,7 @@ var App = /** @class */ (function () {
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', function () {
             var id = document.getElementById('id').valueAsNumber;
-            _this.removendoProduto(id);
+            _this.facade.removendoProduto(id);
         });
         removalForm.appendChild(removerButton);
         var voltarButton = document.createElement('button');
@@ -386,7 +397,7 @@ var App = /** @class */ (function () {
             var id = document.getElementById('id').valueAsNumber;
             var valor = document.getElementById('valor').valueAsNumber;
             var quantidade = document.getElementById('quantidade').valueAsNumber;
-            _this.atualizandoProduto(id, valor, quantidade);
+            _this.facade.atualizandoProduto(id, valor, quantidade);
         });
         updateForm.appendChild(atualizarButton);
         var voltarButton = document.createElement('button');
@@ -408,7 +419,7 @@ var App = /** @class */ (function () {
                         titulo.textContent = 'Lista de Produtos';
                         header.appendChild(titulo);
                         document.body.appendChild(header);
-                        return [4 /*yield*/, this.listandoProdutos()];
+                        return [4 /*yield*/, this.facade.listandoProdutos()];
                     case 1:
                         productsData = _b.sent();
                         if (!productsData) {
@@ -442,7 +453,7 @@ var App = /** @class */ (function () {
                         document.body.appendChild(table);
                         voltarButton = document.createElement('button');
                         voltarButton.textContent = 'Voltar';
-                        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+                        voltarButton.addEventListener('click', this.create_product_management_screen.bind(this));
                         document.body.appendChild(voltarButton);
                         return [2 /*return*/];
                 }
@@ -522,7 +533,7 @@ var App = /** @class */ (function () {
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
             var isAdmin = document.getElementById('adm').checked;
-            _this.cadastrandoFuncionario(cpf, username, password, isAdmin);
+            _this.facade.cadastrandoFuncionario(cpf, username, password, isAdmin);
         });
         registrationForm.appendChild(registerButton);
         var voltarButton = document.createElement('button');
@@ -550,7 +561,7 @@ var App = /** @class */ (function () {
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', function () {
             var cpf = document.getElementById('cpf').valueAsNumber;
-            _this.removendoFuncionario(cpf);
+            _this.facade.removendoFuncionario(cpf);
         });
         removalForm.appendChild(removerButton);
         var voltarButton = document.createElement('button');
@@ -594,7 +605,7 @@ var App = /** @class */ (function () {
             var cpf = document.getElementById('cpf').valueAsNumber;
             var login = document.getElementById('login').value;
             var senha = document.getElementById('senha').value;
-            _this.atualizandoFuncionario(cpf, login, senha);
+            _this.facade.atualizandoFuncionario(cpf, login, senha);
         });
         updateForm.appendChild(atualizarButton);
         var voltarButton = document.createElement('button');
@@ -616,7 +627,7 @@ var App = /** @class */ (function () {
                         titulo.textContent = 'Lista de Funcionários';
                         header.appendChild(titulo);
                         document.body.appendChild(header);
-                        return [4 /*yield*/, this.listandoFuncionarios()];
+                        return [4 /*yield*/, this.facade.listandoFuncionarios()];
                     case 1:
                         employeeData = _b.sent();
                         if (!employeeData) {
@@ -646,7 +657,7 @@ var App = /** @class */ (function () {
                         document.body.appendChild(table);
                         voltarButton = document.createElement('button');
                         voltarButton.textContent = 'Voltar';
-                        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+                        voltarButton.addEventListener('click', this.create_employee_management_screen.bind(this));
                         document.body.appendChild(voltarButton);
                         return [2 /*return*/];
                 }
@@ -707,7 +718,7 @@ var App = /** @class */ (function () {
         cadastrarButton.addEventListener('click', function () {
             var idProduto = document.getElementById('idProduto').valueAsNumber;
             var porcentagem = document.getElementById('porcentagem').valueAsNumber;
-            _this.cadastrandoDesconto(idProduto, porcentagem);
+            _this.facade.cadastrandoDesconto(idProduto, porcentagem);
         });
         cadastroForm.appendChild(cadastrarButton);
         var voltarButton = document.createElement('button');
@@ -735,7 +746,7 @@ var App = /** @class */ (function () {
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', function () {
             var idProduto = document.getElementById('idProduto').valueAsNumber;
-            _this.removendoDesconto(idProduto);
+            _this.facade.removendoDesconto(idProduto);
         });
         removalForm.appendChild(removerButton);
         var voltarButton = document.createElement('button');
@@ -772,7 +783,7 @@ var App = /** @class */ (function () {
         alterarButton.addEventListener('click', function () {
             var idProduto = document.getElementById('idProduto').valueAsNumber;
             var porcentagem = document.getElementById('porcentagem').valueAsNumber;
-            _this.atualizandoDesconto(idProduto, porcentagem);
+            _this.facade.atualizandoDesconto(idProduto, porcentagem);
         });
         alteracaoForm.appendChild(alterarButton);
         var voltarButton = document.createElement('button');
@@ -785,7 +796,7 @@ var App = /** @class */ (function () {
     App.prototype.create_sell_registration_form = function () {
         var _this = this;
         this.clear_body();
-        this.constrVenda.iniciaVenda();
+        this.facade.iniciaVenda();
         var sellRegisterScreen = document.createElement('div');
         var productList = document.createElement('div');
         var cpfLabel = document.createElement('label');
@@ -816,13 +827,13 @@ var App = /** @class */ (function () {
             var productId = productIdInput.valueAsNumber;
             var productQtd = productQtdInput.valueAsNumber;
             if (productId) {
-                _this.constrVenda.adicionarProdutoLido(productId, productQtd);
+                _this.facade.adicionarProdutoLido(productId, productQtd);
                 var productLabel_1 = document.createElement('label');
                 productLabel_1.textContent = "Produto: ".concat(productId);
                 var removeButton_1 = document.createElement('button');
                 removeButton_1.textContent = 'Remover';
                 removeButton_1.addEventListener('click', function () {
-                    _this.constrVenda.removeProdutoLido(productLabel_1.textContent);
+                    _this.facade.removeProdutoLido(productLabel_1.textContent);
                     productLabel_1.remove();
                     removeButton_1.remove();
                 });
@@ -835,7 +846,7 @@ var App = /** @class */ (function () {
         var backButton = document.createElement('button');
         backButton.textContent = 'Voltar';
         backButton.addEventListener('click', function () {
-            _this.constrVenda.cancelaVenda();
+            _this.facade.cancelaVenda();
             _this.create_start_screen();
         });
         sellRegisterScreen.appendChild(backButton);
@@ -843,8 +854,11 @@ var App = /** @class */ (function () {
         submitButton.textContent = 'Cadastrar';
         submitButton.addEventListener('click', function () {
             var cpfCliente = document.getElementById('cpfCliente').valueAsNumber;
-            var cpfFuncionario = _this.caixa.getFuncionarioAtivo();
-            _this.cadastrandoVenda(cpfCliente, cpfFuncionario);
+            var funcionario = _this.facade.getLogado();
+            if (funcionario) {
+                var cpfFuncionario = funcionario;
+                _this.facade.cadastrandoVenda(cpfCliente, cpfFuncionario);
+            }
         });
         sellRegisterScreen.appendChild(submitButton);
         document.body.appendChild(sellRegisterScreen);
@@ -868,7 +882,7 @@ var App = /** @class */ (function () {
         reembolsarButton.textContent = 'Reembolsar';
         reembolsarButton.addEventListener('click', function () {
             var vendaNumero = document.getElementById('vendaNumero').valueAsNumber;
-            _this.reembolsando(vendaNumero);
+            _this.facade.reembolsando(vendaNumero);
         });
         reembolsoForm.appendChild(reembolsarButton);
         var voltarButton = document.createElement('button');
@@ -886,12 +900,20 @@ var App = /** @class */ (function () {
         titulo.textContent = 'Relatório de Vendas';
         header.appendChild(titulo);
         document.body.appendChild(header);
+        var monthLabel = document.createElement('label');
+        monthLabel.textContent = 'Mês:';
+        document.body.appendChild(monthLabel);
         var monthInput = document.createElement('input');
         monthInput.type = 'number';
         monthInput.id = 'monthInput';
+        document.body.appendChild(monthInput);
+        var yearLabel = document.createElement('label');
+        yearLabel.textContent = 'Ano:';
+        document.body.appendChild(yearLabel);
         var yearInput = document.createElement('input');
         yearInput.type = 'number';
         yearInput.id = 'yearInput';
+        document.body.appendChild(yearInput);
         //Botão de gerar relatório
         var buscarRelatorioButton = document.createElement('button');
         buscarRelatorioButton.textContent = 'Buscar Relatório';
@@ -906,7 +928,7 @@ var App = /** @class */ (function () {
                             alert('Selecione o mês e o ano para gerar o relatório.');
                             return [2 /*return*/];
                         }
-                        return [4 /*yield*/, this.criandoRelatorioVendas(selectedMonth, selectedYear)];
+                        return [4 /*yield*/, this.facade.criandoRelatorioVendas(selectedMonth, selectedYear)];
                     case 1:
                         salesData = _b.sent();
                         if (!salesData) {
@@ -916,6 +938,7 @@ var App = /** @class */ (function () {
                         document.body.removeChild(monthInput);
                         document.body.removeChild(yearInput);
                         document.body.removeChild(buscarRelatorioButton);
+                        document.body.removeChild(voltarButtonIni);
                         salesTable = document.createElement('table');
                         salesTable.className = 'sales-table';
                         tableHeader = salesTable.insertRow();
@@ -947,19 +970,105 @@ var App = /** @class */ (function () {
                 }
             });
         }); });
-        // Append elements to the body
-        document.body.appendChild(monthInput);
-        document.body.appendChild(yearInput);
         document.body.appendChild(buscarRelatorioButton);
+        var voltarButtonIni = document.createElement('button');
+        voltarButtonIni.textContent = 'Voltar';
+        voltarButtonIni.addEventListener('click', this.create_start_screen.bind(this));
+        document.body.appendChild(voltarButtonIni);
     };
-    //As funções a seguir devem apenas chamar os métodos das classes onde os códigos foram implementados
+    return App;
+}());
+//IMPLEMENTAÇÃO DAS CLASSES -----------------------------------------------------------------------------------------------------------------------------------------------
+var GerenciadorLogin = /** @class */ (function () {
+    function GerenciadorLogin() {
+    }
+    GerenciadorLogin.prototype.validaLogin = function (username, password) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, options, response, loginData, funcionarioLogado, funcionarioLogado, errorMessage, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 6, , 7]);
+                        url = "https://light-killdeer-grateful.ngrok-free.app/login/".concat(username, "/").concat(password);
+                        options = {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
+                        };
+                        return [4 /*yield*/, fetch(url, options)];
+                    case 1:
+                        response = _a.sent();
+                        console.log(response);
+                        if (!response.ok) return [3 /*break*/, 3];
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        loginData = _a.sent();
+                        if (loginData.is_gerente) {
+                            funcionarioLogado = new Gerente(loginData.cpf, loginData.login);
+                            console.log('Login como gerente realizado com sucesso!');
+                            return [2 /*return*/, funcionarioLogado];
+                        }
+                        else {
+                            funcionarioLogado = new Funcionario(loginData.cpf, loginData.login);
+                            console.log('Login como funcionário realizado com sucesso!');
+                            return [2 /*return*/, funcionarioLogado];
+                        }
+                        return [3 /*break*/, 5];
+                    case 3: return [4 /*yield*/, response.text()];
+                    case 4:
+                        errorMessage = _a.sent();
+                        throw new Error("Erro ao validar login: ".concat(errorMessage));
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_1 = _a.sent();
+                        console.error("Erro ao validar login: ".concat(error_1.message));
+                        return [2 /*return*/, null];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return GerenciadorLogin;
+}());
+var Facade = /** @class */ (function () {
+    function Facade() {
+        this.caixa = Caixa.getInstance();
+        this.constrVenda = new ConstrutorVenda();
+        this.gerenciadorLogin = new GerenciadorLogin();
+        this.constrVenda.registrarObservador(this.caixa);
+    }
+    Facade.prototype.getLogado = function () {
+        if (this.funcionarioLogado) {
+            return this.funcionarioLogado.getCpf();
+        }
+        else {
+            return null;
+        }
+    };
+    Facade.prototype.getStatusCaixa = function () {
+        return this.caixa.getStatus();
+    };
+    Facade.prototype.getTipoFuncionario = function () {
+        var _a;
+        if (this.funcionarioLogado) {
+            return (_a = this.funcionarioLogado) === null || _a === void 0 ? void 0 : _a.getTipoFuncionario();
+        }
+        else {
+            return null;
+        }
+    };
+    Facade.prototype.trocaStatusCaixa = function () {
+        this.caixa.trocarStatus();
+    };
     //VENDA
-    App.prototype.cadastrandoVenda = function (cpfCliente, cpfFuncionario) {
+    Facade.prototype.cadastrandoVenda = function (cpfCliente, cpfFuncionario) {
         console.log("Cadastrando compra de ".concat(cpfCliente, " gerenciado por ").concat(cpfFuncionario));
         if (cpfFuncionario)
             this.constrVenda.encerraConstrucao(cpfCliente, cpfFuncionario);
     };
-    App.prototype.reembolsando = function (vendaNumero) {
+    Facade.prototype.reembolsando = function (vendaNumero) {
         return __awaiter(this, void 0, void 0, function () {
             var sucess;
             return __generator(this, function (_a) {
@@ -972,7 +1081,6 @@ var App = /** @class */ (function () {
                         sucess = _a.sent();
                         if (sucess) {
                             alert("Venda reembolsada");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao reembolsar cliente");
@@ -982,7 +1090,7 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.criandoRelatorioVendas = function (mes, ano) {
+    Facade.prototype.criandoRelatorioVendas = function (mes, ano) {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {
@@ -1006,26 +1114,22 @@ var App = /** @class */ (function () {
         });
     };
     //CLIENTE
-    App.prototype.cadastrandoCliente = function (cpfCliente) {
+    Facade.prototype.cadastrandoCliente = function (cpfCliente) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("CPF Cliente: ".concat(cpfCliente));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.cadastraCliente(cpfCliente)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.cadastraCliente(cpfCliente)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Cliente registrado");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao registrar cliente");
@@ -1035,26 +1139,22 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.removendoCliente = function (cpfCliente) {
+    Facade.prototype.removendoCliente = function (cpfCliente) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("CPF Cliente removido: ".concat(cpfCliente));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.removeCliente(cpfCliente)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.removeCliente(cpfCliente)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Cliente removido");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao remover cliente");
@@ -1065,26 +1165,22 @@ var App = /** @class */ (function () {
         });
     };
     //FUNCIONARIO
-    App.prototype.cadastrandoFuncionario = function (cpf, username, password, isAdmin) {
+    Facade.prototype.cadastrandoFuncionario = function (cpf, username, password, isAdmin) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("CPF: ".concat(cpf, ", Usu\u00E1rio: ").concat(username, ", Senha: ").concat(password, ", Administrador: ").concat(isAdmin));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.cadastraFuncionario(cpf, username, password, isAdmin)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.cadastraFuncionario(cpf, username, password, isAdmin)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Funcionário registrado");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao registrar funcionário");
@@ -1094,26 +1190,22 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.removendoFuncionario = function (cpf) {
+    Facade.prototype.removendoFuncionario = function (cpf) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("funcion\u00E1rio removido: ".concat(cpf));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.removeFuncionario(cpf)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.removeFuncionario(cpf)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Funcionário removido");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao remover funcionário");
@@ -1123,26 +1215,22 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.atualizandoFuncionario = function (cpf, login, senha) {
+    Facade.prototype.atualizandoFuncionario = function (cpf, login, senha) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("Login: ".concat(login, ", Senha: ").concat(senha));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.atualizaFuncionario(cpf, login, senha)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.atualizaFuncionario(cpf, login, senha)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Funcionário atualizado");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao atualizar funcionário");
@@ -1152,15 +1240,15 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.listandoFuncionarios = function () {
+    Facade.prototype.listandoFuncionarios = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var funcionario, data;
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
-                        if (!funcionario) return [3 /*break*/, 2];
-                        return [4 /*yield*/, funcionario.consultaFuncionarios()];
+                        console.log("Listando funcion\u00E1rios");
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.consultaFuncionarios()];
                     case 1:
                         data = _a.sent();
                         if (data) {
@@ -1178,26 +1266,22 @@ var App = /** @class */ (function () {
         });
     };
     //PRODUTO
-    App.prototype.cadastrandoProduto = function (nome, valor, quantidade) {
+    Facade.prototype.cadastrandoProduto = function (nome, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("Nome: ".concat(nome, ", Valor: ").concat(valor, ", Quantidade: ").concat(quantidade));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.cadastraProduto(nome, valor, quantidade)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.cadastraProduto(nome, valor, quantidade)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Produto cadastrado");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao cadastrar produto");
@@ -1207,26 +1291,22 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.removendoProduto = function (id) {
+    Facade.prototype.removendoProduto = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("ID do produto removido: ".concat(id));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.removeProduto(id)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.removeProduto(id)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Produto removido");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao remover produto");
@@ -1236,26 +1316,22 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.atualizandoProduto = function (id, valor, quantidade) {
+    Facade.prototype.atualizandoProduto = function (id, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("ID: ".concat(id, ", Valor: ").concat(valor, ", Quantidade: ").concat(quantidade));
                         sucess = false;
-                        return [4 /*yield*/, this.caixa.getObjetoFuncionarioAtivo()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.atualizaProduto(id, valor, quantidade)];
                     case 1:
-                        funcionario = _a.sent();
-                        if (!funcionario) return [3 /*break*/, 3];
-                        return [4 /*yield*/, funcionario.atualizaProduto(id, valor, quantidade)];
-                    case 2:
                         sucess = _a.sent();
-                        _a.label = 3;
-                    case 3:
+                        _a.label = 2;
+                    case 2:
                         if (sucess) {
                             alert("Produto atualizado");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao atualizar produto");
@@ -1265,15 +1341,14 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.listandoProdutos = function () {
+    Facade.prototype.listandoProdutos = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var funcionario, data;
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
-                        if (!funcionario) return [3 /*break*/, 2];
-                        return [4 /*yield*/, funcionario.consultaProdutos()];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.consultaProdutos()];
                     case 1:
                         data = _a.sent();
                         data = JSON.stringify(data);
@@ -1293,24 +1368,22 @@ var App = /** @class */ (function () {
         });
     };
     //DESCONTO
-    App.prototype.cadastrandoDesconto = function (idProduto, porcentagem) {
+    Facade.prototype.cadastrandoDesconto = function (idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("ID Produto: ".concat(idProduto, ", Porcentagem: ").concat(porcentagem));
                         sucess = false;
-                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
-                        if (!funcionario) return [3 /*break*/, 2];
-                        return [4 /*yield*/, funcionario.atualizaDesconto(idProduto, porcentagem)];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.atualizaDesconto(idProduto, porcentagem)];
                     case 1:
                         sucess = _a.sent();
                         _a.label = 2;
                     case 2:
                         if (sucess) {
                             alert("Desconto registrado");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao registrar desconto");
@@ -1320,24 +1393,22 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.removendoDesconto = function (idProduto) {
+    Facade.prototype.removendoDesconto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("ID Produto: ".concat(idProduto));
                         sucess = false;
-                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
-                        if (!funcionario) return [3 /*break*/, 2];
-                        return [4 /*yield*/, funcionario.atualizaDesconto(idProduto, 0)];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.atualizaDesconto(idProduto, 0)];
                     case 1:
                         sucess = _a.sent();
                         _a.label = 2;
                     case 2:
                         if (sucess) {
                             alert("Desconto removido");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao remover desconto");
@@ -1347,24 +1418,22 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.atualizandoDesconto = function (idProduto, porcentagem) {
+    Facade.prototype.atualizandoDesconto = function (idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess, funcionario;
+            var sucess;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log("ID Produto: ".concat(idProduto, ", Porcentagem: ").concat(porcentagem));
                         sucess = false;
-                        funcionario = this.caixa.getObjetoFuncionarioAtivo();
-                        if (!funcionario) return [3 /*break*/, 2];
-                        return [4 /*yield*/, funcionario.atualizaDesconto(idProduto, porcentagem)];
+                        if (!this.funcionarioLogado) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.funcionarioLogado.atualizaDesconto(idProduto, porcentagem)];
                     case 1:
                         sucess = _a.sent();
                         _a.label = 2;
                     case 2:
                         if (sucess) {
                             alert("Desconto atualizado");
-                            this.create_start_screen();
                         }
                         else {
                             alert("Falha ao atualizar desconto");
@@ -1374,31 +1443,49 @@ var App = /** @class */ (function () {
             });
         });
     };
-    App.prototype.listandoDescontos = function () { };
-    //EXTRA
-    App.prototype.logando = function (username, password) {
+    Facade.prototype.listandoDescontos = function () { };
+    //LOGIN
+    Facade.prototype.logando = function (username, password) {
         return __awaiter(this, void 0, void 0, function () {
-            var sucess;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         console.log("Usu\u00E1rio: ".concat(username, ", Senha: ").concat(password));
-                        return [4 /*yield*/, this.caixa.validaLogin(username, password)];
+                        _a = this;
+                        return [4 /*yield*/, this.gerenciadorLogin.validaLogin(username, password)];
                     case 1:
-                        sucess = _a.sent();
-                        if (sucess) {
+                        _a.funcionarioLogado = _b.sent();
+                        if (this.funcionarioLogado) {
                             alert("Funcionario logado");
-                            this.create_start_screen();
+                            return [2 /*return*/, true];
                         }
                         else {
                             alert("Funcinario não logado");
+                            return [2 /*return*/, false];
                         }
                         return [2 /*return*/];
                 }
             });
         });
     };
-    return App;
+    //METODOS DO CONSTRUTOR DE VENDA
+    Facade.prototype.cancelaVenda = function () {
+        this.constrVenda.cancelaVenda();
+    };
+    Facade.prototype.iniciaVenda = function () {
+        this.constrVenda.iniciaVenda();
+    };
+    Facade.prototype.adicionarProdutoLido = function (codigo, quantidade) {
+        this.constrVenda.adicionarProdutoLido(codigo, quantidade);
+    };
+    Facade.prototype.removeProdutoLido = function (codigo) {
+        this.constrVenda.removeProdutoLido(codigo);
+    };
+    Facade.prototype.encerraConstrucao = function (cpfCliente, cpfFuncionario) {
+        this.encerraConstrucao(cpfCliente, cpfFuncionario);
+    };
+    return Facade;
 }());
 var Funcionario = /** @class */ (function () {
     function Funcionario(cpf, login) {
@@ -1417,7 +1504,7 @@ var Funcionario = /** @class */ (function () {
     //CLIENTE
     Funcionario.prototype.cadastraCliente = function (cpfCliente) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_1;
+            var url, data, options, response, errorMessage, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1443,8 +1530,8 @@ var Funcionario = /** @class */ (function () {
                         throw new Error("Erro ao cadastrar cliente: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_1 = _a.sent();
-                        console.error("Erro ao cadastrar cliente: ".concat(error_1.message));
+                        error_2 = _a.sent();
+                        console.error("Erro ao cadastrar cliente: ".concat(error_2.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1453,7 +1540,7 @@ var Funcionario = /** @class */ (function () {
     };
     Funcionario.prototype.removeCliente = function (cpfCliente) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_2;
+            var url, options, response, errorMessage, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1478,8 +1565,8 @@ var Funcionario = /** @class */ (function () {
                         throw new Error("Erro ao remover cliente: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_2 = _a.sent();
-                        console.error("Erro ao remover cliente: ".concat(error_2.message));
+                        error_3 = _a.sent();
+                        console.error("Erro ao remover cliente: ".concat(error_3.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1489,7 +1576,7 @@ var Funcionario = /** @class */ (function () {
     //PRODUTOS
     Funcionario.prototype.consultaProdutos = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_3;
+            var url, options, response, data, errorMessage, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1515,16 +1602,14 @@ var Funcionario = /** @class */ (function () {
                         throw new Error("Erro ao consultar produtos: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_3 = _a.sent();
-                        console.error("Erro ao consultar produtos: ".concat(error_3.message));
+                        error_4 = _a.sent();
+                        console.error("Erro ao consultar produtos: ".concat(error_4.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
             });
         });
     };
-    //DESCONTOS
-    Funcionario.prototype.consultaDescontos = function () { };
     return Funcionario;
 }());
 var Gerente = /** @class */ (function (_super) {
@@ -1538,7 +1623,7 @@ var Gerente = /** @class */ (function (_super) {
     //FUNCIONARIOS
     Gerente.prototype.cadastraFuncionario = function (cpf, login, senha, is_gerente) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_4;
+            var url, data, options, response, errorMessage, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1569,8 +1654,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao cadastrar funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_4 = _a.sent();
-                        console.error("Erro ao cadastrar funcion\u00E1rio: ".concat(error_4.message));
+                        error_5 = _a.sent();
+                        console.error("Erro ao cadastrar funcion\u00E1rio: ".concat(error_5.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1579,7 +1664,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.removeFuncionario = function (cpf) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_5;
+            var url, options, response, errorMessage, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1603,8 +1688,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao remover funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_5 = _a.sent();
-                        console.error("Erro ao remover funcion\u00E1rio: ".concat(error_5.message));
+                        error_6 = _a.sent();
+                        console.error("Erro ao remover funcion\u00E1rio: ".concat(error_6.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1614,7 +1699,7 @@ var Gerente = /** @class */ (function (_super) {
     Gerente.prototype.atualizaFuncionario = function (//Falta na api
     cpf, login, senha) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_6;
+            var url, data, options, response, errorMessage, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1643,8 +1728,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar funcion\u00E1rio: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_6 = _a.sent();
-                        console.error("Erro ao atualizar funcion\u00E1rio: ".concat(error_6.message));
+                        error_7 = _a.sent();
+                        console.error("Erro ao atualizar funcion\u00E1rio: ".concat(error_7.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1653,7 +1738,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.consultaFuncionarios = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_7;
+            var url, options, response, data, errorMessage, error_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1679,8 +1764,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao consultar funcion\u00E1rios: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_7 = _a.sent();
-                        console.error("Erro ao consultar funcion\u00E1rios: ".concat(error_7.message));
+                        error_8 = _a.sent();
+                        console.error("Erro ao consultar funcion\u00E1rios: ".concat(error_8.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -1690,7 +1775,7 @@ var Gerente = /** @class */ (function (_super) {
     //PRODUTOS
     Gerente.prototype.cadastraProduto = function (nome, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_8;
+            var url, data, options, response, errorMessage, error_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1720,8 +1805,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao cadastrar produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_8 = _a.sent();
-                        console.error("Erro ao cadastrar produto: ".concat(error_8.message));
+                        error_9 = _a.sent();
+                        console.error("Erro ao cadastrar produto: ".concat(error_9.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1730,7 +1815,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.removeProduto = function (idProduto) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_9;
+            var url, options, response, errorMessage, error_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1754,8 +1839,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao remover produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_9 = _a.sent();
-                        console.error("Erro ao remover produto: ".concat(error_9.message));
+                        error_10 = _a.sent();
+                        console.error("Erro ao remover produto: ".concat(error_10.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1764,7 +1849,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.atualizaProduto = function (idProduto, valor, quantidade) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_10;
+            var url, data, options, response, errorMessage, error_11;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1794,8 +1879,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar produto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_10 = _a.sent();
-                        console.error("Erro ao atualizar produto: ".concat(error_10.message));
+                        error_11 = _a.sent();
+                        console.error("Erro ao atualizar produto: ".concat(error_11.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -1804,7 +1889,7 @@ var Gerente = /** @class */ (function (_super) {
     };
     Gerente.prototype.consultaProdutos = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, data, errorMessage, error_11;
+            var url, options, response, data, errorMessage, error_12;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1830,8 +1915,8 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao consultar produtos: ".concat(errorMessage));
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_11 = _a.sent();
-                        console.error("Erro ao consultar produtos: ".concat(error_11.message));
+                        error_12 = _a.sent();
+                        console.error("Erro ao consultar produtos: ".concat(error_12.message));
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }
@@ -1839,11 +1924,9 @@ var Gerente = /** @class */ (function (_super) {
         });
     };
     //DESCONTOS
-    Gerente.prototype.cadastraDesconto = function () { };
-    Gerente.prototype.removeDesconto = function () { };
     Gerente.prototype.atualizaDesconto = function (idProduto, porcentagem) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, data, options, response, errorMessage, error_12;
+            var url, data, options, response, errorMessage, error_13;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1871,14 +1954,17 @@ var Gerente = /** @class */ (function (_super) {
                         throw new Error("Erro ao atualizar desconto: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_12 = _a.sent();
-                        console.error("Erro ao atualizar desconto: ".concat(error_12.message));
+                        error_13 = _a.sent();
+                        console.error("Erro ao atualizar desconto: ".concat(error_13.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
             });
         });
     };
+    Gerente.prototype.cadastraDesconto = function () { };
+    Gerente.prototype.removeDesconto = function () { };
+    Gerente.prototype.consultaDesconto = function () { };
     return Gerente;
 }(Funcionario));
 var Produto = /** @class */ (function () {
@@ -1977,17 +2063,12 @@ var Caixa = /** @class */ (function () {
         return this.aberto;
     };
     Caixa.prototype.getFuncionarioAtivo = function () {
-        if (this.funcionarioLogado)
-            return this.funcionarioLogado.getCpf();
-        return null;
-    };
-    Caixa.prototype.getObjetoFuncionarioAtivo = function () {
         return this.funcionarioLogado;
     };
     //VENDAS
     Caixa.prototype.cadastraVenda = function (valorVenda, idCliente, idFuncionario, data, listaProdutos) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, vendaData, options, response, errorMessage, error_13;
+            var url, vendaData, options, response, errorMessage, error_14;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2019,8 +2100,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao cadastrar venda: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_13 = _a.sent();
-                        console.error("Erro ao cadastrar venda: ".concat(error_13.message));
+                        error_14 = _a.sent();
+                        console.error("Erro ao cadastrar venda: ".concat(error_14.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -2029,7 +2110,7 @@ var Caixa = /** @class */ (function () {
     };
     Caixa.prototype.removeVenda = function (idVenda) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_14;
+            var url, options, response, errorMessage, error_15;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2053,8 +2134,8 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro ao remover venda: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_14 = _a.sent();
-                        console.error("Erro ao remover venda: ".concat(error_14.message));
+                        error_15 = _a.sent();
+                        console.error("Erro ao remover venda: ".concat(error_15.message));
                         return [2 /*return*/, false];
                     case 6: return [2 /*return*/];
                 }
@@ -2063,7 +2144,7 @@ var Caixa = /** @class */ (function () {
     };
     Caixa.prototype.relatorioVendasMensais = function (mes, ano) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, errorMessage, error_15;
+            var url, options, response, errorMessage, error_16;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2087,59 +2168,10 @@ var Caixa = /** @class */ (function () {
                         throw new Error("Erro pegar relatorio de venda: ".concat(errorMessage));
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_15 = _a.sent();
-                        console.error("Erro pegar relatorio de venda: ".concat(error_15.message));
+                        error_16 = _a.sent();
+                        console.error("Erro pegar relatorio de venda: ".concat(error_16.message));
                         return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    //Usar (this.funcionarioLogado as Gerente) para acessar métodos exclusivos de gerente
-    Caixa.prototype.validaLogin = function (username, password) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, options, response, loginData, errorMessage, error_16;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        url = "https://light-killdeer-grateful.ngrok-free.app/login/".concat(username, "/").concat(password);
-                        options = {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                "ngrok-skip-browser-warning": "69420"
-                            },
-                        };
-                        return [4 /*yield*/, fetch(url, options)];
-                    case 1:
-                        response = _a.sent();
-                        console.log(response);
-                        if (!response.ok) return [3 /*break*/, 3];
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        loginData = _a.sent();
-                        if (loginData.is_gerente) {
-                            this.funcionarioLogado = new Gerente(loginData.cpf, loginData.login);
-                            console.log('Login como gerente realizado com sucesso!');
-                            return [2 /*return*/, true];
-                        }
-                        else {
-                            this.funcionarioLogado = new Funcionario(loginData.cpf, loginData.login);
-                            console.log('Login como funcionário realizado com sucesso!');
-                            return [2 /*return*/, true];
-                        }
-                        return [3 /*break*/, 5];
-                    case 3: return [4 /*yield*/, response.text()];
-                    case 4:
-                        errorMessage = _a.sent();
-                        throw new Error("Erro ao validar login: ".concat(errorMessage));
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_16 = _a.sent();
-                        console.error("Erro ao validar login: ".concat(error_16.message));
-                        return [2 /*return*/, false];
-                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -2284,6 +2316,7 @@ var ConstrutorVenda = /** @class */ (function () {
     function ConstrutorVenda() {
         this.observadores = [];
     }
+    //METODOS DEOBSERVER
     ConstrutorVenda.prototype.registrarObservador = function (observador) {
         this.observadores.push(observador);
     };
@@ -2293,6 +2326,7 @@ var ConstrutorVenda = /** @class */ (function () {
             observador.concluiVenda(venda);
         }
     };
+    //RESTO
     ConstrutorVenda.prototype.cancelaVenda = function () {
         this.vendaAtual = null;
     };
@@ -2446,39 +2480,6 @@ var ConstrutorVenda = /** @class */ (function () {
     };
     return ConstrutorVenda;
 }());
-//Chamadas
-function request() {
-    return __awaiter(this, void 0, void 0, function () {
-        var url, options, response, errorMessage, error_21;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    url = ' https://light-killdeer-grateful.ngrok-free.app/vendas/';
-                    options = {
-                        method: 'GET',
-                        headers: { "ngrok-skip-browser-warning": "69420", },
-                    };
-                    return [4 /*yield*/, fetch(url, options)];
-                case 1:
-                    response = _a.sent();
-                    if (!response.ok) return [3 /*break*/, 2];
-                    console.log("Conex\u00E3o permitida");
-                    return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, response.text()];
-                case 3:
-                    errorMessage = _a.sent();
-                    throw new Error("Conex\u00E3o negada: ".concat(errorMessage));
-                case 4: return [3 /*break*/, 6];
-                case 5:
-                    error_21 = _a.sent();
-                    console.error("Conex\u00E3o negada: ".concat(error_21.message));
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
-}
-request();
+//CHAMADAS --------------------------------------------------------------------------------------------------------------------------------------------------------------
 var my_app = new App();
 my_app.create_start_screen();

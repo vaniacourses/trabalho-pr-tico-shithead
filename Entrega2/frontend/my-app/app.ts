@@ -1,12 +1,9 @@
 //A classe app tem como objetivo gerenciar a navegação pelas páginas da aplicação e chamar caixa para realizar alguma ação quando o usuário clicar em um botão
 
-class App {
-    caixa: Caixa = Caixa.getInstance();
-    constrVenda: ConstrutorVenda = new ConstrutorVenda();
+class App implements InterfaceGraficaInterface {
+    facade: FacadeInterface = new Facade();
 
-    constructor() {
-        this.constrVenda.registrarObservador(this.caixa);
-    }
+    constructor() { }
 
     clear_body() {
         const body = document.body;
@@ -30,8 +27,7 @@ class App {
         divBotoes.className = 'botoes';
         
         //somente logado
-        const funcionario = this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario) {
+        if(this.facade.getLogado()) {
             const gerenciarClientesButton = document.createElement('button');
             gerenciarClientesButton.textContent = 'Gerenciar Clientes';
             gerenciarClientesButton.addEventListener('click', this.create_client_management_screen.bind(this));
@@ -43,7 +39,7 @@ class App {
             divBotoes.appendChild(mostrarRelatorioButton);
             
             //Somente se o caixa estiver aberto
-            if(this.caixa.getStatus() == true) {
+            if(this.facade.getStatusCaixa() == true) {
                 const registrarVendaButton = document.createElement('button');
                 registrarVendaButton.textContent = 'Registrar Venda';
                 registrarVendaButton.addEventListener('click', this.create_sell_registration_form.bind(this));
@@ -52,7 +48,7 @@ class App {
                 const fecharCaixaButton = document.createElement('button');
                 fecharCaixaButton.textContent = 'Fechar Caixa';
                 fecharCaixaButton.addEventListener('click', () => {
-                    this.caixa.trocarStatus();
+                    this.facade.trocaStatusCaixa();
                     this.create_start_screen();
                 });
                 divBotoes.appendChild(fecharCaixaButton);
@@ -67,14 +63,14 @@ class App {
                 const abrirCaixaButton = document.createElement('button');
                 abrirCaixaButton.textContent = 'Abrir Caixa';
                 abrirCaixaButton.addEventListener('click', () => {
-                    this.caixa.trocarStatus()
+                    this.facade.trocaStatusCaixa();
                     this.create_start_screen();
                 });
                 divBotoes.appendChild(abrirCaixaButton);
             }
 
             //Somente gerente
-            if(funcionario.getTipoFuncionario() == "Gerente") {
+            if(this.facade.getTipoFuncionario() == "Gerente") {
                 const gerenciarProdutosButton = document.createElement('button');
                 gerenciarProdutosButton.textContent = 'Gerenciar Produtos';
                 gerenciarProdutosButton.addEventListener('click', this.create_product_management_screen.bind(this));
@@ -85,13 +81,13 @@ class App {
                 gerenciarFuncionariosButton.addEventListener('click', this.create_employee_management_screen.bind(this));
                 divBotoes.appendChild(gerenciarFuncionariosButton);
             }
+        } else {
+            const botaoLogin = document.createElement('button');
+            botaoLogin.textContent = 'Login';
+            botaoLogin.addEventListener('click', this.create_login_form.bind(this));
+            divBotoes.appendChild(botaoLogin);
         }
 
-        const botaoLogin = document.createElement('button');
-        botaoLogin.textContent = 'Login';
-        botaoLogin.addEventListener('click', this.create_login_form.bind(this));
-        divBotoes.appendChild(botaoLogin);
-        
         header.appendChild(divBotoes);
         document.body.appendChild(header);
     }
@@ -126,10 +122,14 @@ class App {
 
         const loginButton = document.createElement('button');
         loginButton.textContent = 'Logar';
-        loginButton.addEventListener('click', () => {
+        loginButton.addEventListener('click', async () => {
             const username = (document.getElementById('username') as HTMLInputElement).value;
             const password = (document.getElementById('password') as HTMLInputElement).value;
-            this.logando(username, password);
+            const logado = await this.facade.logando(username, password);
+
+            if(logado) {
+                this.create_start_screen();
+            }
         });
         loginForm.appendChild(loginButton);
 
@@ -171,7 +171,7 @@ class App {
         document.body.appendChild(clientManagementScreen);
     }
 
-    create_client_registration_form(){
+    create_client_registration_form() {
         this.clear_body()
 
         const registrationForm = document.createElement('div');
@@ -194,7 +194,7 @@ class App {
         cadastrarButton.textContent = 'Cadastrar';
         cadastrarButton.addEventListener('click', () => {
             const cpfCliente = (document.getElementById('cpfCliente') as HTMLInputElement).valueAsNumber;
-            this.cadastrandoCliente(cpfCliente);
+            this.facade.cadastrandoCliente(cpfCliente);
         });
         registrationForm.appendChild(cadastrarButton);
     
@@ -229,7 +229,7 @@ class App {
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', () => {
             const cpfCliente = (document.getElementById('cpfCliente') as HTMLInputElement).valueAsNumber;
-            this.removendoCliente(cpfCliente);
+            this.facade.removendoCliente(cpfCliente);
         });
         removalForm.appendChild(removerButton);
     
@@ -330,7 +330,7 @@ class App {
             const nome = (document.getElementById('nome') as HTMLInputElement).value;
             const valor = (document.getElementById('valor') as HTMLInputElement).valueAsNumber;
             const quantidade = (document.getElementById('quantidade') as HTMLInputElement).valueAsNumber;
-            this.cadastrandoProduto(nome, valor, quantidade);
+            this.facade.cadastrandoProduto(nome, valor, quantidade);
         });
         registrationForm.appendChild(cadastrarButton);
     
@@ -365,7 +365,7 @@ class App {
             removerButton.textContent = 'Remover';
             removerButton.addEventListener('click', () => {
             const id = (document.getElementById('id') as HTMLInputElement).valueAsNumber;
-            this.removendoProduto(id);
+            this.facade.removendoProduto(id);
         });
         removalForm.appendChild(removerButton);
     
@@ -421,7 +421,7 @@ class App {
             const id = (document.getElementById('id') as HTMLInputElement).valueAsNumber;
             const valor = (document.getElementById('valor') as HTMLInputElement).valueAsNumber;
             const quantidade = (document.getElementById('quantidade') as HTMLInputElement).valueAsNumber;
-            this.atualizandoProduto(id, valor, quantidade);
+            this.facade.atualizandoProduto(id, valor, quantidade);
         });
         updateForm.appendChild(atualizarButton);
     
@@ -445,7 +445,7 @@ class App {
 
         document.body.appendChild(header);
 
-        const productsData = await this.listandoProdutos();
+        const productsData = await this.facade.listandoProdutos();
 
         if (!productsData) {
             console.error('Erro ao buscar produtos');
@@ -487,7 +487,7 @@ class App {
 
         const voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
-        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+        voltarButton.addEventListener('click', this.create_product_management_screen.bind(this));
         document.body.appendChild(voltarButton);
 
     }
@@ -585,7 +585,7 @@ class App {
             const username = (document.getElementById('username') as HTMLInputElement).value;
             const password = (document.getElementById('password') as HTMLInputElement).value;
             const isAdmin = (document.getElementById('adm') as HTMLInputElement).checked;
-            this.cadastrandoFuncionario(cpf, username, password, isAdmin);
+            this.facade.cadastrandoFuncionario(cpf, username, password, isAdmin);
         });
         registrationForm.appendChild(registerButton);
 
@@ -620,7 +620,7 @@ class App {
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', () => {
         const cpf = (document.getElementById('cpf') as HTMLInputElement).valueAsNumber;
-        this.removendoFuncionario(cpf);
+        this.facade.removendoFuncionario(cpf);
         });
         removalForm.appendChild(removerButton);
     
@@ -675,7 +675,7 @@ class App {
         const cpf = (document.getElementById('cpf') as HTMLInputElement).valueAsNumber;
         const login = (document.getElementById('login') as HTMLInputElement).value;
         const senha = (document.getElementById('senha') as HTMLInputElement).value;
-        this.atualizandoFuncionario(cpf, login, senha);
+        this.facade.atualizandoFuncionario(cpf, login, senha);
         });
         updateForm.appendChild(atualizarButton);
     
@@ -699,7 +699,7 @@ class App {
 
         document.body.appendChild(header);
 
-        const employeeData = await this.listandoFuncionarios();
+        const employeeData = await this.facade.listandoFuncionarios();
 
         if (!employeeData) {
             console.error('Erro ao buscar funcionários');
@@ -736,7 +736,7 @@ class App {
         // Cria botão voltar
         const voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
-        voltarButton.addEventListener('click', this.create_start_screen.bind(this));
+        voltarButton.addEventListener('click', this.create_employee_management_screen.bind(this));
         document.body.appendChild(voltarButton);
     }
 
@@ -809,7 +809,7 @@ class App {
         cadastrarButton.addEventListener('click', () => {
             const idProduto = (document.getElementById('idProduto') as HTMLInputElement).valueAsNumber;
             const porcentagem = (document.getElementById('porcentagem') as HTMLInputElement).valueAsNumber;
-            this.cadastrandoDesconto(idProduto, porcentagem);
+            this.facade.cadastrandoDesconto(idProduto, porcentagem);
         });
         cadastroForm.appendChild(cadastrarButton);
     
@@ -844,7 +844,7 @@ class App {
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', () => {
         const idProduto = (document.getElementById('idProduto') as HTMLInputElement).valueAsNumber;
-        this.removendoDesconto(idProduto);
+        this.facade.removendoDesconto(idProduto);
         });
         removalForm.appendChild(removerButton);
     
@@ -890,7 +890,7 @@ class App {
         alterarButton.addEventListener('click', () => {
             const idProduto = (document.getElementById('idProduto') as HTMLInputElement).valueAsNumber;
             const porcentagem = (document.getElementById('porcentagem') as HTMLInputElement).valueAsNumber;
-            this.atualizandoDesconto(idProduto, porcentagem);
+            this.facade.atualizandoDesconto(idProduto, porcentagem);
         });
         alteracaoForm.appendChild(alterarButton);
     
@@ -906,7 +906,7 @@ class App {
 
     create_sell_registration_form() {
         this.clear_body()
-        this.constrVenda.iniciaVenda()
+        this.facade.iniciaVenda()
 
         const sellRegisterScreen = document.createElement('div');
         const productList = document.createElement('div');
@@ -946,7 +946,7 @@ class App {
             const productId = productIdInput.valueAsNumber;
             const productQtd = productQtdInput.valueAsNumber;
             if (productId) {
-                this.constrVenda.adicionarProdutoLido(productId, productQtd)
+                this.facade.adicionarProdutoLido(productId, productQtd)
 
                 const productLabel = document.createElement('label');
                 productLabel.textContent = `Produto: ${productId}`;
@@ -954,7 +954,7 @@ class App {
                 const removeButton = document.createElement('button');
                 removeButton.textContent = 'Remover';
                 removeButton.addEventListener('click', () => {
-                    this.constrVenda.removeProdutoLido(productLabel.textContent)
+                    this.facade.removeProdutoLido(productLabel.textContent)
                     productLabel.remove();
                     removeButton.remove();
                 });
@@ -969,7 +969,7 @@ class App {
         const backButton = document.createElement('button');
         backButton.textContent = 'Voltar';
         backButton.addEventListener('click', () => {
-            this.constrVenda.cancelaVenda()
+            this.facade.cancelaVenda()
             this.create_start_screen();
         });
         sellRegisterScreen.appendChild(backButton)
@@ -978,8 +978,11 @@ class App {
         submitButton.textContent = 'Cadastrar';
         submitButton.addEventListener('click', () => {
             const cpfCliente = (document.getElementById('cpfCliente') as HTMLInputElement).valueAsNumber;
-            const cpfFuncionario = this.caixa.getFuncionarioAtivo();
-            this.cadastrandoVenda(cpfCliente, cpfFuncionario);
+            const funcionario = this.facade.getLogado()
+            if(funcionario){
+                const cpfFuncionario = funcionario;
+                this.facade.cadastrandoVenda(cpfCliente, cpfFuncionario);
+            }
         });
         sellRegisterScreen.appendChild(submitButton)
 
@@ -1009,7 +1012,7 @@ class App {
         reembolsarButton.textContent = 'Reembolsar';
         reembolsarButton.addEventListener('click', () => {
             const vendaNumero = (document.getElementById('vendaNumero') as HTMLInputElement).valueAsNumber;
-            this.reembolsando(vendaNumero);
+            this.facade.reembolsando(vendaNumero);
         });
         reembolsoForm.appendChild(reembolsarButton);
 
@@ -1033,13 +1036,23 @@ class App {
 
         document.body.appendChild(header);
 
+        const monthLabel = document.createElement('label');
+        monthLabel.textContent = 'Mês:';
+        document.body.appendChild(monthLabel);
+
         const monthInput = document.createElement('input');
         monthInput.type = 'number';
         monthInput.id = 'monthInput';
+        document.body.appendChild(monthInput);
+
+        const yearLabel = document.createElement('label');
+        yearLabel.textContent = 'Ano:';
+        document.body.appendChild(yearLabel);
 
         const yearInput = document.createElement('input');
         yearInput.type = 'number';
         yearInput.id = 'yearInput';
+        document.body.appendChild(yearInput);
 
         //Botão de gerar relatório
         const buscarRelatorioButton = document.createElement('button');
@@ -1053,7 +1066,7 @@ class App {
                 return;
             }
 
-            const salesData = await this.criandoRelatorioVendas(selectedMonth, selectedYear);
+            const salesData = await this.facade.criandoRelatorioVendas(selectedMonth, selectedYear);
 
             if (!salesData) {
                 console.error('Error fetching sales data');
@@ -1063,6 +1076,7 @@ class App {
             document.body.removeChild(monthInput);
             document.body.removeChild(yearInput);
             document.body.removeChild(buscarRelatorioButton);
+            document.body.removeChild(voltarButtonIni)
 
             //Cria tabela de vendas
             const salesTable = document.createElement('table');
@@ -1099,15 +1113,269 @@ class App {
             voltarButton.addEventListener('click', this.create_start_screen.bind(this));
             document.body.appendChild(voltarButton);
         });
-
-        // Append elements to the body
-        document.body.appendChild(monthInput);
-        document.body.appendChild(yearInput);
         document.body.appendChild(buscarRelatorioButton);
 
+        const voltarButtonIni = document.createElement('button');
+        voltarButtonIni.textContent = 'Voltar';
+        voltarButtonIni.addEventListener('click', this.create_start_screen.bind(this));
+        document.body.appendChild(voltarButtonIni);
+    }
+}
+
+//INTERFACE DAS CLASSES ---------------------------------------------------------------------------------------------------------------------------------------------------
+
+interface ConstrutorVendaObserver {
+    concluiVenda(venda: VendaInterface): Promise<boolean>;
+}
+
+interface InterfaceGraficaInterface {
+    clear_body(): void;
+    create_start_screen(): void;
+    create_login_form(): void;
+
+    //CLIENTE
+    create_client_management_screen(): void;
+    create_client_registration_form(): void;
+    create_client_removal_form(): void;
+
+    //PRODUTO
+    create_product_management_screen(): void;
+    create_product_registration_form(): void;
+    create_product_removal_form(): void;
+    create_product_update_form(): void;
+    create_product_list(): void;
+
+    //FUNCIONARIO
+    create_employee_management_screen(): void;
+    create_employee_registration_form(): void;
+    create_employee_removal_form(): void;
+    create_employee_update_form(): void;
+    create_employee_list(): void;
+
+    //DESCONTO
+    create_discount_management_screen(): void;
+    create_discount_registration_form(): void;
+    create_discount_removal_form(): void;
+    create_discount_update_form(): void;
+
+    //VENDA
+    create_sell_registration_form(): void;
+    create_refund_form(): void;
+    create_monthly_report(): void;
+}
+
+interface FacadeInterface {
+    //GETS / SETS
+    getLogado() : number | null
+    getStatusCaixa() : boolean
+    getTipoFuncionario(): string | null
+    trocaStatusCaixa(): void
+
+    //VENDA
+    cadastrandoVenda(cpfCliente: number, cpfFuncionario: number | null): void;
+    reembolsando(vendaNumero: number): void;
+    criandoRelatorioVendas(mes: number, ano: number): Promise<any>
+
+    //CLIENTE
+    cadastrandoCliente(cpfCliente: number): void;
+    removendoCliente(cpfCliente: number): void;
+
+    //FUNCIONARIO
+    cadastrandoFuncionario(cpf: number, username: string, password: string, isAdmin: boolean): void;
+    removendoFuncionario(cpf: number): void;
+    atualizandoFuncionario(cpf: number, login: string, senha: string): void;
+    listandoFuncionarios(): Promise <any>
+
+    //PRODUTO
+    cadastrandoProduto(nome: string, valor: number, quantidade: number): void;
+    removendoProduto(id: number): void;
+    atualizandoProduto(id: number, valor: number, quantidade: number): void;
+    listandoProdutos(): Promise<any>
+
+    //DESCONTO
+    cadastrandoDesconto(idProduto: number, porcentagem: number): void;
+    removendoDesconto(idProduto: number): void;
+    atualizandoDesconto(idProduto: number, porcentagem: number): void;
+    listandoDescontos()
+
+    //LOGIN
+    logando(username: string, password: string): Promise<boolean>;
+
+    //METODOS DO CONSTRUTOR DE VENDA
+    cancelaVenda(): void;
+    iniciaVenda(): void;
+
+    adicionarProdutoLido(codigo: number, quantidade: number): void;
+    removeProdutoLido(codigo: string | null): void;
+
+    encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): void;
+}
+
+interface FuncionarioInterface {
+    getTipoFuncionario(): string;
+    getCpf(): number;
+    getLogin(): string;
+    cadastraCliente(cpfCliente: number): Promise<boolean>;
+    removeCliente(cpfCliente: number): Promise<boolean>;
+    consultaProdutos(): Promise<any>;
+}
+
+interface GerenteInterface extends FuncionarioInterface {
+    //Funcionario
+    cadastraFuncionario(cpf: number, login: string, senha: string, is_gerente: boolean): Promise<boolean>;
+    removeFuncionario(cpf: number): Promise<boolean>;
+    atualizaFuncionario(cpf: number,login: string,senha: string): Promise<boolean>;
+    consultaFuncionarios(): Promise<any>;
+
+    //Produto
+    cadastraProduto(nome: string, valor: number, quantidade: number): Promise<boolean>;
+    removeProduto(idProduto: number): Promise<boolean>;
+    atualizaProduto(idProduto: number, valor: number, quantidade: number): Promise<boolean>;
+    consultaProdutos(): Promise<any>;
+
+    //Desconto
+    cadastraDesconto();
+    removeDesconto();
+    atualizaDesconto(idProduto: number, porcentagem: number): Promise<boolean>;
+    consultaDesconto();
+}
+
+interface ProdutoInterface {
+    getValor(): number;
+    setQuantidade(qtd): void;
+    getQuantidade(): number;
+    getCodigo(): number;
+    getDesconto(): number;
+}
+
+interface VendaInterface {
+    adicionaProduto(produto: ProdutoInterface): void;
+    removeProduto(codigoProduto: number): void;
+    editaProduto(codigoProduto: number, qtd: number): void;
+    getValorVenda(): number;
+    setValorVenda(valor: number): void;
+    getData(): Date;
+    getCpfCliente(): number;
+    setCpfCliente(cpf: number): void;
+    getCpfFuncionario(): number;
+    setCpfFuncionario(cpf: number): void;
+    getProdutos(): ProdutoInterface[]
+}
+
+interface CaixaInterface extends ConstrutorVendaObserver {
+    trocarStatus(): void;
+    getStatus(): boolean;
+
+    //VENDAS
+    cadastraVenda(valorVenda: number, idCliente: number, idFuncionario: number, data: Date, listaProdutos: number[]): Promise<boolean>;
+    removeVenda(idVenda: number): Promise<boolean>;
+    relatorioVendasMensais(mes: number, ano: number): Promise<any>;
+
+    //AUXILIAR VENDA
+    atualizarEstoque(listaProdutos: ProdutoInterface[]): Promise<void>;
+
+    //PRODUTO
+    consultaProduto(idProduto: number): Promise<any>;
+    atualizaProduto(idProduto: number, valor: number, quantidade: number, desconto: number): Promise<boolean>;
+}
+
+interface ConstrutorVendaInterface {
+    cancelaVenda(): void;
+    iniciaVenda(): void;
+
+    adicionarProdutoLido(codigo: number, quantidade: number): void;
+    removeProdutoLido(codigo: string | null): void;
+
+    encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): void;
+    calculaValorTotal(produtos: ProdutoInterface[], idCliente: number | null): void;
+
+    //CONSULTAS AO BANCO DE DADOS
+    consultaFidelidade(idCliente: number): Promise<number>;
+    consultaProduto(idProduto: number): Promise<any>;
+
+    //PADRÃO OBSERVER
+    registrarObservador(observador: ConstrutorVendaObserver): void;
+}
+
+interface GerenciadorLoginInterface {
+    validaLogin(username: string, password: string): Promise<(GerenteInterface | FuncionarioInterface) | null>;
+}
+
+//IMPLEMENTAÇÃO DAS CLASSES -----------------------------------------------------------------------------------------------------------------------------------------------
+
+class GerenciadorLogin implements GerenciadorLoginInterface {
+    constructor () {}
+
+    async validaLogin(username: string, password: string): Promise<(GerenteInterface | FuncionarioInterface) | null> {
+        try {
+            const url = `https://light-killdeer-grateful.ngrok-free.app/login/${username}/${password}`;
+            const options = {
+                method: 'GET',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    "ngrok-skip-browser-warning": "69420"
+                 },
+            };
+        
+            const response = await fetch(url, options);
+            console.log(response)
+
+            if (response.ok) {
+                const loginData = await response.json();
+                if (loginData.is_gerente) {
+                    const funcionarioLogado = new Gerente(loginData.cpf, loginData.login);
+                    console.log('Login como gerente realizado com sucesso!');
+                    return funcionarioLogado;
+                } else {
+                    const funcionarioLogado = new Funcionario(loginData.cpf, loginData.login);
+                    console.log('Login como funcionário realizado com sucesso!');
+                    return funcionarioLogado;
+                }
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(`Erro ao validar login: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(`Erro ao validar login: ${error.message}`);
+            return null;
+        }
+    }
+}
+
+class Facade implements FacadeInterface {
+    private caixa: CaixaInterface = Caixa.getInstance();
+    private constrVenda: ConstrutorVendaInterface = new ConstrutorVenda();
+    private gerenciadorLogin: GerenciadorLoginInterface =  new GerenciadorLogin();
+    private funcionarioLogado: (FuncionarioInterface | GerenteInterface) | null;
+
+    constructor() {
+        this.constrVenda.registrarObservador(this.caixa);
     }
 
-    //As funções a seguir devem apenas chamar os métodos das classes onde os códigos foram implementados
+    getLogado() : number | null {
+        if(this.funcionarioLogado){
+            return this.funcionarioLogado.getCpf();
+        } else {
+            return null;
+        }
+    }
+
+    getStatusCaixa() : boolean {
+        return this.caixa.getStatus();
+    }
+
+    getTipoFuncionario(): string | null {
+        if(this.funcionarioLogado){
+            return this.funcionarioLogado?.getTipoFuncionario();
+        } else {
+            return null;
+        }
+        
+    }
+
+    trocaStatusCaixa(): void {
+        this.caixa.trocarStatus();
+    }
 
     //VENDA
     cadastrandoVenda(cpfCliente: number, cpfFuncionario: number | null) {
@@ -1126,7 +1394,6 @@ class App {
 
         if(sucess) {
             alert("Venda reembolsada");
-            this.create_start_screen();
         } else {
             alert("Falha ao reembolsar cliente");
         }
@@ -1153,14 +1420,12 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await funcionario.cadastraCliente(cpfCliente);
+        if(this.funcionarioLogado){
+            sucess = await this.funcionarioLogado.cadastraCliente(cpfCliente);
         }
         
         if(sucess) {
             alert("Cliente registrado");
-            this.create_start_screen();
         } else {
             alert("Falha ao registrar cliente");
         }
@@ -1172,14 +1437,12 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await funcionario.removeCliente(cpfCliente);
+        if(this.funcionarioLogado){
+            sucess = await this.funcionarioLogado.removeCliente(cpfCliente);
         }
 
         if(sucess) {
             alert("Cliente removido");
-            this.create_start_screen();
         } else {
             alert("Falha ao remover cliente");
         }
@@ -1191,14 +1454,12 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await (funcionario as Gerente).cadastraFuncionario(cpf, username, password,  isAdmin);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).cadastraFuncionario(cpf, username, password,  isAdmin);
         }
 
         if(sucess) {
             alert("Funcionário registrado");
-            this.create_start_screen();
         } else {
             alert("Falha ao registrar funcionário");
         }
@@ -1209,14 +1470,12 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await (funcionario as Gerente).removeFuncionario(cpf);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).removeFuncionario(cpf);
         }
 
         if(sucess) {
             alert("Funcionário removido");
-            this.create_start_screen();
         } else {
             alert("Falha ao remover funcionário");
         }
@@ -1227,24 +1486,22 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await (funcionario as Gerente).atualizaFuncionario(cpf, login, senha);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).atualizaFuncionario(cpf, login, senha);
         }
 
         if(sucess) {
             alert("Funcionário atualizado");
-            this.create_start_screen();
         } else {
             alert("Falha ao atualizar funcionário");
         }
     }
 
     async listandoFuncionarios(): Promise <any> {
-        const funcionario = this.caixa.getObjetoFuncionarioAtivo();
+        console.log(`Listando funcionários`);
         
-        if(funcionario){
-            const data = await (funcionario as Gerente).consultaFuncionarios();
+        if(this.funcionarioLogado){
+            const data = await (this.funcionarioLogado as GerenteInterface).consultaFuncionarios();
 
             if(data) {
                 alert("Funcionários listados");
@@ -1262,14 +1519,12 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await (funcionario as Gerente).cadastraProduto(nome, valor, quantidade);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).cadastraProduto(nome, valor, quantidade);
         }
 
         if(sucess) {
             alert("Produto cadastrado");
-            this.create_start_screen();
         } else {
             alert("Falha ao cadastrar produto");
         }
@@ -1280,14 +1535,12 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await (funcionario as Gerente).removeProduto(id);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).removeProduto(id);
         }
 
         if(sucess) {
             alert("Produto removido");
-            this.create_start_screen();
         } else {
             alert("Falha ao remover produto");
         }
@@ -1298,24 +1551,20 @@ class App {
 
         let sucess = false
 
-        const funcionario = await this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await (funcionario as Gerente).atualizaProduto(id, valor, quantidade);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).atualizaProduto(id, valor, quantidade);
         }
 
         if(sucess) {
             alert("Produto atualizado");
-            this.create_start_screen();
         } else {
             alert("Falha ao atualizar produto");
         }
     }
 
-    async listandoProdutos(): Promise<any> {
-        const funcionario = this.caixa.getObjetoFuncionarioAtivo();
-        
-        if(funcionario){
-            let data = await funcionario.consultaProdutos();
+    async listandoProdutos(): Promise<any> {  
+        if(this.funcionarioLogado){
+            let data = await this.funcionarioLogado.consultaProdutos();
             data = JSON.stringify(data);
             data = JSON.parse(data);
 
@@ -1335,14 +1584,12 @@ class App {
 
         let sucess = false
 
-        const funcionario = this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await (funcionario as Gerente).atualizaDesconto(idProduto, porcentagem);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).atualizaDesconto(idProduto, porcentagem);
         }
 
         if(sucess) {
             alert("Desconto registrado");
-            this.create_start_screen();
         } else {
             alert("Falha ao registrar desconto");
         }
@@ -1353,14 +1600,12 @@ class App {
 
         let sucess = false
 
-        const funcionario = this.caixa.getObjetoFuncionarioAtivo()
-        if(funcionario){
-            sucess = await (funcionario as Gerente).atualizaDesconto(idProduto, 0);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).atualizaDesconto(idProduto, 0);
         }
 
         if(sucess) {
             alert("Desconto removido");
-            this.create_start_screen();
         } else {
             alert("Falha ao remover desconto");
         }
@@ -1371,14 +1616,12 @@ class App {
 
         let sucess = false;
 
-        const funcionario = this.caixa.getObjetoFuncionarioAtivo();
-        if(funcionario){
-            sucess = await (funcionario as Gerente).atualizaDesconto(idProduto, porcentagem);
+        if(this.funcionarioLogado){
+            sucess = await (this.funcionarioLogado as GerenteInterface).atualizaDesconto(idProduto, porcentagem);
         }
 
         if(sucess) {
             alert("Desconto atualizado");
-            this.create_start_screen();
         } else {
             alert("Falha ao atualizar desconto");
         }
@@ -1386,30 +1629,41 @@ class App {
 
     listandoDescontos() {}
 
-    //EXTRA
-    async logando(username: string, password: string) {
+    //LOGIN
+    async logando(username: string, password: string): Promise<boolean>{
         console.log(`Usuário: ${username}, Senha: ${password}`);
 
-        const sucess = await this.caixa.validaLogin(username, password);
+        this.funcionarioLogado = await this.gerenciadorLogin.validaLogin(username, password);
 
-        if(sucess) {
+        if(this.funcionarioLogado) {
             alert("Funcionario logado");
-            this.create_start_screen();
+            return true;
         } else {
             alert("Funcinario não logado");
+            return false;
         }
     }
-}
 
+    //METODOS DO CONSTRUTOR DE VENDA
+    cancelaVenda(): void {
+        this.constrVenda.cancelaVenda();
+    }
 
-//INTERFACE DAS CLASSES
+    iniciaVenda(): void {
+        this.constrVenda.iniciaVenda();
+    }
 
+    adicionarProdutoLido(codigo: number, quantidade: number): void {
+        this.constrVenda.adicionarProdutoLido(codigo, quantidade);
+    }
 
+    removeProdutoLido(codigo: string | null): void {
+        this.constrVenda.removeProdutoLido(codigo);
+    }
 
-//IMPLEMENTAÇÃO DAS CLASSES
-
-interface FuncionarioInterface {
-    getTipoFuncionario(): string;
+    encerraConstrucao(cpfCliente: number | null, cpfFuncionario: number): void {
+        this.encerraConstrucao(cpfCliente, cpfFuncionario);
+    }
 }
 
 class Funcionario implements FuncionarioInterface{
@@ -1510,12 +1764,9 @@ class Funcionario implements FuncionarioInterface{
             return null;
         }
     }
-
-    //DESCONTOS
-    consultaDescontos() {}
 }
 
-class Gerente extends Funcionario {
+class Gerente extends Funcionario implements GerenteInterface {
     constructor(cpf: number, login: string) {
       super(cpf, login);
     }
@@ -1771,10 +2022,6 @@ class Gerente extends Funcionario {
     }
 
     //DESCONTOS
-    cadastraDesconto() {}
-
-    removeDesconto() {}
-
     async atualizaDesconto(
         idProduto: number,
         porcentagem: number,
@@ -1808,9 +2055,13 @@ class Gerente extends Funcionario {
             return false;
         }
     }
+
+    cadastraDesconto() {}
+    removeDesconto() {}
+    consultaDesconto() {}
 }
 
-class Produto {
+class Produto implements ProdutoInterface{
     private codigo: number;
     private quantidade: number;
     private valor: number;
@@ -1844,9 +2095,9 @@ class Produto {
     }
 }
 
-class Venda {
+class Venda implements VendaInterface {
     private data: Date;
-    private produtos: Produto[];
+    private produtos: ProdutoInterface[];
     private cpfCliente: number;
     private cpfFuncionario: number;
     private valorTotal: number;
@@ -1862,7 +2113,7 @@ class Venda {
         this.cpfFuncionario = cpfFuncionario;
     }
 
-    adicionaProduto(produto: Produto): void {
+    adicionaProduto(produto: ProdutoInterface): void {
         this.produtos.push(produto);
     }
 
@@ -1908,15 +2159,15 @@ class Venda {
         this.cpfFuncionario = cpf
     }
 
-    getProdutos(): Produto[] {
+    getProdutos(): ProdutoInterface[] {
         return this.produtos
     }
 }
 
-class Caixa implements ConstrutorVendaObserver {
-    private static _instance: Caixa;
+class Caixa implements CaixaInterface {
+    private static _instance: CaixaInterface;
 
-    private listaVendas: Venda[];
+    private listaVendas: VendaInterface[];
     private funcionarioLogado: (Funcionario | Gerente) | null;
     private aberto = false;
   
@@ -1925,7 +2176,7 @@ class Caixa implements ConstrutorVendaObserver {
       this.funcionarioLogado = null;
     }
 
-    public static getInstance(): Caixa {
+    public static getInstance(): CaixaInterface {
         if (!this._instance) {
             this._instance = new Caixa();
         }
@@ -1941,13 +2192,7 @@ class Caixa implements ConstrutorVendaObserver {
     getStatus(): boolean {
         return this.aberto;
     }
-    getFuncionarioAtivo(): number | null {
-        if(this.funcionarioLogado) 
-        return this.funcionarioLogado.getCpf()
-
-        return null
-    }
-    getObjetoFuncionarioAtivo(): Funcionario | null {
+    getFuncionarioAtivo(): FuncionarioInterface | null {
         return this.funcionarioLogado
     }
 
@@ -1960,7 +2205,7 @@ class Caixa implements ConstrutorVendaObserver {
         listaProdutos: number[],
       ): Promise<boolean> {
         try {
-            const url = ' https://light-killdeer-grateful.ngrok-free.app/vendas/';
+            const url = 'https://light-killdeer-grateful.ngrok-free.app/vendas/';
             const vendaData = {
                 valor_venda: valorVenda,
                 id_cliente: idCliente,
@@ -2041,45 +2286,8 @@ class Caixa implements ConstrutorVendaObserver {
         }
     }
 
-    //Usar (this.funcionarioLogado as Gerente) para acessar métodos exclusivos de gerente
-
-    async validaLogin(username: string, password: string): Promise<boolean> {
-        try {
-            const url = `https://light-killdeer-grateful.ngrok-free.app/login/${username}/${password}`;
-            const options = {
-                method: 'GET',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    "ngrok-skip-browser-warning": "69420"
-                 },
-            };
-        
-            const response = await fetch(url, options);
-            console.log(response)
-
-            if (response.ok) {
-                const loginData = await response.json();
-                if (loginData.is_gerente) {
-                    this.funcionarioLogado = new Gerente(loginData.cpf, loginData.login);
-                    console.log('Login como gerente realizado com sucesso!');
-                    return true;
-                } else {
-                    this.funcionarioLogado = new Funcionario(loginData.cpf, loginData.login);
-                    console.log('Login como funcionário realizado com sucesso!');
-                    return true;
-                }
-            } else {
-                const errorMessage = await response.text();
-                throw new Error(`Erro ao validar login: ${errorMessage}`);
-            }
-        } catch (error) {
-            console.error(`Erro ao validar login: ${error.message}`);
-            return false;
-        }
-    }
-
     //FUNÇÃO QUE CHAMA CADASTRAR VENDA E AUXILIARES
-    async concluiVenda(venda: Venda): Promise<boolean> {
+    async concluiVenda(venda: VendaInterface): Promise<boolean> {
         this.atualizarEstoque(venda.getProdutos())
 
         const valorTotal = venda.getValorVenda()
@@ -2104,7 +2312,7 @@ class Caixa implements ConstrutorVendaObserver {
         return await this.cadastraVenda(valorTotal, idCliente, idFuncionario, data, listaCodigos)
     }
 
-    async atualizarEstoque(listaProdutos: Produto[]): Promise<void> {
+    async atualizarEstoque(listaProdutos: ProdutoInterface[]): Promise<void> {
         for (const produto of listaProdutos) {
             const produtoConsultado = await this.consultaProduto(produto.getCodigo());
             let quantidade = produtoConsultado.quantidade_estoque
@@ -2177,29 +2385,25 @@ class Caixa implements ConstrutorVendaObserver {
     }
 }
 
-interface ConstrutorVendaObserver {
-    concluiVenda(venda: Venda): void;
-}
-
-class ConstrutorVenda {
-    vendaAtual: Venda | null
+class ConstrutorVenda  implements ConstrutorVendaInterface {
+    vendaAtual: VendaInterface | null
+    private observadores: ConstrutorVendaObserver[] = [];
 
     constructor() {
 
     }
-
-    private observadores: ConstrutorVendaObserver[] = [];
-
+    //METODOS DEOBSERVER
     public registrarObservador(observador: ConstrutorVendaObserver): void {
         this.observadores.push(observador);
     }
 
-    private update(venda: Venda): void {
+    private update(venda: VendaInterface): void {
         for (const observador of this.observadores) {
             observador.concluiVenda(venda);
         }
     }
 
+    //RESTO
     cancelaVenda() {
         this.vendaAtual = null
     }
@@ -2238,7 +2442,7 @@ class ConstrutorVenda {
         }
     }
 
-    async calculaValorTotal(produtos: Produto[], idCliente: number | null) {
+    async calculaValorTotal(produtos: ProdutoInterface[], idCliente: number | null) {
         let valorTotal = 0;
 
         for (const produto of produtos) {
@@ -2312,31 +2516,7 @@ class ConstrutorVenda {
     }
 }
 
-//Chamadas
-
-async function request(): Promise<void> {
-    try {
-        const url = ' https://light-killdeer-grateful.ngrok-free.app/vendas/';
-        const options = {
-            method: 'GET',
-            headers: { "ngrok-skip-browser-warning": "69420", },
-        };
-    
-        const response = await fetch(url, options);
-    
-        if (response.ok) {
-            console.log(`Conexão permitida`);
-        } else {
-            const errorMessage = await response.text();
-            throw new Error(`Conexão negada: ${errorMessage}`);
-        }
-    } catch (error) {
-        console.error(`Conexão negada: ${error.message}`);
-    }
-}
-
-request();
+//CHAMADAS --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 const my_app = new App();
-
-my_app.create_start_screen()
+my_app.create_start_screen();
