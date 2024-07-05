@@ -1816,9 +1816,9 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/descontos/".concat(idProduto);
+                        url = "http://localhost:8000/produtos/desconto/".concat(idProduto);
                         data = JSON.stringify({
-                            porcentagem: porcentagem,
+                            desconto: porcentagem,
                         });
                         options = {
                             method: 'PUT',

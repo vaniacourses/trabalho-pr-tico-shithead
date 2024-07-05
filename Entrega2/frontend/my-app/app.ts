@@ -1389,6 +1389,13 @@ class App {
     }
 }
 
+
+//INTERFACE DAS CLASSES
+
+
+
+//IMPLEMENTAÇÃO DAS CLASSES
+
 interface FuncionarioInterface {
     getTipoFuncionario(): string;
 }
@@ -1738,9 +1745,9 @@ class Gerente extends Funcionario {
         porcentagem: number,
       ): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/descontos/${idProduto}`;
+            const url = `http://localhost:8000/produtos/desconto/${idProduto}`;
             const data = JSON.stringify({
-                porcentagem: porcentagem,
+                desconto: porcentagem,
             });
             const options = {
                 method: 'PUT',
