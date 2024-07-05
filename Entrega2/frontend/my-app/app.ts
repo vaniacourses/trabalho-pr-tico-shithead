@@ -268,6 +268,11 @@ class App {
         atualizarButton.addEventListener('click', this.create_product_update_form.bind(this));
         productManagementScreen.appendChild(atualizarButton);
 
+        const consultarButton = document.createElement('button');
+        consultarButton.textContent = 'Consultar';
+        consultarButton.addEventListener('click', this.create_product_list.bind(this));
+        productManagementScreen.appendChild(consultarButton);
+
         const descontosButton = document.createElement('button');
         descontosButton.textContent = 'Gerenciar Descontos';
         descontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
@@ -513,6 +518,11 @@ class App {
         atualizarButton.textContent = 'Atualizar';
         atualizarButton.addEventListener('click', this.create_employee_update_form.bind(this));
         employeeManagementScreen.appendChild(atualizarButton);
+
+        const consultarButton = document.createElement('button');
+        consultarButton.textContent = 'Consultar';
+        consultarButton.addEventListener('click', this.create_employee_list.bind(this));
+        employeeManagementScreen.appendChild(consultarButton);
     
         const voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
@@ -1031,7 +1041,7 @@ class App {
         yearInput.type = 'number';
         yearInput.id = 'yearInput';
 
-        //Bptão de gerar relatório
+        //Botão de gerar relatório
         const buscarRelatorioButton = document.createElement('button');
         buscarRelatorioButton.textContent = 'Buscar Relatório';
         buscarRelatorioButton.addEventListener('click', async () => {
@@ -1575,6 +1585,7 @@ class Gerente extends Funcionario {
         try {
             const url = `http://localhost:8000/funcionarios/${cpf}`;
             const data = JSON.stringify({
+
                 login: login,
                 senha: senha,
             });
@@ -1979,7 +1990,7 @@ class Caixa implements ConstrutorVendaObserver {
         try {
             const url = `http://localhost:8000/relatorio-vendas/${mes}/${ano}/`;
             const options = {
-                method: 'POST',
+                method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             };
         

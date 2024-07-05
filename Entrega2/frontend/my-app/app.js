@@ -263,6 +263,10 @@ var App = /** @class */ (function () {
         atualizarButton.textContent = 'Atualizar';
         atualizarButton.addEventListener('click', this.create_product_update_form.bind(this));
         productManagementScreen.appendChild(atualizarButton);
+        var consultarButton = document.createElement('button');
+        consultarButton.textContent = 'Consultar';
+        consultarButton.addEventListener('click', this.create_product_list.bind(this));
+        productManagementScreen.appendChild(consultarButton);
         var descontosButton = document.createElement('button');
         descontosButton.textContent = 'Gerenciar Descontos';
         descontosButton.addEventListener('click', this.create_discount_management_screen.bind(this));
@@ -465,6 +469,10 @@ var App = /** @class */ (function () {
         atualizarButton.textContent = 'Atualizar';
         atualizarButton.addEventListener('click', this.create_employee_update_form.bind(this));
         employeeManagementScreen.appendChild(atualizarButton);
+        var consultarButton = document.createElement('button');
+        consultarButton.textContent = 'Consultar';
+        consultarButton.addEventListener('click', this.create_employee_list.bind(this));
+        employeeManagementScreen.appendChild(consultarButton);
         var voltarButton = document.createElement('button');
         voltarButton.textContent = 'Voltar';
         voltarButton.addEventListener('click', this.create_start_screen.bind(this));
@@ -884,7 +892,7 @@ var App = /** @class */ (function () {
         var yearInput = document.createElement('input');
         yearInput.type = 'number';
         yearInput.id = 'yearInput';
-        //Bptão de gerar relatório
+        //Botão de gerar relatório
         var buscarRelatorioButton = document.createElement('button');
         buscarRelatorioButton.textContent = 'Buscar Relatório';
         buscarRelatorioButton.addEventListener('click', function () { return __awaiter(_this, void 0, void 0, function () {
@@ -2032,7 +2040,7 @@ var Caixa = /** @class */ (function () {
                         _a.trys.push([0, 5, , 6]);
                         url = "http://localhost:8000/relatorio-vendas/".concat(mes, "/").concat(ano, "/");
                         options = {
-                            method: 'POST',
+                            method: 'GET',
                             headers: { 'Content-Type': 'application/json' }
                         };
                         return [4 /*yield*/, fetch(url, options)];
