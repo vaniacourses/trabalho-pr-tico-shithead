@@ -27,28 +27,28 @@ def get_db():
 
 #FUNCIONARIO
 
-@app.post("/funcionarios/", response_model=schemas.Funcionario)
+@app.post("/funcionarios/", response_model=schemas.FuncionarioBase)
 def create_funcionario(funcionario: schemas.FuncionarioCreate, db: Session = Depends(get_db)):
     db_funcionario = crud.get_funcionario_by_cpf(db, cpf=funcionario.cpf)
     if db_funcionario:
         raise HTTPException(status_code=400, detail="CPF já registrado")
     return crud.create_funcionario(db=db, funcionario=funcionario)
 
-@app.get("/funcionarios/", response_model=list[schemas.Funcionario])
+@app.get("/funcionarios/", response_model=list[schemas.FuncionarioBase])
 def read_funcionarios(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     funcionarios = crud.get_funcionarios(db, skip=skip, limit=limit)
     return funcionarios
 
-@app.get("/funcionarios/{cpf_funcionario}/", response_model=schemas.Funcionario)
-def read_funcionario(cpf: int, db: Session = Depends(get_db)):
-    db_funcionario = crud.get_funcionario_by_cpf(db, cpf=cpf)
+@app.get("/funcionarios/{cpf_funcionario}", response_model=schemas.FuncionarioBase)
+def read_funcionario(cpf_funcionario: int, db: Session = Depends(get_db)):
+    db_funcionario = crud.get_funcionario_by_cpf(db, cpf=cpf_funcionario)
     if db_funcionario is None:
         raise HTTPException(status_code=404, detail="Funcionário não encontrado")
     return db_funcionario
 
 @app.put("/funcionarios/{cpf_funcionario}", response_model=schemas.Funcionario)
-def update_funcionario(cpf:int,funcionario_update:schemas.Funcionario, db: Session = Depends(get_db)):
-    db_funcionario = crud.update_funcionario(db=db,cpf=cpf,funcionario=funcionario_update)
+def update_funcionario(cpf_funcionario:int,funcionario_update:schemas.Funcionario, db: Session = Depends(get_db)):
+    db_funcionario = crud.update_funcionario(db=db,cpf=cpf_funcionario,funcionario=funcionario_update)
     if db_funcionario is None:
         raise HTTPException(status_code=404,detail="Funcionário não encontrado")
     return db_funcionario
@@ -91,16 +91,16 @@ def delete_cliente(cpf_cliente: int, db: Session = Depends(get_db)):
 
 #PRODUTO
 
-@app.post("/produtos/", response_model=schemas.ProdutoBase)
+@app.post("/produtos/", response_model=schemas.Produto)
 def create_produto(produto: schemas.ProdutoCreate, db: Session = Depends(get_db)):
     return crud.create_produto(db=db, produto=produto)
 
-@app.get("/produtos/", response_model=list[schemas.ProdutoBase])
+@app.get("/produtos/", response_model=list[schemas.Produto])
 def read_produtos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     produtos = crud.get_produtos(db, skip=skip, limit=limit)
     return produtos
 
-@app.get("/produtos/{produto_id}", response_model=schemas.ProdutoBase)
+@app.get("/produtos/{produto_id}", response_model=schemas.Produto)
 def read_produto(produto_id: int, db: Session = Depends(get_db)):
     db_produto = crud.get_produto_by_id(db, id_produto=produto_id)
     if db_produto is None:
@@ -114,17 +114,13 @@ def update_produto(produto_id: int, produto_update: schemas.ProdutoBase, db: Ses
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     return db_produto
 
-@app.put("/produtos/desconto/{produto_id}", response_model=schemas.ProdutoBase)
-def update_desconto(produto_id: int, produto_update: schemas.Produto, db: Session = Depends(get_db)):
-    db_produto = crud.update_desconto(db=db, id_produto=produto_id,produto_update=produto_update)
+@app.put("/produtos/desconto/{produto_id}", response_model=schemas.Produto)
+def update_desconto(produto_id: int, desconto_update: schemas.Desconto, db: Session = Depends(get_db)):
+    db_produto = crud.update_desconto(db=db, id_produto=produto_id,desconto=desconto_update)
     if db_produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     return db_produto
 
-@app.get("/produtos/desconto/{id_produto}", response_model=int)
-def read_desconto(id_produto: int, db: Session = Depends(get_db)):
-    db_desconto = crud.get_desconto_by_id(db, id_produto=id_produto)
-    return db_desconto
 
 
 

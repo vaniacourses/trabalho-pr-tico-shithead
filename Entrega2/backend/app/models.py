@@ -67,7 +67,7 @@ class Produto(Base):
     nome = Column(String(255), unique=True)
     valor = Column(Float)
     quantidade_estoque = Column(Integer)
-    desconto = Column(Float)
+    desconto = Column(Float,default=0)
 
     vendas = relationship("Venda", secondary="produtos_venda", back_populates="produtos")
 

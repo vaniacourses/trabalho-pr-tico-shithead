@@ -19,10 +19,17 @@ class ProdutoCreate(ProdutoBase):
 
 class Produto(BaseModel):
     desconto: int
+    valor: float
+    quantidade_estoque: int
+    nome : str
+    id_produto:int
 
 
     class Config:
         orm_mode = True
+
+class Desconto(BaseModel):
+    desconto:int
 
 #-------------------------------------------
 
@@ -64,18 +71,21 @@ class Cliente(ClienteBase):
 
 #-------------------------------------------
 class FuncionarioBase(BaseModel):
+    login: str
+    senha: str
+    cpf: int
+    is_gerente:bool
+
+class FuncionarioCreate(FuncionarioBase):
     cpf: int
     login: str
     is_gerente: bool
     senha: str
 
-class FuncionarioCreate(FuncionarioBase):
-    pass; 
 
-
-class Funcionario(FuncionarioBase):
-    pass
-
+class Funcionario(BaseModel):
+    senha: str
+    login: str
     class Config:
         orm_mode = True
 

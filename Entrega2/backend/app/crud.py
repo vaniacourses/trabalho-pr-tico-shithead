@@ -32,8 +32,6 @@ def update_funcionario(cpf:int, db:Session,funcionario:schemas.Funcionario):
     
     db_funcionario.login = funcionario.login
     db_funcionario.senha = funcionario.senha
-    db_funcionario.cpf = funcionario.cpf
-    db_funcionario.is_gerente = funcionario.is_gerente
 
     db.commit()
     db.refresh(db_funcionario)
@@ -172,18 +170,13 @@ def delete_venda(db: Session, venda_id: int):
 
 #DESCONTO
 
-def get_desconto_by_id(db: Session, id_produto: int):
-    db_produto = db.query(models.Produto).filter(models.Produto.id_produto == id_produto).first()
-    return db_produto.desconto
 
-
-
-def update_desconto(db: Session, id_produto: int, produto_update: schemas.Produto):
+def update_desconto(db: Session, id_produto: int, desconto: schemas.Desconto):
     db_produto = get_produto_by_id(db, id_produto)
     if not db_produto:
         raise Exception(f"Produto com id {id_produto} não encontrado")
 
-    db_produto.desconto = produto_update.desconto
+    db_produto.desconto = desconto.desconto
 
     db.commit()
     return db_produto
