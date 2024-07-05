@@ -477,10 +477,10 @@ class App {
             priceCell.textContent = product.valor.toFixed(2);
 
             const quantityCell = tableRow.insertCell();
-            quantityCell.textContent = `${product.quantidade_estoque}%`;
+            quantityCell.textContent = `${product.quantidade_estoque}`;
             
             const discountCell = tableRow.insertCell();
-            discountCell.textContent = `${product.desconto}%`;
+            discountCell.textContent = `${product.desconto}`;
         }
 
         document.body.appendChild(table);
@@ -1072,24 +1072,24 @@ class App {
             const tableHeader = salesTable.insertRow();
             const headerCells = ['Valor da Venda', 'Data', 'ID Cliente', 'ID Funcionário'];
             for (const headerCellText of headerCells) {
-            const headerCell = tableHeader.insertCell();
-            headerCell.textContent = headerCellText;
+                const headerCell = tableHeader.insertCell();
+                headerCell.textContent = headerCellText;
             }
 
             //Cria linhas da tabela
             for (const sale of salesData) {
-            const tableRow = salesTable.insertRow();
-            const valorVendaCell = tableRow.insertCell();
-            valorVendaCell.textContent = sale.valor_venda.toFixed(2);
+                const tableRow = salesTable.insertRow();
+                const valorVendaCell = tableRow.insertCell();
+                valorVendaCell.textContent = sale.valor_venda.toFixed(2);
 
-            const dataCell = tableRow.insertCell();
-            dataCell.textContent = sale.data;
+                const dataCell = tableRow.insertCell();
+                dataCell.textContent = sale.data;
 
-            const idClienteCell = tableRow.insertCell();
-            idClienteCell.textContent = sale.id_cliente ? sale.id_cliente : '-';
+                const idClienteCell = tableRow.insertCell();
+                idClienteCell.textContent = sale.id_cliente ? sale.id_cliente : '-';
 
-            const idFuncionarioCell = tableRow.insertCell();
-            idFuncionarioCell.textContent = sale.id_funcionario;
+                const idFuncionarioCell = tableRow.insertCell();
+                idFuncionarioCell.textContent = sale.id_funcionario;
             }
 
             document.body.appendChild(salesTable);
@@ -1320,7 +1320,7 @@ class App {
             if(data) {
                 alert("Produtos listados");
                 console.log(`${data}`);
-                return data;
+                return JSON.stringify(data);
             } else {
                 alert("Falha ao buscar produtos");
             }
@@ -1998,7 +1998,7 @@ class Caixa implements ConstrutorVendaObserver {
         
             if (response.ok) {
                 console.log(`Relatório de vendas de ${mes}/${ano} lido com sucesso!`);
-                return response.json;
+                return response.json();
             } else {
                 const errorMessage = await response.text();
                 throw new Error(`Erro pegar relatorio de venda: ${errorMessage}`);

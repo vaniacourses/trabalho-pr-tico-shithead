@@ -435,9 +435,9 @@ var App = /** @class */ (function () {
                             priceCell = tableRow.insertCell();
                             priceCell.textContent = product.valor.toFixed(2);
                             quantityCell = tableRow.insertCell();
-                            quantityCell.textContent = "".concat(product.quantidade_estoque, "%");
+                            quantityCell.textContent = "".concat(product.quantidade_estoque);
                             discountCell = tableRow.insertCell();
-                            discountCell.textContent = "".concat(product.desconto, "%");
+                            discountCell.textContent = "".concat(product.desconto);
                         }
                         document.body.appendChild(table);
                         voltarButton = document.createElement('button');
@@ -1279,7 +1279,7 @@ var App = /** @class */ (function () {
                         if (data) {
                             alert("Produtos listados");
                             console.log("".concat(data));
-                            return [2 /*return*/, data];
+                            return [2 /*return*/, JSON.stringify(data)];
                         }
                         else {
                             alert("Falha ao buscar produtos");
@@ -2048,7 +2048,7 @@ var Caixa = /** @class */ (function () {
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 2];
                         console.log("Relat\u00F3rio de vendas de ".concat(mes, "/").concat(ano, " lido com sucesso!"));
-                        return [2 /*return*/, response.json];
+                        return [2 /*return*/, response.json()];
                     case 2: return [4 /*yield*/, response.text()];
                     case 3:
                         errorMessage = _a.sent();
