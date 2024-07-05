@@ -447,7 +447,7 @@ class App {
 
         const productsData = await this.listandoProdutos();
 
-        if (productsData) {
+        if (!productsData) {
             console.error('Erro ao buscar produtos');
             return;
         }
@@ -1317,6 +1317,7 @@ class App {
         if(funcionario){
             let data = await funcionario.consultaProdutos();
             data = JSON.stringify(data);
+            data = JSON.parse(data);
 
             if(data) {
                 alert("Produtos listados");

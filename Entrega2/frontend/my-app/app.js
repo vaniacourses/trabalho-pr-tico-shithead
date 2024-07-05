@@ -411,7 +411,7 @@ var App = /** @class */ (function () {
                         return [4 /*yield*/, this.listandoProdutos()];
                     case 1:
                         productsData = _b.sent();
-                        if (productsData) {
+                        if (!productsData) {
                             console.error('Erro ao buscar produtos');
                             return [2 /*return*/];
                         }
@@ -1277,6 +1277,7 @@ var App = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data = JSON.stringify(data);
+                        data = JSON.parse(data);
                         if (data) {
                             alert("Produtos listados");
                             console.log("".concat(data));
