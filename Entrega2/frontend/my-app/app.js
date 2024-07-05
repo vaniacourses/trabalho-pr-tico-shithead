@@ -1422,11 +1422,13 @@ var Funcionario = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = 'http://localhost:8000/clientes/';
+                        url = ' https://light-killdeer-grateful.ngrok-free.app/clientes/';
                         data = JSON.stringify({ cpf: cpfCliente });
                         options = {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: data,
                         };
                         return [4 /*yield*/, fetch(url, options)];
@@ -1456,10 +1458,12 @@ var Funcionario = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = 'http://localhost:8000/clientes/';
+                        url = ' https://light-killdeer-grateful.ngrok-free.app/clientes/';
                         options = {
                             method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: JSON.stringify({ cpf: cpfCliente }),
                         };
                         return [4 /*yield*/, fetch("".concat(url).concat(cpfCliente), options)];
@@ -1490,10 +1494,12 @@ var Funcionario = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = 'http://localhost:8000/produtos/';
+                        url = ' https://light-killdeer-grateful.ngrok-free.app/produtos/';
                         options = {
                             method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -1537,7 +1543,7 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = 'http://localhost:8000/funcionarios/';
+                        url = ' https://light-killdeer-grateful.ngrok-free.app/funcionarios/';
                         data = JSON.stringify({
                             cpf: cpf,
                             login: login,
@@ -1546,7 +1552,9 @@ var Gerente = /** @class */ (function (_super) {
                         });
                         options = {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: data,
                         };
                         return [4 /*yield*/, fetch(url, options)];
@@ -1576,10 +1584,12 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/funcionarios/".concat(cpf);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/funcionarios/".concat(cpf);
                         options = {
                             method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -1609,14 +1619,16 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/funcionarios/".concat(cpf);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/funcionarios/".concat(cpf);
                         data = JSON.stringify({
                             login: login,
                             senha: senha,
                         });
                         options = {
                             method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: data,
                         };
                         return [4 /*yield*/, fetch(url, options)];
@@ -1646,10 +1658,12 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = 'http://localhost:8000/funcionarios/';
+                        url = ' https://light-killdeer-grateful.ngrok-free.app/funcionarios/';
                         options = {
                             method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -1681,7 +1695,7 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = 'http://localhost:8000/produtos/';
+                        url = ' https://light-killdeer-grateful.ngrok-free.app/produtos/';
                         data = JSON.stringify({
                             nome: nome,
                             valor: valor,
@@ -1689,7 +1703,9 @@ var Gerente = /** @class */ (function (_super) {
                         });
                         options = {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: data,
                         };
                         return [4 /*yield*/, fetch(url, options)];
@@ -1719,10 +1735,12 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/produtos/".concat(idProduto);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/produtos/".concat(idProduto);
                         options = {
                             method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -1751,7 +1769,7 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/produtos/".concat(idProduto);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/produtos/".concat(idProduto);
                         data = JSON.stringify({
                             nome: "oi",
                             valor: valor,
@@ -1759,7 +1777,9 @@ var Gerente = /** @class */ (function (_super) {
                         });
                         options = {
                             method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: data,
                         };
                         return [4 /*yield*/, fetch(url, options)];
@@ -1789,10 +1809,12 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = 'http://localhost:8000/produtos/';
+                        url = ' https://light-killdeer-grateful.ngrok-free.app/produtos/';
                         options = {
                             method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -1826,13 +1848,15 @@ var Gerente = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/produtos/desconto/".concat(idProduto);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/produtos/desconto/".concat(idProduto);
                         data = JSON.stringify({
                             desconto: porcentagem,
                         });
                         options = {
                             method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: data,
                         };
                         return [4 /*yield*/, fetch(url, options)];
@@ -1968,7 +1992,7 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = 'http://localhost:8000/vendas/';
+                        url = ' https://light-killdeer-grateful.ngrok-free.app/vendas/';
                         vendaData = {
                             valor_venda: valorVenda,
                             id_cliente: idCliente,
@@ -1978,7 +2002,9 @@ var Caixa = /** @class */ (function () {
                         };
                         options = {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: JSON.stringify(vendaData),
                         };
                         return [4 /*yield*/, fetch(url, options)];
@@ -2008,10 +2034,12 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/vendas/".concat(idVenda);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/vendas/".concat(idVenda);
                         options = {
                             method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -2040,10 +2068,12 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/relatorio-vendas/".concat(mes, "/").concat(ano, "/");
+                        url = " https://light-killdeer-grateful.ngrok-free.app/relatorio-vendas/".concat(mes, "/").concat(ano, "/");
                         options = {
                             method: 'GET',
-                            headers: { 'Content-Type': 'application/json' }
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            }
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -2073,14 +2103,18 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/login/".concat(username, "/").concat(password);
+                        url = "https://light-killdeer-grateful.ngrok-free.app/login/".concat(username, "/").concat(password);
                         options = {
                             method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
                         response = _a.sent();
+                        console.log(response);
                         if (!response.ok) return [3 /*break*/, 3];
                         return [4 /*yield*/, response.json()];
                     case 2:
@@ -2174,10 +2208,12 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/produtos/".concat(idProduto);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/produtos/".concat(idProduto);
                         options = {
                             method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -2208,7 +2244,7 @@ var Caixa = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        url = "http://localhost:8000/produtos/".concat(idProduto);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/produtos/".concat(idProduto);
                         data = JSON.stringify({
                             valor: valor,
                             quantidade_estoque: quantidade,
@@ -2217,7 +2253,9 @@ var Caixa = /** @class */ (function () {
                         });
                         options = {
                             method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                             body: data,
                         };
                         return [4 /*yield*/, fetch(url, options)];
@@ -2341,10 +2379,12 @@ var ConstrutorVenda = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/fidelidade-cliente/".concat(idCliente);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/fidelidade-cliente/".concat(idCliente);
                         options = {
                             method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -2375,10 +2415,12 @@ var ConstrutorVenda = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 6, , 7]);
-                        url = "http://localhost:8000/produtos/".concat(idProduto);
+                        url = " https://light-killdeer-grateful.ngrok-free.app/produtos/".concat(idProduto);
                         options = {
                             method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420"
+                            },
                         };
                         return [4 /*yield*/, fetch(url, options)];
                     case 1:
@@ -2405,5 +2447,38 @@ var ConstrutorVenda = /** @class */ (function () {
     return ConstrutorVenda;
 }());
 //Chamadas
+function request() {
+    return __awaiter(this, void 0, void 0, function () {
+        var url, options, response, errorMessage, error_21;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 5, , 6]);
+                    url = ' https://light-killdeer-grateful.ngrok-free.app/vendas/';
+                    options = {
+                        method: 'GET',
+                        headers: { "ngrok-skip-browser-warning": "69420", },
+                    };
+                    return [4 /*yield*/, fetch(url, options)];
+                case 1:
+                    response = _a.sent();
+                    if (!response.ok) return [3 /*break*/, 2];
+                    console.log("Conex\u00E3o permitida");
+                    return [3 /*break*/, 4];
+                case 2: return [4 /*yield*/, response.text()];
+                case 3:
+                    errorMessage = _a.sent();
+                    throw new Error("Conex\u00E3o negada: ".concat(errorMessage));
+                case 4: return [3 /*break*/, 6];
+                case 5:
+                    error_21 = _a.sent();
+                    console.error("Conex\u00E3o negada: ".concat(error_21.message));
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
+            }
+        });
+    });
+}
+request();
 var my_app = new App();
 my_app.create_start_screen();

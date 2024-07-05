@@ -1434,11 +1434,13 @@ class Funcionario implements FuncionarioInterface{
     //CLIENTE
     async cadastraCliente(cpfCliente: number): Promise<boolean> { //Retorna true ou false
         try {
-            const url = 'http://localhost:8000/clientes/';
+            const url = ' https://light-killdeer-grateful.ngrok-free.app/clientes/';
             const data = JSON.stringify({ cpf: cpfCliente });
             const options = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: data,
             };
             
@@ -1459,10 +1461,12 @@ class Funcionario implements FuncionarioInterface{
 
     async removeCliente(cpfCliente: number): Promise<boolean> {
         try {
-            const url = 'http://localhost:8000/clientes/';
+            const url = ' https://light-killdeer-grateful.ngrok-free.app/clientes/';
             const options = {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: JSON.stringify({ cpf: cpfCliente }),
             };
         
@@ -1484,10 +1488,12 @@ class Funcionario implements FuncionarioInterface{
     //PRODUTOS
     async consultaProdutos(): Promise<any> {
         try {
-            const url = 'http://localhost:8000/produtos/';
+            const url = ' https://light-killdeer-grateful.ngrok-free.app/produtos/';
             const options = {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
@@ -1526,7 +1532,7 @@ class Gerente extends Funcionario {
         is_gerente: boolean
       ): Promise<boolean> {
         try {
-            const url = 'http://localhost:8000/funcionarios/';
+            const url = ' https://light-killdeer-grateful.ngrok-free.app/funcionarios/';
             const data = JSON.stringify({
                 cpf: cpf,
                 login: login,
@@ -1535,7 +1541,9 @@ class Gerente extends Funcionario {
             });
             const options = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: data,
             };
         
@@ -1558,10 +1566,12 @@ class Gerente extends Funcionario {
 
     async removeFuncionario(cpf: number): Promise<boolean> { //Falta na api
         try {
-          const url = `http://localhost:8000/funcionarios/${cpf}`;
+          const url = ` https://light-killdeer-grateful.ngrok-free.app/funcionarios/${cpf}`;
           const options = {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json',
+                 "ngrok-skip-browser-warning": "69420"
+             },
           };
       
           const response = await fetch(url, options);
@@ -1585,7 +1595,7 @@ class Gerente extends Funcionario {
         senha: string
       ): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/funcionarios/${cpf}`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/funcionarios/${cpf}`;
             const data = JSON.stringify({
 
                 login: login,
@@ -1593,7 +1603,9 @@ class Gerente extends Funcionario {
             });
             const options = {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: data,
             };
         
@@ -1614,10 +1626,12 @@ class Gerente extends Funcionario {
 
     async consultaFuncionarios(): Promise<any> {
         try {
-            const url = 'http://localhost:8000/funcionarios/';
+            const url = ' https://light-killdeer-grateful.ngrok-free.app/funcionarios/';
             const options = {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
@@ -1642,7 +1656,7 @@ class Gerente extends Funcionario {
         quantidade: number
       ): Promise<boolean> {
         try {
-            const url = 'http://localhost:8000/produtos/';
+            const url = ' https://light-killdeer-grateful.ngrok-free.app/produtos/';
             const data = JSON.stringify({
                 nome: nome,
                 valor: valor,
@@ -1650,7 +1664,9 @@ class Gerente extends Funcionario {
             });
             const options = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: data,
             };
         
@@ -1671,10 +1687,12 @@ class Gerente extends Funcionario {
 
     async removeProduto(idProduto: number): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/produtos/${idProduto}`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/produtos/${idProduto}`;
             const options = {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
@@ -1698,7 +1716,7 @@ class Gerente extends Funcionario {
         quantidade: number
       ): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/produtos/${idProduto}`; // Use the ID in the URL
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/produtos/${idProduto}`; // Use the ID in the URL
             const data = JSON.stringify({
                 nome: "oi",
                 valor: valor,
@@ -1706,7 +1724,9 @@ class Gerente extends Funcionario {
             });
             const options = {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: data,
             };
         
@@ -1727,10 +1747,12 @@ class Gerente extends Funcionario {
 
     async consultaProdutos(): Promise<any> {
         try {
-            const url = 'http://localhost:8000/produtos/';
+            const url = ' https://light-killdeer-grateful.ngrok-free.app/produtos/';
             const options = {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
@@ -1758,13 +1780,15 @@ class Gerente extends Funcionario {
         porcentagem: number,
       ): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/produtos/desconto/${idProduto}`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/produtos/desconto/${idProduto}`;
             const data = JSON.stringify({
                 desconto: porcentagem,
             });
             const options = {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: data,
             };
         
@@ -1936,7 +1960,7 @@ class Caixa implements ConstrutorVendaObserver {
         listaProdutos: number[],
       ): Promise<boolean> {
         try {
-            const url = 'http://localhost:8000/vendas/';
+            const url = ' https://light-killdeer-grateful.ngrok-free.app/vendas/';
             const vendaData = {
                 valor_venda: valorVenda,
                 id_cliente: idCliente,
@@ -1946,7 +1970,9 @@ class Caixa implements ConstrutorVendaObserver {
             };
             const options = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: JSON.stringify(vendaData),
             };
         
@@ -1967,10 +1993,12 @@ class Caixa implements ConstrutorVendaObserver {
 
     async removeVenda(idVenda: number): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/vendas/${idVenda}`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/vendas/${idVenda}`;
             const options = {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
@@ -1990,10 +2018,12 @@ class Caixa implements ConstrutorVendaObserver {
     
     async relatorioVendasMensais(mes: number, ano: number): Promise<any> {
         try {
-            const url = `http://localhost:8000/relatorio-vendas/${mes}/${ano}/`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/relatorio-vendas/${mes}/${ano}/`;
             const options = {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 }
             };
         
             const response = await fetch(url, options);
@@ -2015,14 +2045,18 @@ class Caixa implements ConstrutorVendaObserver {
 
     async validaLogin(username: string, password: string): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/login/${username}/${password}`;
+            const url = `https://light-killdeer-grateful.ngrok-free.app/login/${username}/${password}`;
             const options = {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
-        
+            console.log(response)
+
             if (response.ok) {
                 const loginData = await response.json();
                 if (loginData.is_gerente) {
@@ -2082,10 +2116,12 @@ class Caixa implements ConstrutorVendaObserver {
 
     async consultaProduto(idProduto: number): Promise<any> {
         try {
-            const url = `http://localhost:8000/produtos/${idProduto}`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/produtos/${idProduto}`;
             const options = {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
@@ -2110,7 +2146,7 @@ class Caixa implements ConstrutorVendaObserver {
         desconto: number,
       ): Promise<boolean> {
         try {
-            const url = `http://localhost:8000/produtos/${idProduto}`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/produtos/${idProduto}`;
             const data = JSON.stringify({
                 valor: valor,
                 quantidade_estoque: quantidade,
@@ -2119,7 +2155,9 @@ class Caixa implements ConstrutorVendaObserver {
             });
             const options = {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
                 body: data,
             };
         
@@ -2225,10 +2263,12 @@ class ConstrutorVenda {
 
     async consultaFidelidade(idCliente: number): Promise<number> {
         try {
-            const url = `http://localhost:8000/fidelidade-cliente/${idCliente}`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/fidelidade-cliente/${idCliente}`;
             const options = {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
@@ -2248,10 +2288,12 @@ class ConstrutorVenda {
 
     async consultaProduto(idProduto: number): Promise<any> {
         try {
-            const url = `http://localhost:8000/produtos/${idProduto}`;
+            const url = ` https://light-killdeer-grateful.ngrok-free.app/produtos/${idProduto}`;
             const options = {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                     "ngrok-skip-browser-warning": "69420"
+                 },
             };
         
             const response = await fetch(url, options);
@@ -2271,6 +2313,29 @@ class ConstrutorVenda {
 }
 
 //Chamadas
+
+async function request(): Promise<void> {
+    try {
+        const url = ' https://light-killdeer-grateful.ngrok-free.app/vendas/';
+        const options = {
+            method: 'GET',
+            headers: { "ngrok-skip-browser-warning": "69420", },
+        };
+    
+        const response = await fetch(url, options);
+    
+        if (response.ok) {
+            console.log(`Conexão permitida`);
+        } else {
+            const errorMessage = await response.text();
+            throw new Error(`Conexão negada: ${errorMessage}`);
+        }
+    } catch (error) {
+        console.error(`Conexão negada: ${error.message}`);
+    }
+}
+
+request();
 
 const my_app = new App();
 
