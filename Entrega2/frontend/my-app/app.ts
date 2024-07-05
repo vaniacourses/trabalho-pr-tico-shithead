@@ -1315,12 +1315,13 @@ class App {
         const funcionario = this.caixa.getObjetoFuncionarioAtivo();
         
         if(funcionario){
-            const data = await funcionario.consultaProdutos();
+            let data = await funcionario.consultaProdutos();
+            data = JSON.stringify(data);
 
             if(data) {
                 alert("Produtos listados");
                 console.log(`${data}`);
-                return JSON.stringify(data);
+                return data;
             } else {
                 alert("Falha ao buscar produtos");
             }

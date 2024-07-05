@@ -1276,10 +1276,11 @@ var App = /** @class */ (function () {
                         return [4 /*yield*/, funcionario.consultaProdutos()];
                     case 1:
                         data = _a.sent();
+                        data = JSON.stringify(data);
                         if (data) {
                             alert("Produtos listados");
                             console.log("".concat(data));
-                            return [2 /*return*/, JSON.stringify(data)];
+                            return [2 /*return*/, data];
                         }
                         else {
                             alert("Falha ao buscar produtos");
